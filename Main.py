@@ -60,17 +60,16 @@ def main_menu():
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """)
 
-if (RoE() == "1"):
-    banner()
-    main_menu()
-    selection = 0
-    while(selection != 10):
-        selection = int(input("Selection: "))
+if __name__ == '__main__':
+    if (RoE() == "1"):
+      banner()
+      main_menu()
+      selection = 0
+      while(selection != 10):
+          selection = int(input("Selection: "))
 
-    print("Exiting...")
-    exit()
-else:
-    print("Exiting.............")
-    exit()
-
-
+      print("Exiting...")
+      exit()
+    else:
+        print("Exiting.............")
+        exit()
