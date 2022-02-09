@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 def prRed(printinput):
     print("\033[91m {}\033[00m" .format(printinput))
@@ -56,20 +57,19 @@ def main_menu():
     3. Uninstall Tools          8. Exploitation
 
     4. Tor Proxy                9. Maintaining Access
-
-   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     """)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     if (RoE() == "1"):
-      banner()
-      main_menu()
-      selection = 0
-      while(selection != 10):
-          selection = int(input("Selection: "))
+        os.system('clear')
+        banner()
+        main_menu()
+        selection = 0
+        while(selection != 10):
+            selection = int(input("Selection: "))
 
-      print("Exiting...")
-      exit()
+        print("Exiting...")
+        exit()
     else:
         print("Exiting.............")
         exit()

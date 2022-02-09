@@ -2,6 +2,8 @@ from queue import Queue
 import subprocess
 import multiprocessing
 import time
+
+#need to add !!apt update!! to get latest packages
 #namexxx_ss variable can find "upgradable"
 def tor_check(q):
     tor_s = subprocess.run("apt list 2>/dev/null | grep -E '^tor/'", shell=True, stdout=subprocess.PIPE)
@@ -87,11 +89,83 @@ def nikto_check(q):
     print("Nikto Done")
     return q.put(nikto_checkr)
 
+def gobuster_check(q):
+    gobuster_s = subprocess.run("apt list 2>/dev/null | grep -E '^gobuster/'", shell=True, stdout=subprocess.PIPE)
+    gobuster_ss = gobuster_s.stdout.decode('ascii')
+    if("installed" in gobuster_ss):
+        gobuster_checkr = "GoBuster Installed"
+    elif("upgradable" in gobuster_ss):
+        gobuster_checkr = "GoBuster Upgradeable"
+    else:
+        gobuster_checkr = "GoBuster Not Installed"
+    print("GoBuster Done")
+    return q.put(gobuster_checkr)
+
+def hydra_check(q):
+    hydra_s = subprocess.run("apt list 2>/dev/null | grep -E '^hydra/'", shell=True, stdout=subprocess.PIPE)
+    hydra_ss = hydra_s.stdout.decode('ascii')
+    if("installed" in hydra_ss):
+        hydra_checkr = "Hydra Installed"
+    elif("upgradable" in hydra_ss):
+        hydra_checkr = "Hydra Upgradeable"
+    else:
+        hydra_checkr = "Hydra Not Installed"
+    print("Hydra Done")
+    return q.put(hydra_checkr)
+
+def john_check(q):
+    john_s = subprocess.run("apt list 2>/dev/null | grep -E '^john/'", shell=True, stdout=subprocess.PIPE)
+    john_ss = john_s.stdout.decode('ascii')
+    if("installed" in john_ss):
+        john_checkr = "JohnTheRipper Installed"
+    elif("upgradable" in john_ss):
+        john_checkr = "JohnTheRipper Upgradeable"
+    else:
+        john_checkr = "JohnTheRipper Not Installed"
+    print("JohnTheRipper Done")
+    return q.put(john_checkr)
+
+def ettercap_check(q):
+    ettercap_s = subprocess.run("apt list 2>/dev/null | grep -E '^ettercap-common/'", shell=True, stdout=subprocess.PIPE)
+    ettercap_ss = ettercap_s.stdout.decode('ascii')
+    if("installed" in ettercap_ss):
+        ettercap_checkr = "Ettercap Installed"
+    elif("upgradable" in ettercap_ss):
+        ettercap_checkr = "Ettercap Upgradeable"
+    else:
+        ettercap_checkr = "Ettercap Not Installed"
+    print("Ettercap Done")
+    return q.put(ettercap_checkr)
+
+def set_check(q):
+    set_s = subprocess.run("apt list 2>/dev/null | grep -E '^set/'", shell=True, stdout=subprocess.PIPE)
+    set_ss = set_s.stdout.decode('ascii')
+    if("installed" in set_ss):
+        set_checkr = "SEToolkit Installed"
+    elif("upgradable" in set_ss):
+        set_checkr = "SEToolkit Upgradeable"
+    else:
+        set_checkr = "SEToolkit Not Installed"
+    print("SEToolkit Done")
+    return q.put(set_checkr)
+
+def msfvenom_check(q):
+    msf_s = subprocess.run("apt list 2>/dev/null | grep -E '^metasploit-framework/'", shell=True, stdout=subprocess.PIPE)
+    msf_ss = msf_s.stdout.decode('ascii')
+    if("installed" in msf_ss):
+        msf_checkr = "Metasploit Installed"
+    elif("upgradable" in msf_ss):
+        msf_checkr = "Metasploit Upgradeable"
+    else:
+        msf_checkr = "Metasploit Not Installed"
+    print("Metasploit Done")
+    return q.put(msf_checkr)
  ###################################################################   
 
 def self_check(): #run all packages check
     print("Starting process to check all packages...")
     q = multiprocessing.Queue()
+    
     tor = multiprocessing.Process(target=tor_check, args=(q,))              #use args q for putting into the queue for returning packages status in queue
     nmap = multiprocessing.Process(target=nmap_check, args=(q,))
     sqlmap = multiprocessing.Process(target=sqlmap_check, args=(q,))
@@ -99,6 +173,12 @@ def self_check(): #run all packages check
     wpscan = multiprocessing.Process(target=wpscan_check, args=(q,))
     joomscan = multiprocessing.Process(target=joomscan_check, args=(q,))
     nikto = multiprocessing.Process(target=nikto_check, args=(q,))
+    gobuster = multiprocessing.Process(target=gobuster_check, args=(q,))
+    hydra = multiprocessing.Process(target=hydra_check, args=(q,))
+    john = multiprocessing.Process(target=john_check, args=(q,))
+    ettercap = multiprocessing.Process(target=ettercap_check, args=(q,))
+    set = multiprocessing.Process(target=set_check, args=(q,))
+    msfvenom = multiprocessing.Process(target=msfvenom_check, args=(q,))
 
     tor.start()         # start multiprocessing
     nmap.start()
@@ -107,6 +187,12 @@ def self_check(): #run all packages check
     wpscan.start()
     joomscan.start()
     nikto.start()
+    gobuster.start()
+    hydra.start()
+    john.start()
+    ettercap.start()
+    set.start()
+    msfvenom.start()
 
     time.sleep(6)
     print("------------------------------")     
@@ -120,12 +206,11 @@ def self_check(): #run all packages check
     wpscan.join()
     joomscan.join()
     nikto.join()
-
-    #print(q.get())
-#    tor = tor_check()
-#    nmap = nmap_check()
-#    sqlmap = sqlmap_check()
-#    searchsploit = searchsploit_check()
-#    wpscan = wpscan_check()
+    gobuster.join()
+    hydra.join()
+    john.join()
+    ettercap.join()
+    set.join()
+    msfvenom.join()
 
 self_check() ##to be deleted
