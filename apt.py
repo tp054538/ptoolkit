@@ -4,59 +4,90 @@ import multiprocessing
 import time
 #namexxx_ss variable can find "upgradable"
 def tor_check(q):
-    global tor_check
     tor_s = subprocess.run("apt list 2>/dev/null | grep -E '^tor/'", shell=True, stdout=subprocess.PIPE)
     tor_ss = tor_s.stdout.decode('ascii') #this variable is to find "upgradable" word in another script to determine updates
-    if(tor_ss==""):
-        tor_check = "Tor Not Installed"
+    if("installed" in tor_ss):
+        tor_checkr = "Tor Installed"
+    elif("upgradable" in tor_ss):
+        tor_checkr = "Tor Upgradeable"
     else:
-        tor_check = "Tor Installed"
+        tor_checkr = "Tor Not Installed"
     print("Tor Done")
-    return q.put(tor_check)
+    return q.put(tor_checkr)
 
 def nmap_check(q):
-    global nmap_check
     nmap_s = subprocess.run("apt list 2>/dev/null | grep -E '^nmap/'", shell=True, stdout=subprocess.PIPE)
     nmap_ss = nmap_s.stdout.decode('ascii') #this variable is to find "upgradable" word in another script to determine updates
-    if(nmap_ss==""):
-        nmap_check = "Nmap Not Installed"
+    if("installed" in nmap_ss):
+        nmap_checkr = "Nmap Installed"
+    elif("upgradable" in nmap_ss):
+        nmap_checkr = "Nmap Upgradeable"
     else:
-        nmap_check = "Nmap Installed"
+        nmap_checkr = "Nmap Not Installed"
     print("Nmap Done")
-    return q.put(nmap_check)
+    return q.put(nmap_checkr)
 
 def sqlmap_check(q):
-    global sqlmap_check
     sqlmap_s = subprocess.run("apt list 2>/dev/null | grep -E '^sqlmap/'", shell=True, stdout=subprocess.PIPE)
     sqlmap_ss = sqlmap_s.stdout.decode('ascii')
-    if(sqlmap_ss==""):
-        sqlmap_check = "SQLmap Not Installed"
+    if("installed" in sqlmap_ss):
+        sqlmap_checkr = "SQLmap Installed"
+    elif("upgradable" in sqlmap_ss):
+        sqlmap_checkr = "SQLmap Upgradeable"
     else:
-        sqlmap_check = "SQLmap Installed"
+        sqlmap_checkr = "SQLmap Not Installed"
     print("SQLmap Done")
-    return q.put(sqlmap_check)
+    return q.put(sqlmap_checkr)
 
 def searchsploit_check(q):
-    global searchsploit_check
     ssploit_s = subprocess.run("apt list 2>/dev/null | grep -E '^exploitdb/'", shell=True, stdout=subprocess.PIPE) #exploitdb is searchsploit, exploitdb-papers for scripts
     ssploit_ss = ssploit_s.stdout.decode('ascii')
-    if(ssploit_ss==""):
-        searchsploit_check = "Searchsploit Not Installed"
+    if("installed" in ssploit_ss):
+        ssploit_checkr = "SearchSploit Installed"
+    elif("upgradable" in ssploit_ss):
+        ssploit_checkr = "SearchSploit Upgradeable"
     else:
-        searchsploit_check = "Searchsploit Installed"
+        ssploit_checkr = "SerchSploit Not Installed"
     print("Searchsploit Done")
-    return q.put(searchsploit_check)
+    return q.put(ssploit_checkr)
 
 def wpscan_check(q):
-    global wpscan_check
     wpscan_s = subprocess.run("apt list 2>/dev/null | grep -E '^wpscan/'", shell=True, stdout=subprocess.PIPE)
     wpscan_ss = wpscan_s.stdout.decode('ascii')
-    if(wpscan_ss==""):
-        wpscan_check = "WPscan Not Installed"
+    if("installed" in wpscan_ss):
+        wpscan_checkr = "WPscan Installed"
+    elif("upgradable" in wpscan_ss):
+        wpscan_checkr = "WPscan Upgradeable"
     else:
-        wpscan_check = "WPscan Installed"
+        wpscan_checkr = "WPscan Not Installed"
     print("WPscan Done")
-    return q.put(wpscan_check)
+    return q.put(wpscan_checkr)
+
+def joomscan_check(q):
+    joomscan_s = subprocess.run("apt list 2>/dev/null | grep -E '^joomscan/'", shell=True, stdout=subprocess.PIPE)
+    joomscan_ss = joomscan_s.stdout.decode('ascii')
+    if("installed" in joomscan_ss):
+        joomscan_checkr = "JoomScan Installed"
+    elif("upgradable" in joomscan_ss):
+        joomscan_checkr = "JoomScan Upgradeable"
+    else:
+        joomscan_checkr = "JoomScan Not Installed"
+    print("JoomScan Done")
+    return q.put(joomscan_checkr)
+
+def nikto_check(q):
+    nikto_s = subprocess.run("apt list 2>/dev/null | grep -E '^nikto/'", shell=True, stdout=subprocess.PIPE)
+    nikto_ss = nikto_s.stdout.decode('ascii')
+    if("installed" in nikto_ss):
+        nikto_checkr = "Nikto Installed"
+    elif("upgradable" in nikto_ss):
+        nikto_checkr = "Nikto Upgradeable"
+    else:
+        nikto_checkr = "Nikto Not Installed"
+    print("Nikto Done")
+    return q.put(nikto_checkr)
+
+ ###################################################################   
 
 def self_check(): #run all packages check
     print("Starting process to check all packages...")
@@ -66,14 +97,18 @@ def self_check(): #run all packages check
     sqlmap = multiprocessing.Process(target=sqlmap_check, args=(q,))
     searchsploit = multiprocessing.Process(target=searchsploit_check, args=(q,))
     wpscan = multiprocessing.Process(target=wpscan_check, args=(q,))
+    joomscan = multiprocessing.Process(target=joomscan_check, args=(q,))
+    nikto = multiprocessing.Process(target=nikto_check, args=(q,))
 
     tor.start()         # start multiprocessing
     nmap.start()
     sqlmap.start()
     searchsploit.start()
     wpscan.start()
+    joomscan.start()
+    nikto.start()
 
-    time.sleep(5)
+    time.sleep(6)
     print("------------------------------")     
     for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
         print(q.get())    #print this can be used to determine if the package is installed or not
@@ -83,6 +118,8 @@ def self_check(): #run all packages check
     sqlmap.join()
     searchsploit.join()
     wpscan.join()
+    joomscan.join()
+    nikto.join()
 
     #print(q.get())
 #    tor = tor_check()
