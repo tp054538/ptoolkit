@@ -1,10 +1,12 @@
 import subprocess
 import os
+import PackageCheck
+import PackageInstall
 
 def prRed(printinput):
-    print("\033[91m {}\033[00m" .format(printinput))
+    print("\033[91m{}\033[00m".format(printinput))
 def prYellow(printinput):
-    print("\033[93m {}\033[00m" .format(printinput))
+    print("\033[93m{}\033[00m".format(printinput))
 
 def RoE():
     print("|----------------------------------------------------------------|")
@@ -60,16 +62,22 @@ def main_menu():
     """)
 
 if __name__ == '__main__':  
-    if (RoE() == "1"):
-        os.system('clear')
-        banner()
-        main_menu()
-        selection = 0
-        while(selection != 10):
-            selection = int(input("Selection: "))
+    try:
+        if (RoE() == "1"):
+            os.system('clear')
+            package_status = PackageCheck.self_check()
+            banner()
+            main_menu()
+            selection = 0
+            while(selection != 10):
+                selection = int(input("Selection: "))
+                if selection == 1:
+                    PackageInstall.printMenu(package_status)
 
-        print("Exiting...")
-        exit()
-    else:
-        print("Exiting.............")
+            print("Exiting...")
+            exit()
+        else:
+            print("Exiting.............")
+            exit()
+    except KeyboardInterrupt:
         exit()
