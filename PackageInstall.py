@@ -1,4 +1,5 @@
 import os
+import PackageCheck
 
 def packagestatus_check(package_status):
     global nmap_status, sqlmap_status, tor_status, searchsploit_status, joomscan_status, set_status, nikto_status, wpscan_status
@@ -195,24 +196,35 @@ def printMenu():
     print("\n")
     print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom")
     print("\n")
-    print(white+"    99. "+purple+"Back to Main Menu")
+    print(white+"    99. "+purple+"Back to Main Menu"+white+"      100. "+purple+"Update APT packages' information")
+    print("\n")
+    print(white+"   111. "+purple+"Batch Update Packages")
     print("\033[0;37m"+"\n*Red colour   = Not Installed Packages")
     print("*Green colour = Installed Packages")
+    print("\n")
 
 def prRed(printinput):   print("\033[91m{}\033[00m".format(printinput))
 def installpackages(select):
     selection = str(select)
-    dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb"}
-    prRed("[+]Start installing "+dictionary[selection])
+    dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
+    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
+    prRed("\n[+]Start installing "+dictionary[selection])
     os.system("sudo apt install "+dictionary[selection])
 
-def main(status):
-    packagestatus_check(status)
+
+def main():
     select = 0
     while select != 99:
+        status = PackageCheck.self_check()
+        packagestatus_check(status)
         printMenu()
-        select = int(input("Selection: "))
+        try:
+            select = int(input("Selection: "))
+        except ValueError:
+            pass
         if select >= 1 and select <= 13:
             installpackages(select)
-    
-#installpackages(input("s:"))#delete
+        elif select == 100:
+            os.system('sudo apt update')
+        else:
+            print("Please enter a valid operation!")

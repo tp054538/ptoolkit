@@ -1,7 +1,7 @@
-import subprocess
 import os
 import PackageCheck
 import PackageInstall
+import PackageUpdate
 
 def prRed(printinput):
     print("\033[91m{}\033[00m".format(printinput))
@@ -62,22 +62,25 @@ def main_menu():
     """)
 
 if __name__ == '__main__':  
-    try:
-        if (RoE() == "1"):
-            package_status = PackageCheck.self_check()
-            selection = 0
-            while(selection != 10):
-                os.system('clear')
-                banner()
-                main_menu()
+    if (RoE() == "1"):
+        #package_status = PackageCheck.self_check()
+        selection = 0
+        while(selection != 10):
+            os.system('clear')
+            banner()
+            main_menu()
+            try:
                 selection = int(input("Selection: "))
-                if selection == 1:
-                    PackageInstall.main(package_status)
+            except ValueError:
+                pass
 
-            print("Exiting...")
-            exit()
-        else:
-            print("Exiting.............")
-            exit()
-    except KeyboardInterrupt:
+            if selection == 1:
+                PackageInstall.main()
+            elif selection == 2:
+                PackageUpdate.main()
+            
+        print("Exiting...")
+        exit()
+    else:
+        print("Exiting.............")
         exit()

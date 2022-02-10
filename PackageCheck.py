@@ -159,7 +159,7 @@ def msfvenom_check(q):
  ###################################################################   
 
 def self_check(): #run all packages check
-    prRed("[+]Starting process to check all packages...")
+    prRed("\n[+]Starting process to check all packages...")
     q = multiprocessing.Queue()
     packages_list = []
     
@@ -191,18 +191,6 @@ def self_check(): #run all packages check
     set.start()
     msfvenom.start()
 
-    time.sleep(2)
-    print("[-].")
-    time.sleep(2)
-    print("[-]..")
-    time.sleep(2)
-    print("[-]...")
-    time.sleep(4)
-    for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
-        packages_list.append(q.get())
-    print(packages_list)    #print this can be used to determine if the package is installed or not
-    prGreen("[+]Self check process completed.")
-
     tor.join()              #join() wait the program to end
     nmap.join()
     sqlmap.join()
@@ -217,4 +205,8 @@ def self_check(): #run all packages check
     set.join()
     msfvenom.join()
 
+    for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
+        packages_list.append(q.get())
+    #print(packages_list)    #debug use - find package status in list
+    prGreen("[+]Self check process completed.")
     return packages_list
