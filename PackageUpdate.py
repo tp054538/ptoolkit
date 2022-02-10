@@ -111,4 +111,6 @@ def main():
         elif select == 100:
             os.system('sudo apt update')
         else:
-            print("Please enter a valid operation!")
+            print("\nPlease enter a valid operation!")
+            useless = input("Enter any key to continue......")
+            break

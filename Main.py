@@ -66,6 +66,7 @@ if __name__ == '__main__':
         #package_status = PackageCheck.self_check()
         selection = 0
         while(selection != 10):
+            selection = 0       #initialize selection so it wont inherit from other module
             os.system('clear')
             banner()
             main_menu()
