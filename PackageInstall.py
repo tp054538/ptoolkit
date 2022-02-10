@@ -199,10 +199,20 @@ def printMenu():
     print("\033[0;37m"+"\n*Red colour   = Not Installed Packages")
     print("*Green colour = Installed Packages")
 
+def prRed(printinput):   print("\033[91m{}\033[00m".format(printinput))
+def installpackages(select):
+    selection = str(select)
+    dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb"}
+    prRed("[+]Start installing "+dictionary[selection])
+    os.system("sudo apt install "+dictionary[selection])
+
 def main(status):
     packagestatus_check(status)
-    select = ""
-    while select != "99":
+    select = 0
+    while select != 99:
         printMenu()
-        select = input("Selection: ")
+        select = int(input("Selection: "))
+        if select >= 1 and select <= 13:
+            installpackages(select)
     
+#installpackages(input("s:"))#delete

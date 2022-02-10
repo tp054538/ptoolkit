@@ -6,7 +6,7 @@ import os
 
 #need to add !!apt update!! to get latest packages
 #namexxx_ss variable can find "upgradable"
-def prGreen(printinput): print("\033[92m{}\033[00m".format(printinput)) #print green colour
+def prGreen(printinput): print("\033[92m{}\033[00m".format(printinput))
 def prRed(printinput):   print("\033[91m{}\033[00m".format(printinput))
 
 def apt_update_list():
