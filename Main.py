@@ -64,15 +64,15 @@ def main_menu():
 if __name__ == '__main__':  
     try:
         if (RoE() == "1"):
-            os.system('clear')
             package_status = PackageCheck.self_check()
-            banner()
-            main_menu()
             selection = 0
             while(selection != 10):
+                os.system('clear')
+                banner()
+                main_menu()
                 selection = int(input("Selection: "))
                 if selection == 1:
-                    PackageInstall.printMenu(package_status)
+                    PackageInstall.main(package_status)
 
             print("Exiting...")
             exit()

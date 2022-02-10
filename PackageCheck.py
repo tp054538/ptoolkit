@@ -197,7 +197,7 @@ def self_check(): #run all packages check
     print("[-]..")
     time.sleep(2)
     print("[-]...")
-    time.sleep(5)
+    time.sleep(4)
     for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
         packages_list.append(q.get())
     print(packages_list)    #print this can be used to determine if the package is installed or not
