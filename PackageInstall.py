@@ -1,5 +1,6 @@
 import os
 import PackageCheck
+import multiprocessing
 
 def packagestatus_check(package_status):
     global nmap_status, sqlmap_status, tor_status, searchsploit_status, joomscan_status, set_status, nikto_status, wpscan_status
@@ -203,7 +204,9 @@ def printMenu():
     print("*Green colour = Installed Packages")
     print("\n")
 
+    #install function
 def prRed(printinput):   print("\033[91m{}\033[00m".format(printinput))
+def prGreen(printinput): print("\033[92m{}\033[00m".format(printinput))
 def installpackages(select):
     selection = str(select)
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
@@ -211,10 +214,27 @@ def installpackages(select):
     prRed("\n[+]Start installing "+dictionary[selection])
     os.system("sudo apt install "+dictionary[selection])
 
+    #batch install function
+def batch_install_packages(input_list):
+    dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
+    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
+    command = "sudo apt install"
+    for i in range(len(input_list)):
+        command += " " + dictionary[input_list[i]]
+    command += " -y > /dev/null 2>&1"
+
+    for e in range(len(input_list)):
+        prRed("[+] "+dictionary[input_list[e]]+" installation is starting......")
+
+    os.system(command)
+    prGreen("[+] Installation completed!")
+    useless = input("Press any key to continue......")
+
 
 def main():
     select = 0
     while select != 99:
+        select = 0      # initialize to not inherit
         status = PackageCheck.self_check()
         packagestatus_check(status)
         printMenu()
@@ -222,11 +242,39 @@ def main():
             select = int(input("Selection: "))
         except ValueError:
             pass
-        if select >= 1 and select <= 13:
+        
+        #selection
+        if select >= 1 and select <= 13:   
             installpackages(select)
-        elif select == 100:
+
+        elif select == 100:         #apt update selection
             os.system('sudo apt update')
-        else:
-            print("\nPlease enter a valid operation!")
-            useless = input("Enter any key to continue......")
-            break
+
+        elif select == 111:         #batch install selection
+            batch_list = []
+            print("Please enter the packages number to be installed with a space between different number \nEg. 1 2 3 10 7\n")
+            batch = input("Batch update selection: ")
+            batch_list = batch.strip().split() #strip() remove space infront and behind
+
+            if batch_list:
+                try:
+                    for i in range(len(batch_list)):    #check list is between the valid numbers or not
+                        if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 13:
+                            pass
+                        else:
+                            print("\nInput contains invalid value, please check again! (Valid input example: 1 2 5 10 7)")
+                            raise AssertionError
+                    batch_install_packages(batch_list) # put multi process func here!!! need to change later
+                except ValueError:
+                    print("\nPlease enter numbers only!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                except AssertionError:
+                    print("\nPlease enter numbers between 1 - 13 only")
+                    useless = input("Enter any key to continue......")
+                    continue
+                
+            else:
+                print("\nInvalid operation! Input is empty.")
+                useless = input("Enter any key to continue......")
+                continue
