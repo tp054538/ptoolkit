@@ -213,6 +213,7 @@ def installpackages(select):
     "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
     prRed("\n[+]Start installing "+dictionary[selection])
     os.system("sudo apt install "+dictionary[selection])
+    useless = input("\n[+] Process Completed. Press any key to continue......")
 
     #batch install function
 def batch_install_packages(input_list):
@@ -224,11 +225,10 @@ def batch_install_packages(input_list):
     command += " -y > /dev/null 2>&1"
 
     for e in range(len(input_list)):
-        prRed("[+] "+dictionary[input_list[e]]+" installation is starting......")
+        prRed("[+] "+dictionary[input_list[e]]+" installation / update is starting......")
 
     os.system(command)
-    prGreen("[+] Installation completed!")
-    useless = input("Press any key to continue......")
+    useless = input("\n[+] Process Completed. Press any key to continue......")
 
 
 def main():
@@ -253,7 +253,7 @@ def main():
         elif select == 111:         #batch install selection
             batch_list = []
             print("Please enter the packages number to be installed with a space between different number \nEg. 1 2 3 10 7\n")
-            batch = input("Batch update selection: ")
+            batch = input("Batch install selection: ")
             batch_list = batch.strip().split() #strip() remove space infront and behind
 
             if batch_list:
@@ -264,7 +264,7 @@ def main():
                         else:
                             print("\nInput contains invalid value, please check again! (Valid input example: 1 2 5 10 7)")
                             raise AssertionError
-                    batch_install_packages(batch_list) # put multi process func here!!! need to change later
+                    batch_install_packages(batch_list)
                 except ValueError:
                     print("\nPlease enter numbers only!")
                     useless = input("Enter any key to continue......")
@@ -278,3 +278,10 @@ def main():
                 print("\nInvalid operation! Input is empty.")
                 useless = input("Enter any key to continue......")
                 continue
+
+        elif select == 99:
+            pass
+
+        else:
+            print("Invalid input!")
+            useless = input("Enter any key to continue......")

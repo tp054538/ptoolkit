@@ -101,16 +101,49 @@ def main():
     select = 0
     while select != 99:
         update_menu()
+        select = 0
         try:
             select = int(input("Selection: "))
         except ValueError:
             pass
         if select >= 1 and select <= 13:
             PackageInstall.installpackages(select)
+        
+        elif select == 99:
+            pass
 
         elif select == 100:
             os.system('sudo apt update')
+        
+        elif select == 111:         #batch install selection
+            batch_list = []
+            print("Please enter the packages number to be updated with a space between different number \nEg. 1 2 3 10 7\n")
+            batch = input("Batch update selection: ")
+            batch_list = batch.strip().split() #strip() remove space infront and behind
+
+            if batch_list:
+                try:
+                    for i in range(len(batch_list)):    #check list is between the valid numbers or not
+                        if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 13:
+                            pass
+                        else:
+                            print("\nInput contains invalid value, please check again! (Valid input example: 1 2 5 10 7)")
+                            raise AssertionError
+                    PackageInstall.batch_install_packages(batch_list) # put multi process func here!!! need to change later
+                except ValueError:
+                    print("\nPlease enter numbers only!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                except AssertionError:
+                    print("\nPlease enter numbers between 1 - 13 only")
+                    useless = input("Enter any key to continue......")
+                    continue
+                
+            else:
+                print("\nInvalid operation! Input is empty.")
+                useless = input("Enter any key to continue......")
+                continue
+
         else:
             print("\nPlease enter a valid operation!")
             useless = input("Enter any key to continue......")
-            break
