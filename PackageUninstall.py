@@ -1,3 +1,4 @@
+from re import A
 import PackageInstall
 import PackageCheck
 import os
@@ -62,6 +63,14 @@ def CheckValid(a):
                 if PackageInstall.msfvenom_status == red:
                     flag = 1
                     break
+            elif a[i] == '14':
+                if PackageInstall.slowloris_status == red:
+                    flag = 1
+                    break
+            elif a[i] == '15':
+                if PackageInstall.sniper_status == red:
+                    flag = 1
+                    break
     else:
         if a == 1:
             if PackageInstall.nmap_status == red:
@@ -101,6 +110,12 @@ def CheckValid(a):
                 flag = 1
         elif a == 13:
             if PackageInstall.msfvenom_status == red:
+                flag = 1
+        elif a == 14:
+            if PackageInstall.slowloris_status == red:
+                flag = 1
+        elif a == 15:
+            if PackageInstall.sniper_status == red:
                 flag = 1
 
     return flag
@@ -178,6 +193,16 @@ def MenuPrint():
         msfvenom_local_status = green
     elif PackageInstall.msfvenom_status == red:
         msfvenom_local_status = red
+    
+    if PackageInstall.slowloris_status == green:
+        slowloris_local_status = green
+    elif PackageInstall.slowloris_status == red:
+        slowloris_local_status = red
+    
+    if PackageInstall.sniper_status == green:
+        sniper_local_status = green
+    elif PackageInstall.sniper_status == red:
+        sniper_local_status = red
 
     os.system('clear')
     print("""
@@ -189,7 +214,7 @@ def MenuPrint():
     print("\n")
     print(white+"     6. "+joomscan_local_status+"JoomScan"+white+"   7. "+nikto_local_status+"Nikto"+white+"       8. "+gobuster_local_status+"GoBuster"+white+"   9. "+hydra_local_status+"Hydra"+white+"         10. "+john_local_status+"John")
     print("\n")
-    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom")
+    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom"+white+"  14. "+slowloris_local_status+"Slowloris"+white+"     15. "+sniper_local_status+"Sn1per")
     print("\n")
     print(white+"    99. "+purple+"Back to Main Menu"+white+"       111. "+purple+"Batch Uninstall Packages")
     print("\033[0;37m"+"\n*Red colour   = Not Installed Packages")
@@ -202,14 +227,32 @@ def prGreen(printinput): print("\033[92m{}\033[00m".format(printinput))
 def UninstallPackage(uninstall_input):
     selection = str(uninstall_input)
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
-    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
+    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework", "14" : "slowloris", "15" : "Sn1per"}
 
     if CheckValid(uninstall_input) == 0:
-        prRed("\n[+]Start Uninstalling "+dictionary[selection])
-        os.system("sudo apt remove "+dictionary[selection])
-        useless = input("\nProcess Completed. Press any key to continue......")
+        if selection != '14' and selection != '15':
+            prRed("\n[+]Start Uninstalling "+dictionary[selection])
+            os.system("sudo apt remove "+dictionary[selection])
+            useless = input("\nProcess Completed. Enter any key to continue......")
+        elif selection == '14':
+            prRed("\n[+] Start removing slowloris.")
+            os.system("rm -R slowloris -f")
+            useless = input("\nSlowloris removed. Enter any key to continue......")
+        elif selection == '15':
+            prRed("\n[+] Start removing Sn1per.")
+            os.system("rm -R Sn1per -f")
+            useless = input("\nSn1per removed. Enter any key to continue......")           
+        
     else:
-        print("\n[+] "+dictionary[selection]+" is not installed. Operation Aborted.")
+        if selection == '14':
+            prRed("\n[+] Slowloris is not installed. Operation Aborted.")
+            useless = input("Enter any key to continue......")
+        elif selection == '15':
+            prRed("\n[+] Sn1per is not installed. Operation Aborted.")
+            useless = input("Enter any key to continue.......")
+        else:
+            prRed("\n[+] "+dictionary[selection]+" is not installed. Operation Aborted.")
+            useless = input("Enter any key to continue......")
 
 
 def BatchUninstallPackage(uninstall_input): 
@@ -220,15 +263,58 @@ def BatchUninstallPackage(uninstall_input):
         print("\n[+] PToolkit cannot uninstall packages that are not installed on this machine!")
         useless = input("Enter any key to continue......")
     else:
-        command = "sudo apt remove"
-        for i in range(len(uninstall_input)):
-            command += " " + dictionary[uninstall_input[i]]
-        command += " -y > /dev/null"
+        if "14" in uninstall_input or "15" in uninstall_input:
+            if "14" in uninstall_input and "15" in uninstall_input:
+                if len(uninstall_input) >= 3:
+                    command = "sudo apt remove"
+                    for i in range(len(uninstall_input)):
+                        if uninstall_input[i] != "14" and uninstall_input[i] != "15":
+                            command += " " + dictionary[uninstall_input[i]]
+                            prRed("[+] "+dictionary[uninstall_input[i]]+" uninstallation is starting......")
+                    command += " -y > /dev/null"
+                    os.system(command)
+                prRed("[+] Slowloris uninstallation is starting......")
+                prRed("[+] Sn1per uninstallation is starting......")
+                os.system("rm -R slowloris -f")
+                os.system("rm -R Sn1per -f")
+                useless = input("\n[+] Process Completed. Enter any key to continue......")
 
-        for j in range(len(uninstall_input)):
-            prRed("[+] "+dictionary[uninstall_input[j]]+" uninstallation is starting......")
-        os.system(command)
-        useless = input("\n[+]Process completed. Enter any key to continue......")
+            elif "14" in uninstall_input and "15" not in uninstall_input:
+                if len(uninstall_input) >= 2:
+                    command = "sudo apt remove"
+                    for i in range(len(uninstall_input)):
+                        if uninstall_input[i] != "14":
+                            command += " " + dictionary[uninstall_input[i]]
+                            prRed("[+] "+dictionary[uninstall_input[i]]+" uninstallation is starting......")
+                    command += " -y > /dev/null 2>&1"
+                    os.system(command)
+                prRed("[+] Slowloris uninstallation is starting......")
+                os.system("rm -R slowloris -f")
+                useless = input("\n[+] Process completed. Enter any key to continue......")
+            
+            elif "14" not in uninstall_input and "15" in uninstall_input:
+                if len(uninstall_input) >= 2:
+                    command = "sudo apt remove"
+                    for i in range(len(uninstall_input)):
+                        if uninstall_input[i] != "15":
+                            command += " " + dictionary[uninstall_input[i]]
+                            prRed("[+] "+dictionary[uninstall_input[i]]+" uninstallation is starting......")
+                    command += " -y > /dev/null 2>&1"
+                    os.system(command)
+                prRed("[+] Sn1per uninstallation is starting......")
+                os.system("rm -R Sn1per -f")
+                useless = input("\n[+] Process completed. Enter any key to continue......")
+
+        else:
+            command = "sudo apt remove"
+            for i in range(len(uninstall_input)):
+                command += " " + dictionary[uninstall_input[i]]
+            command += " -y > /dev/null"
+
+            for j in range(len(uninstall_input)):
+                prRed("[+] "+dictionary[uninstall_input[j]]+" uninstallation is starting......")
+            os.system(command)
+            useless = input("\n[+]Process completed. Enter any key to continue......")
 
 
 def main():
@@ -241,9 +327,9 @@ def main():
         except ValueError:
             pass
 
-        if select >= 1 and select <= 13:
+        if select >= 1 and select <= 15:
             if select == 11:
-                print("\n[*] Caution! Ettercap is one of the dependencies of SET, removing Ettercap will cause SET to be not usable.")
+                prRed("\n[*] Caution! Ettercap is one of the dependencies of SET, removing Ettercap will cause SET to be not usable.")
                 s = input("Do you wish to continue the operation? (y/n)")
                 if s == "y" or s == "Y":
                     UninstallPackage(select)
@@ -263,9 +349,9 @@ def main():
             if batch_list:
                 try:
                     for i in range(len(batch_list)):    #check list is between the valid numbers or not
-                        if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 13:
+                        if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 15:
                             if int(batch_list[i]) == 11:
-                                print("\n[*] Caution! Ettercap is one of the dependencies of SET, removing Ettercap will cause SET to be not usable.")
+                                prRed("\n[*] Caution! Ettercap is one of the dependencies of SET, removing Ettercap will cause SET to be not usable.")
                                 s = input("Do you wish to continue the operation? (y/n)")
                                 if s == "y" or s == "Y":
                                     pass
@@ -281,7 +367,7 @@ def main():
                     useless = input("Enter any key to continue......")
                     continue
                 except AssertionError:
-                    print("\nPlease enter numbers between 1 - 13 only")
+                    print("\nPlease enter numbers between 1 - 15 only")
                     useless = input("Enter any key to continue......")
                     continue
                 except KeyError:

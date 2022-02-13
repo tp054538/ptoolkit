@@ -178,7 +178,7 @@ def sniper_check(q):
  ###################################################################   
 
 def self_check(): #run all packages check
-    prRed("\n[+]Starting process to check all packages...")
+    prRed("\n[+] Starting process to check all packages...")
     q = multiprocessing.Queue()
     packages_list = []
     

@@ -126,6 +126,7 @@ def packagestatus_check(package_status):
         sniper_status = red
 
 def printMenu():
+    global green, red
     green = "\033[1;32m" #green for installed
     red = "\033[1;31m"   #red for not installed
     white = "\033[1;37m"
@@ -249,17 +250,61 @@ def installpackages(select):
     #batch install function
 def batch_install_packages(input_list):
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
-    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
-    command = "sudo apt install"
-    for i in range(len(input_list)):
-        command += " " + dictionary[input_list[i]]
-    command += " -y > /dev/null 2>&1"
+    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework", "14" : "git clone https://github.com/gkbrk/slowloris.git", "15" : "git clone https://github.com/1N3/Sn1per"}
 
-    for e in range(len(input_list)):
-        prRed("[+] "+dictionary[input_list[e]]+" installation / update is starting......")
+    if "14" in input_list or "15" in input_list:
+        if "14" in input_list and "15" in input_list:
+            if len(input_list) >= 3:
+                command = "sudo apt install"
+                for i in range(len(input_list)):
+                    if input_list[i] != "14" and input_list[i] != "15":
+                        command += " " + dictionary[input_list[i]]
+                        prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
+                command += " -y > /dev/null 2>&1"
+                os.system(command)
+            prRed("[+] Slowloris installation is starting......")
+            prRed("[+] Sn1per installation is starting......")
+            os.system(dictionary["14"])
+            os.system(dictionary["15"])
+            useless = input("\n[+] Process completed. Enter any key to continue......")
 
-    os.system(command)
-    useless = input("\n[+] Process Completed. Press any key to continue......")
+        elif "14" in input_list and "15" not in input_list:
+            if len(input_list) >= 2:
+                command = "sudo apt install"
+                for i in range(len(input_list)):
+                    if input_list[i] != "14":
+                        command += " " + dictionary[input_list[i]]
+                        prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
+                command += " -y > /dev/null 2>&1"
+                os.system(command)
+            prRed("[+] Slowloris installation is starting......")
+            os.system(dictionary["14"])
+            useless = input("\n[+] Process completed. Enter any key to continue......")
+
+        elif "14" not in input_list and "15" in input_list:
+            if len(input_list) >= 2:
+                command = "sudo apt install"
+                for i in range(len(input_list)):
+                    if input_list[i] != "15":
+                        command += " " + dictionary[input_list[i]]
+                        prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
+                command += " -y > /dev/null 2>&1"
+                os.system(command)
+            prRed("[+] Sn1per installation is starting......")
+            os.system(dictionary["15"])
+            useless = input("\n[+] Process completed. Enter any key to continue......")
+
+    else:
+        command = "sudo apt install"
+        for i in range(len(input_list)):
+            command += " " + dictionary[input_list[i]]
+        command += " -y > /dev/null 2>&1"
+
+        for e in range(len(input_list)):
+            prRed("[+] "+dictionary[input_list[e]]+" installation / update is starting......")
+
+        os.system(command)
+        useless = input("\n[+] Process Completed. Press any key to continue......")
 
 
 def main():
@@ -275,7 +320,17 @@ def main():
             pass
         
         #selection
-        if select >= 1 and select <= 15:   
+        if select >= 1 and select <= 15: 
+            if select == 14:
+                if slowloris_status == green:
+                    prRed("[+] Slowloris is already installed. Installation process will not be executed.")
+                    useless = input("Enter any key to continue......")  
+                    continue
+            if select == 15:
+                if sniper_status == green:
+                    prRed("[+] Sn1per is already installed. Installation process will not be executed.")
+                    useless = input("Enter any key to continue......")        
+                    continue              
             installpackages(select)
 
         elif select == 100:         #apt update selection
@@ -292,6 +347,14 @@ def main():
                     for i in range(len(batch_list)):    #check list is between the valid numbers or not
                         if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 13:
                             pass
+                        elif int(batch_list[i]) == 14:
+                            if slowloris_status == green:
+                                prRed("[+] Slowloris is already installed! Installation process will not be executed.")
+                                raise KeyError
+                        elif int(batch_list[i]) == 15:
+                            if sniper_status == green:
+                                prRed("[+] Sn1per is already installed! Installation process will not be executed.") 
+                                raise KeyError
                         else:
                             print("\nInput contains invalid value, please check again! (Valid input example: 1 2 5 10 7)")
                             raise AssertionError
@@ -301,7 +364,10 @@ def main():
                     useless = input("Enter any key to continue......")
                     continue
                 except AssertionError:
-                    print("\nPlease enter numbers between 1 - 13 only")
+                    print("\nPlease enter numbers between 1 - 15 only")
+                    useless = input("Enter any key to continue......")
+                    continue
+                except KeyError:
                     useless = input("Enter any key to continue......")
                     continue
                 

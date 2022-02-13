@@ -135,7 +135,7 @@ def main():
                     useless = input("Enter any key to continue......")
                     continue
                 except AssertionError:
-                    print("\nPlease enter numbers between 1 - 13 only")
+                    print("\nPlease enter numbers between 1 - 15 only")
                     useless = input("Enter any key to continue......")
                     continue
                 
