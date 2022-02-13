@@ -1,6 +1,7 @@
 from queue import Queue
 import subprocess
 import multiprocessing
+from sys import stdout
 import time
 import os
 
@@ -156,6 +157,24 @@ def msfvenom_check(q):
     else:
         msf_checkr = "Metasploit Not Installed"
     return q.put(msf_checkr)
+
+def slowloris_check(q):
+    slowloris_s = subprocess.run("ls | grep slowloris", shell=True, stdout=subprocess.PIPE)
+    slowloris_ss = slowloris_s.stdout.decode('ascii')
+    if "slowloris" in slowloris_ss or "Slowloris" in slowloris_ss:
+        slowloris_checkr = "Slowloris Installed"
+    else:
+        slowloris_checkr = "Slowloris Not Installed"
+    return q.put(slowloris_checkr)
+
+def sniper_check(q):
+    sniper_s = subprocess.run("ls | grep Sn1per", shell=True, stdout=subprocess.PIPE)
+    sniper_ss = sniper_s.stdout.decode('ascii')
+    if "Sn1per" in sniper_ss:
+        sniper_checkr = "Sn1per Installed"
+    else:
+        sniper_checkr = "Sn1per Not Installed"
+    return q.put(sniper_checkr)
  ###################################################################   
 
 def self_check(): #run all packages check
@@ -176,6 +195,8 @@ def self_check(): #run all packages check
     ettercap = multiprocessing.Process(target=ettercap_check, args=(q,))
     set = multiprocessing.Process(target=set_check, args=(q,))
     msfvenom = multiprocessing.Process(target=msfvenom_check, args=(q,))
+    slowloris = multiprocessing.Process(target=slowloris_check, args=(q,))
+    sniper = multiprocessing.Process(target=sniper_check, args=(q,))
 
     tor.start()         # start multiprocessing
     nmap.start()
@@ -190,6 +211,8 @@ def self_check(): #run all packages check
     ettercap.start()
     set.start()
     msfvenom.start()
+    slowloris.start()
+    sniper.start()
 
     tor.join()              #join() wait the program to end
     nmap.join()
@@ -204,6 +227,8 @@ def self_check(): #run all packages check
     ettercap.join()
     set.join()
     msfvenom.join()
+    slowloris.join()
+    sniper.join()
 
     for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
         packages_list.append(q.get())

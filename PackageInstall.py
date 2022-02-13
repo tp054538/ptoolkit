@@ -4,7 +4,7 @@ import multiprocessing
 
 def packagestatus_check(package_status):
     global nmap_status, sqlmap_status, tor_status, searchsploit_status, joomscan_status, set_status, nikto_status, wpscan_status
-    global gobuster_status, hydra_status, john_status, ettercap_status, msfvenom_status
+    global gobuster_status, hydra_status, john_status, ettercap_status, msfvenom_status, slowloris_status, sniper_status
     green = "\033[1;32m" #green for installed
     red = "\033[1;31m"   #red for not installed
     yellow = "\033[1;33m" #yellow for upgradeable
@@ -112,6 +112,18 @@ def packagestatus_check(package_status):
         msfvenom_status = green
     elif 'Metasploit Upgradeable' in package_status:
         msfvenom_status = yellow 
+    
+    #slowloris
+    if 'Slowloris Not Installed' in package_status:
+        slowloris_status = red
+    elif 'Slowloris Installed' in package_status:
+        slowloris_status = green
+    
+    #sn1per
+    if 'Sn1per Installed' in package_status:
+        sniper_status = green
+    elif 'Sn1per Not Installed' in package_status:
+        sniper_status = red
 
 def printMenu():
     green = "\033[1;32m" #green for installed
@@ -185,6 +197,16 @@ def printMenu():
     elif msfvenom_status == red:
         msfvenom_local_status = red
 
+    if slowloris_status == green:
+        slowloris_local_status = green
+    elif slowloris_status == red:
+        slowloris_local_status = red
+
+    if sniper_status == green:
+        sniper_local_status = green
+    elif sniper_status == red:
+        sniper_local_status = red
+
     os.system('clear')
     print("""
                                 Install Packages
@@ -195,11 +217,11 @@ def printMenu():
     print("\n")
     print(white+"     6. "+joomscan_local_status+"JoomScan"+white+"   7. "+nikto_local_status+"Nikto"+white+"       8. "+gobuster_local_status+"GoBuster"+white+"   9. "+hydra_local_status+"Hydra"+white+"         10. "+john_local_status+"John")
     print("\n")
-    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom")
+    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom"+white+"  14. "+slowloris_local_status+"Slowloris"+white+"     15. "+sniper_local_status+"Sn1per")
     print("\n")
     print(white+"    99. "+purple+"Back to Main Menu"+white+"      100. "+purple+"Update APT packages' information")
     print("\n")
-    print(white+"   111. "+purple+"Batch Update Packages")
+    print(white+"   111. "+purple+"Batch Install Packages")
     print("\033[0;37m"+"\n*Red colour   = Not Installed Packages")
     print("*Green colour = Installed Packages")
     print("\n")
@@ -210,10 +232,19 @@ def prGreen(printinput): print("\033[92m{}\033[00m".format(printinput))
 def installpackages(select):
     selection = str(select)
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
-    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework"}
-    prRed("\n[+]Start installing "+dictionary[selection])
-    os.system("sudo apt install "+dictionary[selection])
-    useless = input("\n[+] Process Completed. Press any key to continue......")
+    "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework", "14" : "git clone https://github.com/gkbrk/slowloris.git", "15" : "git clone https://github.com/1N3/Sn1per"}
+    if select != 14 and select != 15:
+        print(select)
+        prRed("\n[+] Start installing "+dictionary[selection])
+        os.system("sudo apt install "+dictionary[selection])
+        useless = input("\n[+] Process Completed. Enter any key to continue......")
+    else:
+        if select == 14:
+            prRed("[+] Start installing Slowloris")
+        elif select == 15:
+            prRed("[+] Start Installing Sn1per")
+        os.system(dictionary[selection])
+        useless = input("\n[+] Process Completed. Enter any key to continue......")
 
     #batch install function
 def batch_install_packages(input_list):
@@ -244,7 +275,7 @@ def main():
             pass
         
         #selection
-        if select >= 1 and select <= 13:   
+        if select >= 1 and select <= 15:   
             installpackages(select)
 
         elif select == 100:         #apt update selection

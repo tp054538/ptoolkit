@@ -1,4 +1,3 @@
-from time import sleep
 import PackageInstall
 import PackageCheck
 import os
@@ -192,7 +191,7 @@ def MenuPrint():
     print("\n")
     print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom")
     print("\n")
-    print(white+"    99. "+purple+"Back to Main Menu"+white+"       111. "+purple+"Batch Update Packages")
+    print(white+"    99. "+purple+"Back to Main Menu"+white+"       111. "+purple+"Batch Uninstall Packages")
     print("\033[0;37m"+"\n*Red colour   = Not Installed Packages")
     print("*Green colour = Installed Packages")
     print("\n")
@@ -212,8 +211,8 @@ def UninstallPackage(uninstall_input):
     else:
         print("\n[+] "+dictionary[selection]+" is not installed. Operation Aborted.")
 
-def BatchUninstallPackage(uninstall_input): 
 
+def BatchUninstallPackage(uninstall_input): 
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
     "10" : "john", "11" : "ettercap-common ettercap-graphical", "12" : "set" , "13" : "metasploit-framework"}
 
@@ -241,7 +240,7 @@ def main():
             select = int(input("Selection: "))
         except ValueError:
             pass
-        
+
         if select >= 1 and select <= 13:
             if select == 11:
                 print("\n[*] Caution! Ettercap is one of the dependencies of SET, removing Ettercap will cause SET to be not usable.")
