@@ -2,6 +2,8 @@ import PackageInstall
 import PackageCheck
 import os
 
+from PackageUninstall import prRed
+
 
 
 def update_menu():
@@ -77,6 +79,9 @@ def update_menu():
         msfvenom_local_status = green
     elif PackageInstall.msfvenom_status == red or PackageInstall.msfvenom_status == green:
         msfvenom_local_status = red
+    
+    slowloris_local_status = red
+    sniper_local_status = red
 
     os.system('clear')
     print("""
@@ -88,13 +93,14 @@ def update_menu():
     print("\n")
     print(white+"     6. "+joomscan_local_status+"JoomScan"+white+"   7. "+nikto_local_status+"Nikto"+white+"       8. "+gobuster_local_status+"GoBuster"+white+"   9. "+hydra_local_status+"Hydra"+white+"         10. "+john_local_status+"John")
     print("\n")
-    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom")
+    print(white+"    11. "+ettercap_local_status+"Ettercap"+white+"  12. "+set_local_status+"SEToolkit"+white+"  13. "+msfvenom_local_status+"MSFvenom"+white+"  14. "+slowloris_local_status+"Slowloris"+white+"     15. "+sniper_local_status+"Sn1per")
     print("\n")
     print(white+"    99. "+purple+"Back to Main Menu"+white+"      100. "+purple+"Update APT packages' information")
     print("\n")
     print(white+"   111. "+purple+"Batch Update Packages")
     print("\033[0;37m"+"\n*Red colour   = Not Installed / Not Upgradeable Packages")
     print("*Green colour = Upgradeable Packages")
+    print("Important: Please note that the program will install packages when selecting NOT INSTALLED packages! (except Slowloris and Sn1per)")
     print("\n")
 
 def main():
@@ -108,6 +114,14 @@ def main():
             pass
         if select >= 1 and select <= 13:
             PackageInstall.installpackages(select)
+        
+        elif select == 14:
+            prRed("\n[+] Slowloris is not available for update!")
+            useless = input("Enter any key to continue......")
+
+        elif select == 15:
+            prRed("\n[+] Sn1per is not available for update!")
+            useless = input("Enter any key to continue......")
         
         elif select == 99:
             pass
@@ -126,6 +140,12 @@ def main():
                     for i in range(len(batch_list)):    #check list is between the valid numbers or not
                         if int(batch_list[i]) >= 1 and int(batch_list[i]) <= 13:
                             pass
+                        elif int(batch_list[i]) == 14:
+                            prRed("\n[+] Slowloris is not available for update!")
+                            raise KeyError
+                        elif int(batch_list[i]) == 15:
+                            prRed("\n[+] Sn1per is not available for update!")
+                            raise KeyError
                         else:
                             print("\nInput contains invalid value, please check again! (Valid input example: 1 2 5 10 7)")
                             raise AssertionError
@@ -136,6 +156,9 @@ def main():
                     continue
                 except AssertionError:
                     print("\nPlease enter numbers between 1 - 15 only")
+                    useless = input("Enter any key to continue......")
+                    continue
+                except KeyError:
                     useless = input("Enter any key to continue......")
                     continue
                 

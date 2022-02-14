@@ -245,6 +245,8 @@ def installpackages(select):
         elif select == 15:
             prRed("[+] Start Installing Sn1per")
         os.system(dictionary[selection])
+        if select == 15:
+            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
         useless = input("\n[+] Process Completed. Enter any key to continue......")
 
     #batch install function
@@ -266,6 +268,7 @@ def batch_install_packages(input_list):
             prRed("[+] Sn1per installation is starting......")
             os.system(dictionary["14"])
             os.system(dictionary["15"])
+            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
             useless = input("\n[+] Process completed. Enter any key to continue......")
 
         elif "14" in input_list and "15" not in input_list:
@@ -292,6 +295,7 @@ def batch_install_packages(input_list):
                 os.system(command)
             prRed("[+] Sn1per installation is starting......")
             os.system(dictionary["15"])
+            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
             useless = input("\n[+] Process completed. Enter any key to continue......")
 
     else:

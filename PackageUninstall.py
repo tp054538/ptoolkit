@@ -1,4 +1,5 @@
-from re import A
+import subprocess
+from sys import stdout
 import PackageInstall
 import PackageCheck
 import os
@@ -240,6 +241,7 @@ def UninstallPackage(uninstall_input):
             useless = input("\nSlowloris removed. Enter any key to continue......")
         elif selection == '15':
             prRed("\n[+] Start removing Sn1per.")
+            os.system('cd Sn1per; echo "y" > y.txt ; sudo ./uninstall.sh < y.txt') #pass "y" to uninstall prompt
             os.system("rm -R Sn1per -f")
             useless = input("\nSn1per removed. Enter any key to continue......")           
         
@@ -275,6 +277,7 @@ def BatchUninstallPackage(uninstall_input):
                     os.system(command)
                 prRed("[+] Slowloris uninstallation is starting......")
                 prRed("[+] Sn1per uninstallation is starting......")
+                os.system('cd Sn1per; echo "y" > y.txt ; sudo ./uninstall.sh < y.txt')
                 os.system("rm -R slowloris -f")
                 os.system("rm -R Sn1per -f")
                 useless = input("\n[+] Process Completed. Enter any key to continue......")
@@ -302,6 +305,7 @@ def BatchUninstallPackage(uninstall_input):
                     command += " -y > /dev/null 2>&1"
                     os.system(command)
                 prRed("[+] Sn1per uninstallation is starting......")
+                os.system('cd Sn1per; echo "y" > y.txt ; sudo ./uninstall.sh < y.txt')
                 os.system("rm -R Sn1per -f")
                 useless = input("\n[+] Process completed. Enter any key to continue......")
 
