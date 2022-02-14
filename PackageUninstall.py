@@ -128,6 +128,7 @@ def MenuPrint():
     purple = "\033[1;35m"
     yellow = "\033[1;33m"
 
+    prGreen("\n[+] Loading Uninstall Module")
     PackageInstall.packagestatus_check(PackageCheck.self_check()) #self check everytime to get latest package status up to date in loop
 
     if PackageInstall.nmap_status == yellow or PackageInstall.nmap_status == green:       

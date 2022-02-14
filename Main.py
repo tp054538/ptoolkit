@@ -3,6 +3,7 @@ import PackageCheck
 import PackageInstall
 import PackageUpdate
 import PackageUninstall
+from module import *
 
 def prRed(printinput):
     print("\033[91m{}\033[00m".format(printinput))
@@ -82,6 +83,8 @@ if __name__ == '__main__':
                 PackageUpdate.main()
             elif selection == 3:
                 PackageUninstall.main()
+            elif selection == 4:
+                tor.main()
             
         print("Exiting...")
         exit()

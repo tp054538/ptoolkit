@@ -2,7 +2,7 @@ import PackageInstall
 import PackageCheck
 import os
 
-from PackageUninstall import prRed
+from PackageUninstall import prGreen, prRed
 
 
 
@@ -105,6 +105,7 @@ def update_menu():
 
 def main():
     select = 0
+    prGreen("\n[+] Loading Update Module")
     while select != 99:
         update_menu()
         select = 0

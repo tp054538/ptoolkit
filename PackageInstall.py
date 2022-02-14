@@ -235,7 +235,6 @@ def installpackages(select):
     dictionary = {"1" : "nmap", "2" : "sqlmap", "3" : "tor", "4" : "exploitdb", "5" : "wpscan", "6" : "joomscan", "7" : "nikto", "8": "gobuster", "9" : "hydra",
     "10" : "john", "11" : "ettercap-common", "12" : "set" , "13" : "metasploit-framework", "14" : "git clone https://github.com/gkbrk/slowloris.git", "15" : "git clone https://github.com/1N3/Sn1per"}
     if select != 14 and select != 15:
-        print(select)
         prRed("\n[+] Start installing "+dictionary[selection])
         os.system("sudo apt install "+dictionary[selection])
         useless = input("\n[+] Process Completed. Enter any key to continue......")
@@ -313,6 +312,7 @@ def batch_install_packages(input_list):
 
 def main():
     select = 0
+    prGreen("\n[+] Loading Install Module")
     while select != 99:
         select = 0      # initialize to not inherit
         status = PackageCheck.self_check()
