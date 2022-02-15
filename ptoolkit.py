@@ -58,13 +58,13 @@ def main_menu():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Install Tools            6. Reconnaissance               10. Exit
+    1. Install Tools            5. Reconnaissance               10. Exit
 
-    2. Update Tools             7. Scanning
+    2. Update Tools             6. Scanning
 
-    3. Uninstall Tools          8. Exploitation
+    3. Uninstall Tools          7. Exploitation
 
-    4. Tor Proxy                9. Maintaining Access
+    4. Tor Proxy                8. Maintaining Access
     """)
 
 if __name__ == '__main__':  
@@ -90,7 +90,8 @@ if __name__ == '__main__':
                 PackageUninstall.main()
             elif selection == 4:
                 tor.main()
-                
+            elif selection == 5:
+                nmap.main()
             
         print("Exiting...")
         exit()
