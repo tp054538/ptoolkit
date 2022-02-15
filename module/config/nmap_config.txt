@@ -1,1 +1,5 @@
-
+[nmap config]
+custom_scan1 = Custom 1
+custom_scan2 = Custom 2
+scan1_desc = Not defined
+scan2_desc = Not defined
