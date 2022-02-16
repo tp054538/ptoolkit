@@ -1,6 +1,7 @@
 import configparser
 import os
 import ipaddress
+from sqlalchemy import desc
 
 from websockets import protocol
 
@@ -187,6 +188,10 @@ def newscan():
         
         attack_command = "sudo nmap "
         scan_technique = ""
+        verbose_command = ""
+        os_detect = ""
+        scanspeed_command = " -T"
+        scanspeed_command += str(scanspeed)
 
         if ipprotocol_flag == 1:
             scan_technique = "-sO "
@@ -202,8 +207,14 @@ def newscan():
             if xmasscan_flag == 1:
                 scan_technique += "-sX "
             scan_technique = scan_technique
+        if verbose_flag == 1:
+            verbose_command = "-v "
+        elif xverbose_flag == 1:
+            verbose_command = "-vv "
+        if os_detection_flag == 1:
+            os_detect = "-O "
 
-        attack_command += shortcut + port + scan_technique + target#+ others 
+        attack_command += verbose_command + shortcut + port + scan_technique + os_detect + target + scanspeed_command
         newscan_banner()
         try:
             select = int(input("Select: "))
@@ -384,25 +395,119 @@ def newscan():
                 else:
                     os.system(attack_command)
                     useless = input("\n[*] Completed. Enter any key to continue......")
+            #save settings
+            elif select == 91:
+                file = '/module/config/nmap_config.txt'
+                path = os.getcwd()+file
+                custom_input = input("Save to Custom 1 or Custom 2? : ")
+                write_config = configparser.ConfigParser()
+                write_config.read(path)
+                if custom_input == "1":
+                    name = input("\nPlease enter a new name for custom scan 1: ")
+                    description = input("\nPlease enter a new description for custom scan 1: ")
+                    if name == "" or name[0].isalnum() == False:
+                        name_flag = 0
+                        print("[*] Name cannot be empty or start with space")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    if description == "" or description[0].isalnum() == False:
+                        description_flag = 0
+                        print("[*] Description cannot be empty or start with space")
+                        useless = input("Enter any key to continue......")
+                        continue
+
+                    #change configuration file values
+                    write_config.set('Custom1','shortcut_flag',str(shortcut_flag))
+                    write_config.set('Custom1','udpscan_flag',str(udpscan_flag))
+                    write_config.set('Custom1','synscan_flag',str(synscan_flag))
+                    write_config.set('Custom1','nullscan_flag',str(nullscan_flag))
+                    write_config.set('Custom1','finscan_flag',str(finscan_flag))
+                    write_config.set('Custom1','xmasscan_flag',str(xmasscan_flag))
+                    write_config.set('Custom1','ipprotocol_flag',str(ipprotocol_flag))
+                    write_config.set('Custom1','os_detection_flag',str(os_detection_flag))
+                    write_config.set('Custom1','scanspeed',str(scanspeed))
+                    write_config.set('Custom1','verbose_Flag',str(verbose_flag))
+                    write_config.set('Custom1','xverbose_flag',str(xverbose_flag))
+                    write_config.set('Custom1','port',port)
+                    write_config.set('nmap config','custom_scan1',name)
+                    write_config.set('nmap config','scan1_desc',description)
+                    with open(path, 'w') as configuration_file:
+                        write_config.write(configuration_file)
+                    
+                elif custom_input == "2":
+                    name = input("\nPlease enter a new name for custom scan 2: ")
+                    description = input("\nPlease enter a new description for custom scan 2: ")
+                    if name == "" or name[0].isalnum() == False:
+                        name_flag = 0
+                        print("[*] Name cannot be empty or start with space")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    if description == "" or description[0].isalnum() == False:
+                        description_flag = 0
+                        print("[*] Description cannot be empty or start with space")
+                        useless = input("Enter any key to continue......")
+                        continue
+
+                    write_config.set('Custom2','shortcut_flag',str(shortcut_flag))
+                    write_config.set('Custom2','udpscan_flag',str(udpscan_flag))
+                    write_config.set('Custom2','synscan_flag',str(synscan_flag))
+                    write_config.set('Custom2','nullscan_flag',str(nullscan_flag))
+                    write_config.set('Custom2','finscan_flag',str(finscan_flag))
+                    write_config.set('Custom2','xmasscan_flag',str(xmasscan_flag))
+                    write_config.set('Custom2','ipprotocol_flag',str(ipprotocol_flag))
+                    write_config.set('Custom2','os_detection_flag',str(os_detection_flag))
+                    write_config.set('Custom2','scanspeed',str(scanspeed))
+                    write_config.set('Custom2','verbose_Flag',str(verbose_flag))
+                    write_config.set('Custom2','xverbose_flag',str(xverbose_flag))
+                    write_config.set('Custom2','port',port)
+                    write_config.set('nmap config','custom_scan2',name)
+                    write_config.set('nmap config','scan2_desc',description)
+                    with open(path, 'w') as configuration_file:
+                        write_config.write(configuration_file)
+                else:
+                    print("\n[*] Invalid input. Please select either 1 or 2 custom scan to save.")
+                    useless = input("Enter any key to continue.......")
+                    continue
         except ValueError:
             pass
 
-def main():
-    #read nmap config file for custom 1 and custom 2 data
-    parser = configparser.ConfigParser()
+def custom_scan_menu():
+    customparser = configparser.ConfigParser()
     file = '/module/config/nmap_config.txt'
     path = os.getcwd()+file
-    
-    parser.read(path)
-    global custom_scan1, custom_scan2, scan1_desc, scan2_desc
-    custom_scan1 = parser.get("nmap config","custom_scan1")
-    scan1_desc  = parser.get("nmap config","scan1_desc")
-    custom_scan2 = parser.get("nmap config","custom_scan2")
-    scan2_desc = parser.get("nmap config","scan2_desc")
-    
+    customparser.read(path)
+    """
+    shortcut_flag = 0
+    udpscan_flag = 0
+    synscan_flag = 0
+    nullscan_flag = 0
+    finscan_flag = 0
+    xmasscan_flag = 0
+    ipprotocol_flag = 0
+    os_detection_flag = 0
+    scanspeed = 2
+    verbose_flag = 0
+    xverbose_flag = 0
+    port = 
+    """
+
+def main():
     #read input and check condition
     user_input = 0
     while user_input != 4:
+        #read nmap config file for custom 1 and custom 2 data
+        parser = configparser.ConfigParser()
+        file = '/module/config/nmap_config.txt'
+        path = os.getcwd()+file
+        
+        parser.read(path)
+        global custom_scan1, custom_scan2, scan1_desc, scan2_desc
+        custom_scan1 = parser.get("nmap config","custom_scan1")
+        scan1_desc  = parser.get("nmap config","scan1_desc")
+        custom_scan2 = parser.get("nmap config","custom_scan2")
+        scan2_desc = parser.get("nmap config","scan2_desc")
+        ##########################################################
+
         user_input = 0
         banner()
         try:
@@ -410,10 +515,17 @@ def main():
             if user_input == 1:
                 newscan()
             elif user_input == 2:
-                if scan1_desc == "Not defined":
+                if scan1_desc == "Custom 1 Not Defined":
                     print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
                     useless = input("Enter any key to continue......")
                     continue
+                custom_scan_menu()
+            elif user_input == 3:
+                if scan2_desc == "Custom 2 Not Defined":
+                    print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
+                    useless = input("Enter any key to continue......")
+                    continue
+                custom_scan_menu()
             elif user_input == 4:
                 pass
             else:
