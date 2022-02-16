@@ -1,5 +1,34 @@
 [nmap config]
 custom_scan1 = Custom 1
-custom_scan2 = Custom 2
+custom_scan2 = joe2
 scan1_desc = Not defined
-scan2_desc = Not defined
+scan2_desc = joe2 defiend
+
+[Custom1]
+shortcut_flag = 0
+udpscan_flag = 0
+synscan_flag = 0
+nullscan_flag = 0
+finscan_flag = 0
+xmasscan_flag = 0
+ipprotocol_flag = 0
+os_detection_flag = 0
+scanspeed = 2
+verbose_flag = 0
+xverbose_flag = 0
+port = 
+
+[Custom2]
+shortcut_flag = 0
+udpscan_flag = 0
+synscan_flag = 0
+nullscan_flag = 0
+finscan_flag = 0
+xmasscan_flag = 0
+ipprotocol_flag = 0
+os_detection_flag = 0
+scanspeed = 2
+verbose_flag = 0
+xverbose_flag = 0
+port = 
+
