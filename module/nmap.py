@@ -5,6 +5,17 @@ import ipaddress
 # \033[00m default print font
 # purple = "\033[1;35m"
 #"\033[1;32m" green
+def port_duplicate_check(ports):
+    ports_set = set(ports)
+    if type(ports) is list:
+        if len(ports_set) != len(ports):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+#def port_value_check():
 
 def banner():
     os.system("clear")
@@ -33,29 +44,35 @@ def newscan_banner():
 
     1. Target: """+target_color+target+"""\033[00m
 
-Scan Type:
+Shortcuts:
     2. Default Scan      -  Scan the 1,000 most common ports
     3. Fast Scan         -  Scan the 100 most common ports
     4. Aggressive Scan   -  With OS Detection, Version Detection, Script Scanning, and Traceroute
 
 Port Specification:
     5. Port ranges: """+port_range+"""
+    6. Specific Ports: \033[1;32m"""+specific_port+"""\033[00m
+
+Scan Techniques:
+    7. 
 \n""")
 
 def newscan():
     green = "\033[1;32m"
     red = "\033[1;31m"
-    global target, target_color, port_range, port_range_color
+    global target, target_color, port_range, port_range_color, specific_port
     target_color = "\033[00m"
     port_range_color = "\033[00m"
     target = ""
     port_range = ""
+    specific_port = ""
 
     select = 0
     while select != 99:
         newscan_banner()
         try:
             select = int(input("Select: "))
+            #target
             if select == 1:
                 target_ip = input("Target IP Address: ")
                 #check ip address format valid
@@ -70,6 +87,7 @@ def newscan():
                     continue
                 finally:
                     target = target_ip
+            #port range -> no duplicate, min range must larger than max range, 1-65535, format check (-), numbers only
             elif select == 5:
                 port_range_temp = input("Port Ranges (1-65535): ")
                 port_range_temp.strip()
@@ -99,7 +117,29 @@ def newscan():
                 else:
                     port_range = ""
                     print("Port Range format is wrong. Numbers only.") 
-            input(".......")            
+                input("Enter any key to continue")   
+            #specific port (validation input -> 1-65535, only numbers, no duplicate
+            elif select == 6:
+                try:
+                    specific_port = ""
+                    specific_port_string = ""
+                    specific_port_temp = input("\nSpecific Port (use a space between two ports number for multiple specific port): ")
+                    specific_port_temp2 = specific_port_temp.strip().split()
+                    if port_duplicate_check(specific_port_temp2) == True:
+                        print("\n[*] Invalid Ports! Ports number duplicated!")
+                        useless  = input("Enter any key to continue......")
+                        continue
+                    for i in range(len(specific_port_temp2)):
+                        if specific_port_temp2[i].isnumeric() == True and int(specific_port_temp2[i]) >= 1 and int(specific_port_temp2[i]) <= 65535:
+                            specific_port_string +=  str(specific_port_temp2[i]).strip() + ","
+                            specific_port_string.strip()
+                        else:
+                            raise ValueError
+                    specific_port = specific_port_string.strip(",")
+                except ValueError:
+                    print("\n[*] Port numbers invalid.")
+                    useless = input("Enter any key to continue......")
+                    pass
         except ValueError:
             pass
 
