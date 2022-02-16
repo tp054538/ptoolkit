@@ -2,6 +2,8 @@ import configparser
 import os
 import ipaddress
 
+from websockets import protocol
+
 # \033[00m default print font
 # purple = "\033[1;35m"
 #"\033[1;32m" green
@@ -36,6 +38,71 @@ def banner():
     """)
 
 def newscan_banner():
+    #determine which shortcuts is selected, only can select 1
+    if shortcut_flag == 2:
+        default_scan_flag = "\033[1;32m"
+        aggressive_flag = "\033[00m"
+        fast_scan_flag = "\033[00m"
+    elif shortcut_flag == 3:
+        fast_scan_flag = "\033[1;32m"
+        default_scan_flag = "\033[00m"
+        aggressive_flag = "\033[00m"
+    elif shortcut_flag == 4:
+        aggressive_flag = "\033[1;32m"
+        default_scan_flag = "\033[00m"
+        fast_scan_flag = "\033[00m"
+    else:
+        default_scan_flag = "\033[00m"
+        fast_scan_flag = "\033[00m"
+        aggressive_flag = "\033[00m"
+    
+    #scan technique colour
+    if udpscan_flag == 1:
+        udp_color = "\033[1;32m"
+    else:
+        udp_color = "\033[00m"
+    #
+    if synscan_flag == 1:
+        syn_color = "\033[1;32m"
+    else:
+        syn_color = "\033[00m"
+    #
+    if nullscan_flag == 1:
+        null_color = "\033[1;32m"
+    else:
+        null_color = "\033[00m"
+    #
+    if finscan_flag == 1:
+        fin_color = "\033[1;32m"
+    else:
+        fin_color = "\033[00m"
+    #
+    if xmasscan_flag == 1:
+        xmas_color = "\033[1;32m"
+    else:
+        xmas_color = "\033[00m"
+    #
+    if ipprotocol_flag == 1:
+        ipprotocol_color = "\033[1;32m"
+    else:
+        ipprotocol_color = "\033[00m"
+    #
+    if os_detection_flag == 1:
+        os_color = "\033[1;32m"
+    else:
+        os_color = "\033[00m"
+    #reserve for speed
+    #
+    if verbose_flag == 1:
+        verbose_color = "\033[1;32m"
+    else:
+        verbose_color = "\033[00m"
+    #
+    if xverbose_flag == 1:
+        xverbose_color = "\033[1;32m"
+    else:
+        xverbose_color = "\033[00m"
+
     os.system("clear")
     print("""
                                       \033[1;31mNMAP\033[00m
@@ -44,23 +111,39 @@ def newscan_banner():
 
     1. Target: """+target_color+target+"""\033[00m
 
-Shortcuts:
-    2. Default Scan      -  Scan the 1,000 most common ports
-    3. Fast Scan         -  Scan the 100 most common ports
-    4. Aggressive Scan   -  With OS Detection, Version Detection, Script Scanning, and Traceroute
+\033[1;33mShortcuts: (Maximum select 1 only)\033[00m
+    2. """+default_scan_flag+"""Default Scan\033[00m      -  Scan the 1,000 most common ports
+    3. """+fast_scan_flag+"""Fast Scan\033[00m         -  Scan the 100 most common ports
+    4. """+aggressive_flag+"""Aggressive Scan\033[00m   -  OS, Version Detection, Script Scanning, and Traceroute
+\033[1;33mPort Specification: (Select either 1 or leave empty)\033[00m
+    5. Port ranges     :  \033[1;32m"""+port_range+"""\033[00m
+    6. Specific Ports  :  \033[1;32m"""+specific_port+"""\033[00m
+\033[1;33mScan Techniques:\033[00m
+    7. """+udp_color+"""UDP Scan\033[00m         -   Send UDP packets
+    8. """+syn_color+"""TCP SYN Scan\033[00m     -   Send TCP SYN packets, relatively stealthy
+    9. """+null_color+"""TCP NULL Scan\033[00m    -   Identify listening TCP ports with flagless TCP packet
+   10. """+fin_color+"""TCP FIN Scan\033[00m     -   Set TCP FIN packets, more invisible compared to SYN Scan
+   11. """+xmas_color+"""TCP Xmas Scan\033[00m    -   Utilize TCP FIN, PSH, and URG flags to perform scan
+   12. """+ipprotocol_color+"""IP Protocol Scan\033[00m -   Scan the IP protocols used (cant use with other scan techniques)
+\033[1;33mOthers:\033[00m
+   13. """+os_color+"""OS Detection\033[00m     -   Scan the target machine running OS
+   14. Scan Speed (0-5) :   \033[1;32m"""+str(scanspeed)+"""\033[00m
+   15. """+verbose_color+"""Verbose\033[00m          -   Get more information when nmap is running
+   16. """+xverbose_color+"""Extra Verbose\033[00m    -   Get all information when nmap is running
+\033[1;33mOperation:\033[00m
+   90. Launch Attack
+   91. Save to Custom Scan Setting
+   99. Exit
 
-Port Specification:
-    5. Port ranges: """+port_range+"""
-    6. Specific Ports: \033[1;32m"""+specific_port+"""\033[00m
-
-Scan Techniques:
-    7. 
-\n""")
+Attack Command: """+attack_command+"""
+""")
 
 def newscan():
     green = "\033[1;32m"
     red = "\033[1;31m"
-    global target, target_color, port_range, port_range_color, specific_port
+    global target, target_color, port_range, port_range_color, specific_port, shortcut_flag, udpscan_flag, synscan_flag, nullscan_flag, finscan_flag
+    global xmasscan_flag, ipprotocol_flag, os_detection_flag, scanspeed, verbose_flag, xverbose_flag
+    global attack_command
     target_color = "\033[00m"
     port_range_color = "\033[00m"
     target = ""
@@ -68,7 +151,59 @@ def newscan():
     specific_port = ""
 
     select = 0
+    shortcut_flag = 0
+    udpscan_flag = 0
+    synscan_flag = 0
+    nullscan_flag = 0
+    finscan_flag = 0
+    xmasscan_flag = 0
+    ipprotocol_flag = 0
+    os_detection_flag = 0
+    scanspeed = 2
+    verbose_flag = 0
+    xverbose_flag = 0
+    attack_command = ""
+    port = ""
+
     while select != 99:
+        #clear other scan technique (if not nmap will fail)
+        if ipprotocol_flag == 1:
+            udpscan_flag = 0
+            synscan_flag = 0
+            nullscan_flag = 0
+            finscan_flag = 0
+            xmasscan_flag = 0
+        
+        #compile all settings and generate the command
+        if shortcut_flag == 3:
+            shortcut = "-F "
+        elif shortcut_flag == 4:
+            shortcut = "-A "
+        else:
+            shortcut = ""
+        
+        if (port_range + specific_port) != "":
+            port = "-p "+ port_range + specific_port + " "
+        
+        attack_command = "sudo nmap "
+        scan_technique = ""
+
+        if ipprotocol_flag == 1:
+            scan_technique = "-sO "
+        else:
+            if udpscan_flag == 1:
+                scan_technique += "-sU "
+            if synscan_flag == 1:
+                scan_technique += "-sS "
+            if nullscan_flag == 1:
+                scan_technique += "-sN "
+            if finscan_flag == 1:
+                scan_technique += "-sF "
+            if xmasscan_flag == 1:
+                scan_technique += "-sX "
+            scan_technique = scan_technique
+
+        attack_command += shortcut + port + scan_technique + target#+ others 
         newscan_banner()
         try:
             select = int(input("Select: "))
@@ -86,8 +221,25 @@ def newscan():
                     target_color = red
                     continue
                 finally:
-                    target = target_ip
-            #port range -> no duplicate, min range must larger than max range, 1-65535, format check (-), numbers only
+                    target = target_ip.strip()
+
+            #Shortcuts (only can choose 1), reselect again will cancel selection
+            elif select == 2:
+                if shortcut_flag != 2:
+                    shortcut_flag = 2
+                else:
+                    shortcut_flag = 0
+            elif select == 3:
+                if shortcut_flag != 3:
+                    shortcut_flag = 3
+                else:
+                    shortcut_flag = 0
+            elif select == 4:
+                if shortcut_flag != 4:
+                    shortcut_flag = 4
+                else:
+                    shortcut_flag = 0
+            #port range -> no duplicate, min range must larger than max range, 1-65535, format check (-), numbers only / cancel specific port 
             elif select == 5:
                 port_range_temp = input("Port Ranges (1-65535): ")
                 port_range_temp.strip()
@@ -95,30 +247,36 @@ def newscan():
                     port_range = port_range_temp.split('-')
                     if type(port_range) is list:
                         if len(port_range) != 2:
-                            print("Invalid Port Range! Eg. 1-65535")
+                            print("[*] Invalid Port Range! Eg. 1-65535")
                             port_range = ""
+                            input("Enter any key to continue")   
                         else:
                             try:
                                 if int(port_range[0]) >= 1 and int(port_range[1]) <= 65535:
                                     if int(port_range[0]) >= int(port_range[1]):
-                                        print("Invalid Value. (Starting Port is bigger than Ending Port)")
+                                        print("[*] Invalid Value. (Starting Port is bigger than Ending Port)")
                                         port_range = ""
+                                        input("Enter any key to continue")   
                                     else:
                                         port_range = port_range[0] + "-" + port_range[1]
+                                        specific_port = ""
                                 else:
-                                    print("Port is out of range!")
+                                    print("[*] Port is out of range!")
                                     port_range = ""
+                                    input("Enter any key to continue")   
                             except ValueError:
                                 port_range = ""
-                                print("Port Range is not numbers! Please enter numbers only.") 
+                                print("[*] Port Range is not numbers! Please enter numbers only.") 
+                                input("Enter any key to continue")   
                     else:
                         port_range = ""
-                        print("Port Range format is wrong. Hypen (-) must be used and 1-65535 numbers only.")
+                        print("[*] Port Range format is wrong. Hypen (-) must be used and 1-65535 numbers only.")
+                        input("Enter any key to continue")   
                 else:
                     port_range = ""
-                    print("Port Range format is wrong. Numbers only.") 
-                input("Enter any key to continue")   
-            #specific port (validation input -> 1-65535, only numbers, no duplicate
+                    print("[*] Port Range format is wrong. Numbers only.") 
+                    input("Enter any key to continue")   
+            #specific port (validation input -> 1-65535, only numbers, no duplicate / cancel port range
             elif select == 6:
                 try:
                     specific_port = ""
@@ -136,10 +294,96 @@ def newscan():
                         else:
                             raise ValueError
                     specific_port = specific_port_string.strip(",")
+                    port_range = ""
                 except ValueError:
                     print("\n[*] Port numbers invalid.")
                     useless = input("Enter any key to continue......")
                     pass
+            #Scan techniques
+            elif select == 7: 
+                if udpscan_flag != 1:
+                    udpscan_flag = 1
+                else:
+                    udpscan_flag = 0
+            elif select == 8:
+                if synscan_flag != 1:
+                    synscan_flag = 1
+                    nullscan_flag = 0
+                    finscan_flag = 0
+                    xmasscan_flag = 0
+                else:
+                    synscan_flag = 0
+            elif select == 9:
+                if nullscan_flag != 1:
+                    nullscan_flag = 1
+                    synscan_flag = 0
+                    xmasscan_flag = 0
+                    finscan_flag = 0
+                else:
+                    nullscan_flag = 0
+            elif select == 10:
+                if finscan_flag != 1:
+                    finscan_flag = 1
+                    synscan_flag = 0
+                    nullscan_flag = 0
+                    xmasscan_flag = 0
+                else:
+                    finscan_flag = 0
+            elif select == 11:
+                if xmasscan_flag != 1:
+                    xmasscan_flag = 1
+                    synscan_flag = 0
+                    finscan_flag = 0
+                    nullscan_flag = 0
+                else:
+                    xmasscan_flag = 0
+            elif select == 12:
+                if ipprotocol_flag != 1: #ip protocol scan cannot use with other scan techniques
+                    ipprotocol_flag = 1
+                    udpscan_flag = 0
+                    synscan_flag = 0
+                    nullscan_flag = 0
+                    finscan_flag = 0
+                    xmasscan_flag = 0
+                else:
+                    ipprotocol_flag = 0
+            #others section
+            elif select == 13:
+                if os_detection_flag != 1:
+                    os_detection_flag = 1
+                else:
+                    os_detection_flag = 0
+            elif select == 14:
+                try:
+                    speed = int(input("Speed (0-5): "))
+                    if speed >= 0 and speed <= 5:
+                        scanspeed = speed
+                    else:
+                        scanspeed = 2
+                        raise ValueError
+                except ValueError:
+                    print("\n[*] Please enter numbers from 0 to 5 only!")
+                    useless = input("Enter any key to continue......")
+            elif select == 15:
+                if verbose_flag != 1:
+                    verbose_flag = 1
+                    xverbose_flag = 0
+                else:
+                    verbose_flag = 0
+            elif select == 16:
+                if xverbose_flag != 1:
+                    xverbose_flag = 1
+                    verbose_flag = 0
+                else:
+                    xverbose_flag = 0
+            #launch attack
+            elif select == 90:
+                if target == "" :
+                    print("[*] Target cannot be empty!")
+                    useless = input("Enter any key to continue......")
+                else:
+                    os.system(attack_command)
+                    useless = input("\n[*] Completed. Enter any key to continue......")
         except ValueError:
             pass
 
