@@ -67,6 +67,23 @@ def main_menu():
     4. Tor Proxy                8. Maintaining Access
     """)
 
+def recon_menu():
+    recon_input = ""
+    while recon_input != "99":
+        os.system("clear")
+        print("""
+                              Reconnaissance Menu
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. Searchsploit                  2. Sn1per                
+
+   99. Exit
+    """)
+        recon_input = input("Select: ")
+        if recon_input == "1":
+            pass
+
 def scanning_menu():
     scanning_input = ""
     while scanning_input != "99":
@@ -110,7 +127,7 @@ if __name__ == '__main__':
             elif selection == 4:
                 tor.main()
             elif selection == 5:
-                pass
+                recon_menu()
             elif selection == 6:
                 scanning_menu()
             
