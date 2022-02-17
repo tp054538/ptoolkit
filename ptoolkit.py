@@ -67,6 +67,25 @@ def main_menu():
     4. Tor Proxy                8. Maintaining Access
     """)
 
+def scanning_menu():
+    scanning_input = ""
+    while scanning_input != "99":
+        os.system("clear")
+        print("""
+                               Scanning Menu
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. Nmap                    5. Sn1per                10. Wpscan
+
+    2. JoomScan                6. Nikto
+
+   99. Exit
+    """)
+        scanning_input = input("Select: ")
+        if scanning_input == "1":
+            nmap.main()
+
 if __name__ == '__main__':  
 
     if (RoE() == "1"):
@@ -91,7 +110,9 @@ if __name__ == '__main__':
             elif selection == 4:
                 tor.main()
             elif selection == 5:
-                nmap.main()
+                pass
+            elif selection == 6:
+                scanning_menu()
             
         print("Exiting...")
         exit()
