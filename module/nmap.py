@@ -1,13 +1,7 @@
 import configparser
 import os
 import ipaddress
-from sqlalchemy import desc
 
-from websockets import protocol
-
-# \033[00m default print font
-# purple = "\033[1;35m"
-#"\033[1;32m" green
 def port_duplicate_check(ports):
     ports_set = set(ports)
     if type(ports) is list:
@@ -221,18 +215,24 @@ def newscan():
             #target
             if select == 1:
                 target_ip = input("Target IP Address: ")
+                target_ip = target_ip.strip()
                 #check ip address format valid
-                try:
-                    ip = ipaddress.ip_address(target_ip)
-                    target_color = green
-                except ValueError:
-                    if target_ip[0].isnumeric() == True:
-                        print("\n{} is not a valid IP Address format.".format(target_ip))
-                        useless = input("Enter any key to continue......")
-                    target_color = red
+                if target_ip != "":
+                    try:
+                        ip = ipaddress.ip_address(target_ip)
+                        target_color = green
+                    except ValueError:
+                        if target_ip[0].isnumeric() == True:
+                            print("\n{} is not a valid IP Address format.".format(target_ip))
+                            useless = input("Enter any key to continue......")
+                        target_color = red
+                        continue
+                    finally:
+                        target = target_ip.strip()
+                else:
+                    print("\n[*] Target cannot be empty!")
+                    useless = input("Enter any key to continue......")
                     continue
-                finally:
-                    target = target_ip.strip()
 
             #Shortcuts (only can choose 1), reselect again will cancel selection
             elif select == 2:
@@ -393,9 +393,20 @@ def newscan():
                     print("[*] Target cannot be empty!")
                     useless = input("Enter any key to continue......")
                 else:
+                    output_prompt = input("Do you want to save the result to a file? (y/n) : ")
+                    if output_prompt == "y" or output_prompt == "Y":
+                        file_name = input("Filename: ")
+                        if file_name.strip() != "":
+                            attack_command += " -o ./result/" + file_name
+                        else:
+                            print("Filename cannot be emtpy!")
+                            useless = input("Enter any key to continue......")
+                            continue
                     print("\033[1;32m[+] Starting NMAP\033[00m")
                     os.system(attack_command)
-                    useless = input("\n[*] Completed. Enter any key to continue......")
+                    if "-o" in attack_command:
+                        print("\n\033[1;32m[+] File saved to ./result/{}\033[00m".format(file_name))
+                    useless = input("[*] Completed. Enter any key to continue......")
             #save settings
             elif select == 91:
                 file = '/module/config/nmap_config.txt'
@@ -653,15 +664,28 @@ def custom_scan_menu(custom_num):
         custom_select = input("Select: ")
         if custom_select == "1":
             ctarget = input("Target IP Address / Hostname: ")
+            ctarget = ctarget.strip()
         #cannot launch NMAP if target is not specified
         elif custom_select == "90":
             if ctarget == "":
                 print("\n[*] Target cannot be empty!")
                 useless = input("Enter any key to continue......")
             else:
+                coutput_prompt = input("Do you want to save the result to a file? (y/n) : ")
+                if coutput_prompt == "y" or coutput_prompt == "Y":
+                    cfile_name = input("Filename: ")
+                    if cfile_name.strip() != "":
+                        cattack_command += " -o ./result/" + cfile_name
+                    else:
+                        print("Filename cannot be emtpy!")
+                        useless = input("Enter any key to continue......")
+                        continue
                 print("\033[1;32m[+] Starting NMAP\033[00m")
                 os.system(cattack_command)
+                if "-o" in cattack_command:
+                    print("\n\033[1;32m[+] File saved to ./result/{}\033[00m".format(cfile_name))
                 useless = input("[*] Process Completed. Enter any key to continue......")
+        #delete settings
         elif custom_select == "91":
             file = '/module/config/nmap_config.txt'
             path3 = os.getcwd()+file
