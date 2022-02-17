@@ -393,6 +393,7 @@ def newscan():
                     print("[*] Target cannot be empty!")
                     useless = input("Enter any key to continue......")
                 else:
+                    print("\033[1;32m[+] Starting NMAP\033[00m")
                     os.system(attack_command)
                     useless = input("\n[*] Completed. Enter any key to continue......")
             #save settings
@@ -471,25 +472,237 @@ def newscan():
         except ValueError:
             pass
 
-def custom_scan_menu():
-    customparser = configparser.ConfigParser()
-    file = '/module/config/nmap_config.txt'
-    path = os.getcwd()+file
-    customparser.read(path)
-    """
-    shortcut_flag = 0
-    udpscan_flag = 0
-    synscan_flag = 0
-    nullscan_flag = 0
-    finscan_flag = 0
-    xmasscan_flag = 0
-    ipprotocol_flag = 0
-    os_detection_flag = 0
-    scanspeed = 2
-    verbose_flag = 0
-    xverbose_flag = 0
-    port = 
-    """
+def custom_scan_banner():
+    #print menu for custom
+    if cshortcut_flag == 2:
+        cdefault_scan_flag = "\033[1;32m"
+        caggressive_flag = "\033[00m"
+        cfast_scan_flag = "\033[00m"
+    elif cshortcut_flag == 3:
+        cfast_scan_flag = "\033[1;32m"
+        cdefault_scan_flag = "\033[00m"
+        caggressive_flag = "\033[00m"
+    elif cshortcut_flag == 4:
+        caggressive_flag = "\033[1;32m"
+        cdefault_scan_flag = "\033[00m"
+        cfast_scan_flag = "\033[00m"
+    else:
+        cdefault_scan_flag = "\033[00m"
+        cfast_scan_flag = "\033[00m"
+        caggressive_flag = "\033[00m"
+    
+    #scan technique colour
+    if cudpscan_flag == 1:
+        cudp_color = "\033[1;32m"
+    else:
+        cudp_color = "\033[00m"
+    #
+    if csynscan_flag == 1:
+        csyn_color = "\033[1;32m"
+    else:
+        csyn_color = "\033[00m"
+    #
+    if cnullscan_flag == 1:
+        cnull_color = "\033[1;32m"
+    else:
+        cnull_color = "\033[00m"
+    #
+    if cfinscan_flag == 1:
+        cfin_color = "\033[1;32m"
+    else:
+        cfin_color = "\033[00m"
+    #
+    if cxmasscan_flag == 1:
+        cxmas_color = "\033[1;32m"
+    else:
+        cxmas_color = "\033[00m"
+    #
+    if cipprotocol_flag == 1:
+        cipprotocol_color = "\033[1;32m"
+    else:
+        cipprotocol_color = "\033[00m"
+    #
+    if cos_detection_flag == 1:
+        cos_color = "\033[1;32m"
+    else:
+        cos_color = "\033[00m"
+    #reserve for speed
+    #
+    if cverbose_flag == 1:
+        cverbose_color = "\033[1;32m"
+    else:
+        cverbose_color = "\033[00m"
+    #
+    if cxverbose_flag == 1:
+        cxverbose_color = "\033[1;32m"
+    else:
+        cxverbose_color = "\033[00m"
+    os.system("clear")
+    print("""
+                                \033[1;31mNMAP Custom Scan\033[00m
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. Target: \033[1;32m"""+ctarget+"""\033[00m
+
+    2. """+cdefault_scan_flag+"""Default Scan\033[00m      
+    3. """+cfast_scan_flag+"""Fast Scan\033[00m        
+    4. """+caggressive_flag+"""Aggressive Scan\033[00m  
+    5. Ports           :  \033[1;32m"""+cport+"""\033[00m
+    7. """+cudp_color+"""UDP Scan\033[00m       
+    8. """+csyn_color+"""TCP SYN Scan\033[00m     
+    9. """+cnull_color+"""TCP NULL Scan\033[00m    
+   10. """+cfin_color+"""TCP FIN Scan\033[00m   
+   11. """+cxmas_color+"""TCP Xmas Scan\033[00m   
+   12. """+cipprotocol_color+"""IP Protocol Scan\033[00m 
+   13. """+cos_color+"""OS Detection\033[00m    
+   14. Scan Speed (0-5) :   \033[1;32m"""+str(cscanspeed)+"""\033[00m
+   15. """+cverbose_color+"""Verbose\033[00m          
+   16. """+cxverbose_color+"""Extra Verbose\033[00m   
+\033[1;33mOperation:\033[00m
+   90. Launch Attack
+   91. Delete Custom Settings
+   99. Exit
+
+*Only target could be change in custom scan
+*To change custom scan settings, please set a new custom scan settings in New Scan
+\033[1;32mAttack Command: \033[00m"""+cattack_command+"""
+""")
+
+def custom_scan_menu(custom_num):
+    global ctarget, cshortcut_flag, cudpscan_flag, csynscan_flag, cnullscan_flag, cfinscan_flag, cxmasscan_flag, cipprotocol_flag, cos_detection_flag, cscanspeed
+    global cverbose_flag, cxverbose_flag, cattack_command, cport
+    custom_select = ""
+    ctarget = ""
+    #custom menu select item loop
+    while custom_select != "99":
+        custom_select = ""
+        customparser = configparser.ConfigParser()
+        file = '/module/config/nmap_config.txt'
+        path = os.getcwd()+file
+        customparser.read(path)
+        print(customparser.get("Custom1","shortcut_flag"))
+        #read custom 1 or custom 2 settings
+        if custom_num == 1:
+            cshortcut_flag = int(customparser.get("Custom1","shortcut_flag"))
+            cudpscan_flag = int(customparser.get("Custom1","udpscan_flag"))
+            csynscan_flag = int(customparser.get("Custom1","synscan_flag"))
+            cnullscan_flag = int(customparser.get("Custom1","nullscan_flag"))
+            cfinscan_flag = int(customparser.get("Custom1","finscan_flag"))
+            cxmasscan_flag = int(customparser.get("Custom1","xmasscan_flag"))
+            cipprotocol_flag = int(customparser.get("Custom1","ipprotocol_flag"))
+            cos_detection_flag = int(customparser.get("Custom1","os_detection_flag"))
+            cscanspeed = customparser.get("Custom1","scanspeed")
+            cverbose_flag = int(customparser.get("Custom1","verbose_flag"))
+            cxverbose_flag = int(customparser.get("Custom1","xverbose_flag"))
+            cport = customparser.get("Custom1","port")
+        elif custom_num == 2:
+            cshortcut_flag = int(customparser.get("Custom2","shortcut_flag"))
+            cudpscan_flag = int(customparser.get("Custom2","udpscan_flag"))
+            csynscan_flag = int(customparser.get("Custom2","synscan_flag"))
+            cnullscan_flag = int(customparser.get("Custom2","nullscan_flag"))
+            cfinscan_flag = int(customparser.get("Custom2","finscan_flag"))
+            cxmasscan_flag = int(customparser.get("Custom2","xmasscan_flag"))
+            cipprotocol_flag = int(customparser.get("Custom2","ipprotocol_flag"))
+            cos_detection_flag = int(customparser.get("Custom2","os_detection_flag"))
+            cscanspeed = customparser.get("Custom2","scanspeed")
+            cverbose_flag = int(customparser.get("Custom2","verbose_flag"))
+            cxverbose_flag = int(customparser.get("Custom2","xverbose_flag"))
+            cport = customparser.get("Custom2","port")
+        else:
+            continue
+        #generate the attack command 
+        if cshortcut_flag == 3:
+            cshortcut = "-F "
+        elif cshortcut_flag == 4:
+            cshortcut = "-A "
+        else:
+            cshortcut = ""
+        
+        
+        cattack_command = "sudo nmap "
+        cscan_technique = ""
+        cverbose_command = ""
+        cos_detect = ""
+        cscanspeed_command = " -T"
+        cscanspeed_command += str(cscanspeed)
+
+        if cipprotocol_flag == 1:
+            cscan_technique = "-sO "
+        else:
+            if cudpscan_flag == 1:
+                cscan_technique += "-sU "
+            if csynscan_flag == 1:
+                cscan_technique += "-sS "
+            if cnullscan_flag == 1:
+                cscan_technique += "-sN "
+            if cfinscan_flag == 1:
+                cscan_technique += "-sF "
+            if cxmasscan_flag == 1:
+                cscan_technique += "-sX "
+            cscan_technique = cscan_technique
+        if cverbose_flag == 1:
+            cverbose_command = "-v "
+        elif cxverbose_flag == 1:
+            cverbose_command = "-vv "
+        if cos_detection_flag == 1:
+            cos_detect = "-O "
+
+        cattack_command += cverbose_command + cshortcut + cport + cscan_technique + cos_detect + ctarget + cscanspeed_command
+        custom_scan_banner()
+        custom_select = input("Select: ")
+        if custom_select == "1":
+            ctarget = input("Target IP Address / Hostname: ")
+        #cannot launch NMAP if target is not specified
+        elif custom_select == "90":
+            if ctarget == "":
+                print("\n[*] Target cannot be empty!")
+                useless = input("Enter any key to continue......")
+            else:
+                print("\033[1;32m[+] Starting NMAP\033[00m")
+                os.system(cattack_command)
+                useless = input("[*] Process Completed. Enter any key to continue......")
+        elif custom_select == "91":
+            file = '/module/config/nmap_config.txt'
+            path3 = os.getcwd()+file
+            default_parser = configparser.ConfigParser()
+            default_parser.read(path3)
+            if custom_num == 1:
+                default_parser.set('Custom1','shortcut_flag',str("0"))
+                default_parser.set('Custom1','udpscan_flag',str("0"))
+                default_parser.set('Custom1','synscan_flag',str("0"))
+                default_parser.set('Custom1','nullscan_flag',str("0"))
+                default_parser.set('Custom1','finscan_flag',str("0"))
+                default_parser.set('Custom1','xmasscan_flag',str("0"))
+                default_parser.set('Custom1','ipprotocol_flag',str("0"))
+                default_parser.set('Custom1','os_detection_flag',str("0"))
+                default_parser.set('Custom1','scanspeed',str("2"))
+                default_parser.set('Custom1','verbose_Flag',str("0"))
+                default_parser.set('Custom1','xverbose_flag',str("0"))
+                default_parser.set('Custom1','port',"")
+                default_parser.set('nmap config','custom_scan1',"Custom 1")
+                default_parser.set('nmap config','scan1_desc',"Custom 1 Not Defined")
+                with open(path3, 'w') as configuration_reset_file:
+                    default_parser.write(configuration_reset_file)
+                break
+            elif custom_num == 2:
+                default_parser.set('Custom2','shortcut_flag',str("0"))
+                default_parser.set('Custom2','udpscan_flag',str("0"))
+                default_parser.set('Custom2','synscan_flag',str("0"))
+                default_parser.set('Custom1','nullscan_flag',str("0"))
+                default_parser.set('Custom1','finscan_flag',str("0"))
+                default_parser.set('Custom2','xmasscan_flag',str("0"))
+                default_parser.set('Custom2','ipprotocol_flag',str("0"))
+                default_parser.set('Custom2','os_detection_flag',str("0"))
+                default_parser.set('Custom2','scanspeed',str("2"))
+                default_parser.set('Custom2','verbose_Flag',str("0"))
+                default_parser.set('Custom2','xverbose_flag',str("0"))
+                default_parser.set('Custom2','port',"")
+                default_parser.set('nmap config','custom_scan2',"Custom 2")
+                default_parser.set('nmap config','scan2_desc',"Custom 2 Not Defined")
+                with open(path3, 'w') as configuration_reset_file:
+                    default_parser.write(configuration_reset_file)
+                break
 
 def main():
     #read input and check condition
@@ -519,13 +732,13 @@ def main():
                     print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
                     useless = input("Enter any key to continue......")
                     continue
-                custom_scan_menu()
+                custom_scan_menu(1)
             elif user_input == 3:
                 if scan2_desc == "Custom 2 Not Defined":
                     print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
                     useless = input("Enter any key to continue......")
                     continue
-                custom_scan_menu()
+                custom_scan_menu(2)
             elif user_input == 4:
                 pass
             else:
