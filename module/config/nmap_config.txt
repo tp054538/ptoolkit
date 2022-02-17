@@ -1,8 +1,8 @@
 [nmap config]
 custom_scan1 = Custom 1
-custom_scan2 = joe2
-scan1_desc = Not defined
-scan2_desc = joe2 defiend
+custom_scan2 = Custom 2
+scan1_desc = Custom 1 Not Defined
+scan2_desc = Custom 2 Not Defined
 
 [Custom1]
 shortcut_flag = 0
