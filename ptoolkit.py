@@ -76,7 +76,7 @@ def recon_menu():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Searchsploit                  2. Sn1per                
+    1. Vulnerability Search (Searchsploit)   2. OSINT/Recon (Sn1per)                
 
    99. Exit
     """)
@@ -93,15 +93,19 @@ def scanning_menu():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Nmap                    5. Sn1per                10. Wpscan
+    1. Port Scan (Nmap)                  2. Web/Vuln Scan (Sn1per
+    
+    3. Wordpress Scanner (Wpscan)        4. Joomla scanner(JoomScan) 
 
-    2. JoomScan                6. Nikto
+    5. Nikto                             6. Host Discovery (Nmap)
 
    99. Exit
     """)
         scanning_input = input("Select: ")
         if scanning_input == "1":
             nmap.main()
+        elif scanning_input == "6":
+            host_nmap.main()
 
 if __name__ == '__main__':  
 
