@@ -1,1 +1,1 @@
-__all__ = ['nmap', 'tor']
+__all__ = ['nmap', 'tor','searchsploit']
