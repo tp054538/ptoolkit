@@ -312,7 +312,7 @@ def batch_install_packages(input_list):
 
 def main():
     select = 0
-    prGreen("\n[+] Loading Install Module")
+    print("\033[1;32m\n[+] Loading Install Module\033[00m")
     while select != 99:
         select = 0      # initialize to not inherit
         status = PackageCheck.self_check()

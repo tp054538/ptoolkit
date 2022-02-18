@@ -105,7 +105,7 @@ def update_menu():
 
 def main():
     select = 0
-    prGreen("\n[+] Loading Update Module")
+    print("\033[1;32m\n[+] Loading Update Module\033[00m")
     while select != 99:
         update_menu()
         select = 0

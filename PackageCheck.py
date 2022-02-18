@@ -56,7 +56,7 @@ def searchsploit_check(q):
     elif("upgradable" in ssploit_ss):
         ssploit_checkr = "SearchSploit Upgradeable"
     else:
-        ssploit_checkr = "SerchSploit Not Installed"
+        ssploit_checkr = "SearchSploit Not Installed"
     return q.put(ssploit_checkr)
 
 def wpscan_check(q):
@@ -178,7 +178,7 @@ def sniper_check(q):
  ###################################################################   
 
 def self_check(): #run all packages check
-    prRed("[+] Starting process to check all packages...")
+    print("\033[1;31m[+] Starting process to check all packages...\033[00m")
     q = multiprocessing.Queue()
     packages_list = []
     
