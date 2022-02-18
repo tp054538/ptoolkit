@@ -1,6 +1,7 @@
 import configparser
 import os
 import ipaddress
+import subprocess
 
 def port_duplicate_check(ports):
     ports_set = set(ports)
@@ -728,48 +729,61 @@ def custom_scan_menu(custom_num):
                     default_parser.write(configuration_reset_file)
                 break
 
+def nmap_self_check():
+    print("\033[1;32m[+] Loading Nmap Module.\033[00m")
+    nmap_statuscheck = subprocess.run("apt list 2>/dev/null | grep -E '^nmap/'", shell=True, stdout=subprocess.PIPE)
+    nmap_statuscheckd = nmap_statuscheck.stdout.decode('ascii')
+    if "installed" in nmap_statuscheckd or "upgradable" in nmap_statuscheckd:
+        return 1
+    else:
+        return 0
+
 def main():
     #read input and check condition
-    user_input = 0
-    while user_input != 4:
-        #read nmap config file for custom 1 and custom 2 data
-        parser = configparser.ConfigParser()
-        file = '/module/config/nmap_config.txt'
-        path = os.getcwd()+file
-        
-        parser.read(path)
-        global custom_scan1, custom_scan2, scan1_desc, scan2_desc
-        custom_scan1 = parser.get("nmap config","custom_scan1")
-        scan1_desc  = parser.get("nmap config","scan1_desc")
-        custom_scan2 = parser.get("nmap config","custom_scan2")
-        scan2_desc = parser.get("nmap config","scan2_desc")
-        ##########################################################
-
+    if nmap_self_check() == 1:
         user_input = 0
-        banner()
-        try:
-            user_input = int(input("Select: "))
-            if user_input == 1:
-                newscan()
-            elif user_input == 2:
-                if scan1_desc == "Custom 1 Not Defined":
-                    print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
+        while user_input != 4:
+            #read nmap config file for custom 1 and custom 2 data
+            parser = configparser.ConfigParser()
+            file = '/module/config/nmap_config.txt'
+            path = os.getcwd()+file
+            
+            parser.read(path)
+            global custom_scan1, custom_scan2, scan1_desc, scan2_desc
+            custom_scan1 = parser.get("nmap config","custom_scan1")
+            scan1_desc  = parser.get("nmap config","scan1_desc")
+            custom_scan2 = parser.get("nmap config","custom_scan2")
+            scan2_desc = parser.get("nmap config","scan2_desc")
+            ##########################################################
+
+            user_input = 0
+            banner()
+            try:
+                user_input = int(input("Select: "))
+                if user_input == 1:
+                    newscan()
+                elif user_input == 2:
+                    if scan1_desc == "Custom 1 Not Defined":
+                        print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    custom_scan_menu(1)
+                elif user_input == 3:
+                    if scan2_desc == "Custom 2 Not Defined":
+                        print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    custom_scan_menu(2)
+                elif user_input == 4:
+                    pass
+                else:
+                    print("\n[*] Number entered is out of range! Please enter number from 1 - 4 only.")
                     useless = input("Enter any key to continue......")
                     continue
-                custom_scan_menu(1)
-            elif user_input == 3:
-                if scan2_desc == "Custom 2 Not Defined":
-                    print("\n[*] Custom Scan is not defined. Please configure it in New Scan")
-                    useless = input("Enter any key to continue......")
-                    continue
-                custom_scan_menu(2)
-            elif user_input == 4:
-                pass
-            else:
-                print("\n[*] Number entered is out of range! Please enter number from 1 - 4 only.")
+            except ValueError:
+                print("\n[*] Invalid Input! Please enter numbers from 1 - 4 only.")
                 useless = input("Enter any key to continue......")
                 continue
-        except ValueError:
-            print("\n[*] Invalid Input! Please enter numbers from 1 - 4 only.")
-            useless = input("Enter any key to continue......")
-            continue
+    else:
+        print("\n\033[1;31m[-] Nmap is not installed!\033[00m")
+        useless = input("Enter any key to continue......")
