@@ -83,6 +83,8 @@ def recon_menu():
         recon_input = input("Select: ")
         if recon_input == "1":
             searchsploit.main()
+        elif recon_input == "2":
+            sniper.main()
 
 def scanning_menu():
     scanning_input = ""
