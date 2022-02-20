@@ -56,8 +56,6 @@ def sniper_install_check():
     else:
         return 0
 
-#file saved to /usr/share/sniper/loot/workspace/*
-
 def main():
     global normal_o_r_flag, normal_flag, stealth_o_r_flag, target
     target = ""
@@ -99,11 +97,34 @@ def main():
                     else:
                         stealth_o_r_flag = 0
                 elif sniper_select == "5":
-                    pass#
-                    
+                    if target == "":
+                        print("\n[*] Target cannot be empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    else:
+                        base_command = "sudo sniper -t " + target
+
+                        if normal_o_r_flag == 1:
+                            add_command = " -o -re"
+                        elif stealth_o_r_flag == 1:
+                            add_command = " -m stealth -o -re"
+                        else:
+                            add_command = ""
+                        
+                        launch_command = base_command + add_command
+                        os.system(launch_command)
+                        saved_filepath = "/usr/share/sniper/loot/workspace/" + target
+                        working_directory = os.getcwd()
+                        move_file_command = "sudo mv " + saved_filepath + " " + working_directory +"/result/" + target
+                        os.system(move_file_command)
+                        print("\033[1;32m\n[+] File saved to ./result/{}\033[00m".format(target))
+                        useless = input("\n[*] Process Completed. Enter any key to continue......")
+
+
         else:
             print("\n\033[1;31m[-] Please install sniper through ./Sn1per/install.sh !\033[00m")
             seless = input("Enter any key to continue......")
     else:
         print("\n\033[1;31m[-] Sn1per is not installed!\033[00m")
         useless = input("Enter any key to continue......")
+#file saved to /usr/share/sniper/loot/workspace/*
