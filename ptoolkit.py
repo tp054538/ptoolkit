@@ -95,7 +95,7 @@ def scanning_menu():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Port Scan (Nmap)                  2. Web/Vuln Scan (Sn1per
+    1. Port Scan (Nmap)                  2. Web/Vuln Scan (Sn1per)
     
     3. Wordpress Scanner (Wpscan)        4. Joomla scanner(JoomScan) 
 
@@ -106,6 +106,8 @@ def scanning_menu():
         scanning_input = input("Select: ")
         if scanning_input == "1":
             nmap.main()
+        elif scanning_input == "2":
+            sniper_scan.main()
         elif scanning_input == "6":
             host_nmap.main()
 
