@@ -138,10 +138,91 @@ def main():
                         sniper_mvuln_scan = 1
                     else:
                         sniper_mvuln_scan = 0
+                #launch attack command
+                elif sniper_scan_select == "90":
+                    #check target
+                    if sniper_scan_target == "" and sniper_mscan_file_fullpath == "":
+                        print("\n[*] Target is empty! Please specify the target.")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    #check single or multiple target
+                    if sniper_scan_target != "":
+                        sniper_scan_target_param = "-t "
+                    elif sniper_mscan_file_fullpath != "":
+                        sniper_scan_target_param = "-f "
+                    
+                    #check which mode is selected
+                    #flag for determine mass or single mode
+                    sniper_single_flag = 0
+                    sniper_mass_flag = 0
+                    #check single target for single mode
+                    if sniper_web_scan == 1:
+                        sniper_mode = "-m web "
+                        if sniper_scan_target == "":
+                            print("\n[*] Wrong target specified. Please specify single target at 1. Target.")
+                            useless = input("Enter any key to continue......")
+                            continue
+                        sniper_single_flag = 1
+                    elif sniper_vuln_scan == 1:
+                        sniper_mode = "-m vulnscan "
+                        if sniper_scan_target == "":
+                            print("\n[*] Wrong target specified. Please specify single target at 1. Target.")
+                            useless = input("Enter any key to continue......")
+                            continue
+                        sniper_single_flag = 1
+                    #check file target for multiple mode
+                    elif sniper_mweb_scan == 1:
+                        sniper_mode = "-m massweb "
+                        if sniper_mscan_file_fullpath == "":
+                            print("\n[*] Wrong target specified. Please specify multiple target at 4. Targets file.")
+                            useless = input("Enter any key to continue......")
+                            continue
+                        sniper_mass_flag = 1
+                    elif sniper_mvuln_scan == 1:
+                        sniper_mode = "-m massvulnscan "
+                        if sniper_mscan_file_fullpath == "":
+                            print("\n[*] Wrong target specified. Please specify multiple target at 4. Targets file.")
+                            useless = input("Enter any key to continue......")
+                            continue
+                        sniper_mass_flag = 1
+                    else:
+                        print("\n[*] No mode selected! Please select which scan mode before launching the attack.")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    
+                    #variable for mass mode *single mode also can use 
+                    sniper_mass_workspace = ""
+                    sniper_mass_filename = input("\nEnter a directory name for storing result: ")
+                    sniper_mass_filename = sniper_mass_filename.strip()
+                    if sniper_mass_filename == "":
+                        print("\n[*] Directory name cannot be empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    sniper_mass_workspace = "-w " + sniper_mass_filename
 
+                    #generate command and launch
+                    if sniper_mass_flag == 1:
+                        sniper_scan_launch_command = sniper_scan_base_command + sniper_scan_target_param + sniper_scan_target + sniper_mscan_file_fullpath + " " + sniper_mode + sniper_mass_workspace
+                    elif sniper_single_flag == 1:
+                        sniper_scan_launch_command = sniper_scan_base_command + sniper_scan_target_param + sniper_scan_target + sniper_mscan_file_fullpath + " " + sniper_mode 
+                    print("\033[1;32m\n[+] Starting Sn1per Scan\033[00m")
+                    os.system(sniper_scan_launch_command)
+                    
+                    #move file to cwd 
+                    #single mode
+                    move_to_path = os.getcwd() + "/result/"
+                    if sniper_single_flag == 1:
+                        sniper_scan_move_result = "sudo mv /usr/share/sniper/loot/workspace/" + sniper_scan_target + " " + move_to_path + sniper_mass_filename
+                    #mass mode
+                    elif sniper_mass_flag == 1:
+                        sniper_scan_move_result = "sudo mv /usr/share/sniper/loot/workspace/" + sniper_mass_filename + " " + move_to_path + sniper_mass_filename
+                    os.system(sniper_scan_move_result)
+                    print("\033[1;32m\n[+] File saved to ./result/{}\033[00m".format(sniper_mass_filename))
+                    useless = input("\033[1;32m\n[+] Process Completed. Enter any key to continue\033[00m")
+                    
         else:
             print("\n\033[1;31m[-] Please install sniper through ./Sn1per/install.sh !\033[00m")
-            seless = input("Enter any key to continue......")
+            useless = input("Enter any key to continue......")
     else:
         print("\n\033[1;31m[-] Sn1per is not installed!\033[00m")
         useless = input("Enter any key to continue......")
