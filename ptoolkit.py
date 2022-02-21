@@ -108,6 +108,8 @@ def scanning_menu():
             nmap.main()
         elif scanning_input == "2":
             sniper_scan.main()
+        elif scanning_input == "3":
+            wpscan.main()
         elif scanning_input == "6":
             host_nmap.main()
 

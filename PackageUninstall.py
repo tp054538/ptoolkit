@@ -235,16 +235,16 @@ def UninstallPackage(uninstall_input):
         if selection != '14' and selection != '15':
             prRed("\n[+]Start Uninstalling "+dictionary[selection])
             os.system("sudo apt remove "+dictionary[selection])
-            useless = input("\nProcess Completed. Enter any key to continue......")
+            useless = input("\n[+] Process Completed. Enter any key to continue......")
         elif selection == '14':
             prRed("\n[+] Start removing slowloris.")
             os.system("rm -R slowloris -f")
-            useless = input("\nSlowloris removed. Enter any key to continue......")
+            useless = input("\n[+] Slowloris removed. Enter any key to continue......")
         elif selection == '15':
             prRed("\n[+] Start removing Sn1per.")
             os.system('cd Sn1per; echo "y" > y.txt ; sudo ./uninstall.sh < y.txt') #pass "y" to uninstall prompt
             os.system("rm -R Sn1per -f")
-            useless = input("\nSn1per removed. Enter any key to continue......")           
+            useless = input("\n[+] Sn1per removed. Enter any key to continue......")           
         
     else:
         if selection == '14':
