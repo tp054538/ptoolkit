@@ -50,7 +50,9 @@ Multiple Target:
     """)
 
 def check_file_exist(filepath):
-    if filepath.startswith("/") or filepath.startswith("~"): #treat this as full path
+    if filepath.startswith("/") or filepath.startswith("~/"): #treat this as full path
+        if filepath.startswith("~/"):
+            filepath = os.path.expanduser(filepath)
         if os.path.isfile(filepath) == True:
             return 1
         else:
