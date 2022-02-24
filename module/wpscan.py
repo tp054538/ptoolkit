@@ -343,9 +343,8 @@ Others
             else:
                 return wp_enumerate_temp_command.strip()
 
-
-
 def main():
+    #check wpscan installed
     if wpscan_self_check() == 1:
         global wpscan_url, wpscan_uri, wpscan_password, wpscan_username, wpscan_content_dir, wpscan_plugin_dir, wp_enumerate_command, wpscan_rua_flag, wpscan_force_flag, wpscan_stealthy_flag, wpscan_aggr_flag
         global wpscan_default_flag, wpscan_cookie, wpscan_verbose_flag, wpscan_threads, wpscan_final_command
@@ -385,8 +384,8 @@ def main():
         #wpscan program loop
         while wpscan_select != "99":
             #generate command
-            wpscan_final_command = "wpscan " + wpscan_url_command + wpscan_uri_command + wpscan_content_dir_command + wpscan_plugin_dir_command + wpscan_password_command + wpscan_username_command + wp_enumerate_command
-            wpscan_final_command += wpscan_rua_command + wpscan_force_command + wpscan_stealthy_command + wpscan_aggr_command + wpscan_cookie_command + wpscan_threads_command + wpscan_verbose_command
+            wpscan_final_command = "wpscan " + wpscan_url_command + wpscan_uri_command + wpscan_content_dir_command + wpscan_plugin_dir_command + wpscan_cookie_command + wp_enumerate_command + wpscan_password_command + wpscan_username_command 
+            wpscan_final_command += wpscan_rua_command + wpscan_force_command + wpscan_stealthy_command + wpscan_aggr_command + wpscan_threads_command + wpscan_verbose_command
             #main program
             wpscan_banner_value_color()
             wpscan_banner()
@@ -395,6 +394,7 @@ def main():
             if wpscan_select == "1":
                 wpscan_url = input("\nURL (https protocol need to be specified. Eg. https://example.com): ").strip()
                 if wpscan_url == "":
+                    wpscan_url_command = ""
                     print("\n[*] URL cannot be empty!")
                     useless = input("Enter any key to continue......")
                     continue
@@ -591,11 +591,21 @@ def main():
                     useless = input("Enter any key to continue......")
                     continue
                 #Prompt for output file y/n and output format
-                os.system(wpscan_final_command)
-            
+                wpscan_output_tofile = input("\nDo you want to save the result? (y/n): ")
+                if wpscan_output_tofile == "y" or wpscan_output_tofile == "Y":
+                    wpscan_output_filename = input("\nEnter a new filename: ").strip()
+                    if wpscan_output_filename == "":
+                        print("\n[*] Error. Filename is empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    wpscan_output_filepath = os.getcwd() + "/result/" + wpscan_output_filename
+                    wpscan_output_command = " -o " + wpscan_output_filepath + " "    
+                #launch wpscan
+                print("\033[1;32m[+] Starting WpScan......\033[00m")
+                os.system(wpscan_final_command.strip()+wpscan_output_command)
+                print("\n\033[1;32m[+] Result saved to {}\033[00m".format(wpscan_output_filepath))
+                useless = input("[*] Process Completed. Enter any key to continue......")
 
     else:
         print("\n\033[1;31m[-] WpScan is not installed!\033[00m")
         useless = input("Enter any key to continue......")
-
-#output to file + add output file format
