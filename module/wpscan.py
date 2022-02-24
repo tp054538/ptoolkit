@@ -28,8 +28,8 @@ def wp_validate_dir(dir):
 
 #process all value and add colour for wpscan_banner()
 def wpscan_banner_value_color():
-    global wp_url_banner, wp_uri_banner, wp_password_banner, wp_username_banner, wp_content_dir_banner, wp_plugin_dir_banner, wp_enumerate_banner, wp_rua_color, wp_force_color
-
+    global wp_url_banner, wp_uri_banner, wp_password_banner, wp_username_banner, wp_content_dir_banner, wp_plugin_dir_banner, wp_enumerate_banner, wp_rua_color, wp_force_color, wp_stealthy_color, wp_aggr_color
+    global wp_default_color, wp_cookie_banner, wp_verbose_color, wp_threads_banner
     if wpscan_url != "":
         wp_url_banner = "\033[1;32m" + wpscan_url + "\033[00m"
     else:
@@ -77,10 +77,37 @@ def wpscan_banner_value_color():
     else:
         wp_force_color = "\033[00m"
 
-def wpscan_banner():
-    wp_cookie_banner = "Specify cookie strings in requests. Format: COOKIE=abc123"
-    wp_threads_banner = "\033[1;32m5\033[00m"
+    if wpscan_stealthy_flag == 1:
+        wp_stealthy_color = "\033[1;32m"
+    else:
+        wp_stealthy_color = "\033[00m"
+    
+    if wpscan_aggr_flag == 1:
+        wp_aggr_color = "\033[1;32m"
+    else:
+        wp_aggr_color = "\033[00m"
+    
+    if wpscan_default_flag == 1:
+        wp_default_color = "\033[1;32m"
+    else:
+        wp_default_color = "\033[00m"
+    
+    if wpscan_cookie != "":
+        wp_cookie_banner = "\033[1;32m" + wpscan_cookie + "\033[00m"
+    else:
+        wp_cookie_banner = "Specify cookie strings in requests. Format: COOKIE=abc123"
+    
+    if wpscan_verbose_flag == 1:
+        wp_verbose_color = "\033[1;32m"
+    else:
+        wp_verbose_color = "\033[00m"
 
+    if wpscan_threads == 0 or wpscan_threads < 0:
+        wp_threads_banner = "\033[1;32m5 (Default)\033[00m"
+    else:
+        wp_threads_banner = "\033[1;32m" + str(wpscan_threads) + "\033[00m"
+
+def wpscan_banner():
     os.system("clear")
     print("""
                           Wordpress Scanner (WPscan)
@@ -104,15 +131,17 @@ Modes:
     9. """+wp_force_color+"""Force scan\033[00m           -   Does not check if target is running Wordpress
 
 Scan Modes (Select 1):
-    9. Stealthy\033[00m             -   Random user agent, passive detection, passive plugins detection
-   10. Aggressive\033[00m           -   Aggressive detection & Aggressive plugins detection
-   11. Default\033[00m              -   Mixed detection & passive plugins detection
+   10. """+wp_stealthy_color+"""Stealthy\033[00m             -   Random user agent, passive detection, passive plugins detection
+   11. """+wp_aggr_color+"""Aggressive\033[00m           -   Aggressive detection & Aggressive plugins detection
+   12. """+wp_default_color+"""Default\033[00m              -   Mixed detection & passive plugins detection
 
 Other:
-   12. Cookie               -   """+wp_cookie_banner+"""
-   13. Verbose              -   Display more information when scanning
-   14. Threads              :   """+wp_threads_banner+"""
+   13. Cookie               -   """+wp_cookie_banner+"""
+   14. """+wp_verbose_color+"""Verbose\033[00m              -   Display more information when scanning
+   15. Threads              :   """+wp_threads_banner+"""
 
+Command: \033[0;31m"""+wpscan_final_command+"""\033[00m 
+   90. Launch Attack
    99. Exit
     """)
 
@@ -312,13 +341,14 @@ Others
                 wp_enumerate_temp_command = wp_enumerate_temp_command.strip(",")
                 return wp_enumerate_temp_command
             else:
-                return wp_enumerate_temp_command
+                return wp_enumerate_temp_command.strip()
 
 
 
 def main():
     if wpscan_self_check() == 1:
-        global wpscan_url, wpscan_uri, wpscan_password, wpscan_username, wpscan_content_dir, wpscan_plugin_dir, wp_enumerate_command, wpscan_rua_flag, wpscan_force_flag
+        global wpscan_url, wpscan_uri, wpscan_password, wpscan_username, wpscan_content_dir, wpscan_plugin_dir, wp_enumerate_command, wpscan_rua_flag, wpscan_force_flag, wpscan_stealthy_flag, wpscan_aggr_flag
+        global wpscan_default_flag, wpscan_cookie, wpscan_verbose_flag, wpscan_threads, wpscan_final_command
         wpscan_url = ""
         wpscan_uri = ""
         wpscan_password = ""
@@ -328,6 +358,12 @@ def main():
         wp_enumerate_select_flag = 0
         wpscan_rua_flag = 0
         wpscan_force_flag = 0
+        wpscan_stealthy_flag = 0
+        wpscan_aggr_flag = 0
+        wpscan_default_flag = 0
+        wpscan_cookie = ""
+        wpscan_verbose_flag = 0
+        wpscan_threads = 0
 
         wpscan_url_command = ""
         wpscan_uri_command = ""
@@ -338,10 +374,20 @@ def main():
         wp_enumerate_command = ""
         wpscan_force_command = ""
         wpscan_rua_command = ""
+        wpscan_stealthy_command = ""
+        wpscan_aggr_command = ""
+        wpscan_cookie_command = ""
+        wpscan_verbose_command = ""
+        wpscan_threads_command = ""
+        wpscan_final_command = ""
 
         wpscan_select = ""
         #wpscan program loop
         while wpscan_select != "99":
+            #generate command
+            wpscan_final_command = "wpscan " + wpscan_url_command + wpscan_uri_command + wpscan_content_dir_command + wpscan_plugin_dir_command + wpscan_password_command + wpscan_username_command + wp_enumerate_command
+            wpscan_final_command += wpscan_rua_command + wpscan_force_command + wpscan_stealthy_command + wpscan_aggr_command + wpscan_cookie_command + wpscan_threads_command + wpscan_verbose_command
+            #main program
             wpscan_banner_value_color()
             wpscan_banner()
             wpscan_select = input("Select: ")
@@ -362,7 +408,7 @@ def main():
                     useless = input("Enter any key to continue......")
                     continue
                 if wp_validate_uri(wpscan_uri) == 1:
-                    wpscan_uri_command = "--login-uri " + wpscan_url + " "
+                    wpscan_uri_command = "--login-uri " + wpscan_uri + " "
                 else:
                     wpscan_uri = ""
                     wpscan_uri_command = ""
@@ -438,7 +484,7 @@ def main():
             #enumerate flag use for deselect
             elif wpscan_select == "7":
                 if wp_enumerate_select_flag != 1:
-                    wp_enumerate_command = wp_enumerate_program()
+                    wp_enumerate_command = wp_enumerate_program() + " "
                     wp_enumerate_select_flag = 1
                 else:
                     wp_enumerate_select_flag = 0
@@ -456,10 +502,97 @@ def main():
             elif wpscan_select == "9":
                 if wpscan_force_flag != 1:
                     wpscan_force_flag = 1
-                    wpscan_force_command = "--force"
+                    wpscan_force_command = "--force "
                 else:
                     wpscan_force_flag = 0
                     wpscan_force_command = ""
+            #Scan Modes select 1 only
+            elif wpscan_select == "10":
+                if wpscan_stealthy_flag != 1:
+                    wpscan_stealthy_flag = 1
+                    wpscan_stealthy_command = "--stealthy "
+                    wpscan_aggr_flag = 0
+                    wpscan_aggr_command = ""
+                    wpscan_default_flag = 0
+                else:
+                    wpscan_stealthy_flag = 0
+                    wpscan_stealthy_command = ""
+            elif wpscan_select == "11":
+                if wpscan_aggr_flag != 1:
+                    wpscan_aggr_flag = 1
+                    wpscan_aggr_command = "--plugins-detection aggressive --detection-mode aggressive --plugins-version-detection aggressive "
+                    wpscan_stealthy_flag = 0
+                    wpscan_stealthy_command = ""
+                    wpscan_default_flag = 0
+                else:
+                    wpscan_aggr_flag = 0
+                    wpscan_aggr_command = ""
+            elif wpscan_select == "12":
+                if wpscan_default_flag != 1:
+                    wpscan_default_flag = 1
+                    wpscan_aggr_flag = 0
+                    wpscan_aggr_command = ""
+                    wpscan_stealthy_flag = 0
+                    wpscan_stealthy_command = ""
+                else:
+                    wpscan_default_flag = 0
+            #Others
+            #Cookie
+            elif wpscan_select == "13":
+                wpscan_cookie = input("\nCookie (format: cookiename=cookievalue): ").strip()
+                if wpscan_cookie == "":
+                    wpscan_cookie = ""
+                    wpscan_cookie_command = ""
+                    print("\n[*] Field cannot be empty!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                #validate format
+                if "=" not in wpscan_cookie:
+                    wpscan_cookie = ""
+                    wpscan_cookie_command = ""
+                    print("\n[*] Wrong format! No \"=\" detected.")
+                    useless = input("Enter any key to continue......")
+                    continue
+                wpscan_cookie_command = "--cookie-string " + wpscan_cookie + " "
+            #Verbose
+            elif wpscan_select == "14":
+                if wpscan_verbose_flag != 1:
+                    wpscan_verbose_flag = 1
+                    wpscan_verbose_command = "--verbose "
+                else:
+                    wpscan_verbose_flag = 0
+                    wpscan_verbose_command = ""
+            #Threads
+            elif wpscan_select == "15":
+                wpscan_threads = input("\nThreads: ")
+                try:
+                    wpscan_threads = int(wpscan_threads.strip())
+                    if wpscan_threads < 0:
+                        wpscan_threads_command = ""
+                        print("\n[*] Threads must be 1 or higher!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    if wpscan_threads == 0:
+                        wpscan_threads_command = ""
+                        print("\n[*] Threads cannot be 0!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    wpscan_threads_command = "-t " + str(wpscan_threads) + " "
+                except ValueError:
+                    wpscan_threads = 0
+                    wpscan_threads_command = ""
+                    print("\n[*] Numbers only!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            #check target is not empty -> fire attack.
+            elif wpscan_select == "90":
+                if wpscan_url == "":
+                    print("\n[*] No target specified!.")
+                    useless = input("Enter any key to continue......")
+                    continue
+                #Prompt for output file y/n and output format
+                os.system(wpscan_final_command)
+            
 
     else:
         print("\n\033[1;31m[-] WpScan is not installed!\033[00m")
