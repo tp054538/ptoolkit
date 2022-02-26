@@ -117,7 +117,7 @@ def wpscan_banner():
     1. URL                  :   """+wp_url_banner+"""
 
 Page locations:
-    2. URI                  :   """+wp_uri_banner+"""
+    2. Logni URI            :   """+wp_uri_banner+"""
     3. Wp-content Directory -   """+wp_content_dir_banner+"""
     4. Wp-plugins Directory -   """+wp_plugin_dir_banner+"""
 
@@ -604,6 +604,7 @@ def main():
                 print("\033[1;32m[+] Starting WpScan......\033[00m")
                 os.system(wpscan_final_command.strip()+wpscan_output_command)
                 print("\n\033[1;32m[+] Result saved to {}\033[00m".format(wpscan_output_filepath))
+                wpscan_output_command = ""
                 useless = input("[*] Process Completed. Enter any key to continue......")
 
     else:
