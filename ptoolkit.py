@@ -46,11 +46,11 @@ def banner():
                      --------------------------
 """)
     #prYellow("Version: 1.0")
-    print("\033[0;33mVersion: 1.0                  ", end='')
+    print("\033[0;33mVersion: 1.0           ", end='')
     if tor.check_init() == 1:
-        PackageCheck.prGreen("Tor is running")
+        PackageCheck.prGreen("Tor is running on socks5://127.0.0.1:9050")
     else:
-        print("Tor is not running\033[00m", end='')
+        print("        Tor is not running\033[00m", end='')
 
 def main_menu():
     print("""
@@ -110,6 +110,8 @@ def scanning_menu():
             sniper_scan.main()
         elif scanning_input == "3":
             wpscan.main()
+        elif scanning_input == "4":
+            joomla.main()
         elif scanning_input == "6":
             host_nmap.main()
 
