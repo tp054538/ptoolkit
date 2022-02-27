@@ -112,6 +112,8 @@ def scanning_menu():
             wpscan.main()
         elif scanning_input == "4":
             joomla.main()
+        elif scanning_input == "5":
+            nikto.main()
         elif scanning_input == "6":
             host_nmap.main()
 
@@ -142,6 +144,8 @@ if __name__ == '__main__':
                 recon_menu()
             elif selection == 6:
                 scanning_menu()
+        if tor.check_init() == 1:
+            os.system("sudo service tor stop")
             
         print("Exiting...")
         exit()
