@@ -241,6 +241,31 @@ def joom_main():
                 joom_rua_flag = 0
                 joom_rua_command = ""
 
+        #Launch attack
+        elif joom_select == "90":
+            if joom_target != "":
+                joom_output_flag = 0
+                joom_output_prompt = input("\nDo you want to save the result to file? (y/n): ")
+                if joom_output_prompt == "y" or joom_output_prompt == "Y":
+                    joom_output_filename = input("Enter the new filename: ").strip()
+                    if joom_output_filename != "":
+                        joom_output_flag = 1
+                        joom_final_command += " > ./result/" + joom_output_filename
+                    else:
+                        joom_output_flag = 0
+                        print("\n[*] Filename cannot be empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                print("\033[1;32m[+] Starting JoomScan......\033[00m")
+                os.system(joom_final_command)
+                if joom_output_flag == 1:
+                    print("\033[1;32m[+] File saved to ./result/{}\033[00m".format(joom_output_filename))
+                useless = input("[*] Process Completed! Enter any key to continue......")
+            else:
+                print("\n[*] Target cannot be empty!")
+                useless = input("Enter any key to continue......")
+                continue
+
 def main():
     print("\033[1;32m[+] Loading JoomScan Module\033[00m")
     if joomscan_self_check() == 1:
