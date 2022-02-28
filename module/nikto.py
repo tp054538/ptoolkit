@@ -39,6 +39,26 @@ def nikto_banner():
         nikto_evasion_color = "\033[1;32m"
     else:
         nikto_evasion_color = "\033[00m"
+    
+    if nikto_ssl_flag == 1:
+        nikto_ssl_color = "\033[1;32m"
+    else:
+        nikto_ssl_color = "\033[00m"
+
+    if nikto_nossl_flag == 1:
+        nikto_nossl_color = "\033[1;32m"
+    else:
+        nikto_nossl_color = "\033[00m"
+
+    if nikto_nodns_flag == 1:
+        nikto_nodns_color = "\033[1;32m"
+    else:
+        nikto_nodns_color = "\033[00m"
+    
+    if nikto_verbose_flag == 1:
+        nikto_verbose_color = "\033[1;32m"
+    else:
+        nikto_verbose_color = "\033[00m"
 
     os.system("clear")
     print("""
@@ -57,10 +77,10 @@ def nikto_banner():
 Mode:
     7. """+nikto_db_color+"""Database Check\033[00m       -   Check syntax error on database and key files
     8. """+nikto_evasion_color+"""Evasion\033[00m              -   Evade detection through encoding
-    9. SSL                  -   Force using SSL
-   10. No SSL               -   Disable SSL
-   11. No DNS lookup        -   Disable DNS lookup
-   12. verbose              -   Display more detailed information
+    9. """+nikto_ssl_color+"""SSL\033[00m                  -   Force using SSL
+   10. """+nikto_nossl_color+"""No SSL\033[00m               -   Disable SSL
+   11. """+nikto_nodns_color+"""No DNS lookup\033[00m        -   Disable DNS lookup (Host should be in IP Address)
+   12. """+nikto_verbose_color+"""Verbose\033[00m              -   Display more detailed information
 
 Command: \033[1;32m"""+nikto_final_command+"""\033[00m
 
@@ -70,6 +90,7 @@ Command: \033[1;32m"""+nikto_final_command+"""\033[00m
 
 def nikto_main():
     global nikto_final_command, nikto_target, nikto_vhost, nikto_port, nikto_port_command, nikto_proxy_command, nikto_ua_command, nikto_ignore_command, nikto_db_flag, nikto_evasion_flag
+    global nikto_ssl_flag, nikto_nossl_flag, nikto_nodns_flag, nikto_verbose_flag
     nikto_target_command = ""
     nikto_target = ""
     nikto_vhost_command = ""
@@ -83,10 +104,20 @@ def nikto_main():
     nikto_db_command = ""
     nikto_evasion_flag = 0
     nikto_evasion_command = ""
+    nikto_ssl_command = ""
+    nikto_ssl_flag = 0
+    nikto_nossl_command = ""
+    nikto_nossl_flag = 0
+    nikto_nodns_flag = 0
+    nikto_nodns_command = ""
+    nikto_verbose_flag = 0
+    nikto_verbose_command = ""
 
     nikto_select = ""
     while nikto_select != "99":
-        nikto_final_command = "nikto " + nikto_target_command + nikto_vhost_command + nikto_port_command + nikto_evasion_command + nikto_db_command + nikto_ignore_command + nikto_proxy_command + nikto_ua_command
+        nikto_output_command = ""
+        nikto_final_command = "nikto " + nikto_target_command + nikto_vhost_command + nikto_port_command + nikto_evasion_command + nikto_verbose_command + nikto_db_command + nikto_ignore_command 
+        nikto_final_command +=  nikto_ssl_command + nikto_nossl_command + nikto_nodns_command + nikto_proxy_command + nikto_ua_command
         nikto_banner()
         nikto_select = input("\nSelect: ")
         #target host ip
@@ -230,6 +261,84 @@ def nikto_main():
             else:
                 nikto_evasion_flag = 0
                 nikto_evasion_command = ""
+        #ssl
+        elif nikto_select == "9":
+            if nikto_ssl_flag != 1:
+                nikto_ssl_flag = 1
+                nikto_ssl_command = "-ssl "
+                nikto_nossl_flag = 0
+                nikto_nossl_command = ""
+            else:
+                nikto_ssl_flag = 0
+                nikto_ssl_command = ""
+        #no ssl
+        elif nikto_select == "10":
+            if nikto_nossl_flag != 1:
+                nikto_nossl_flag = 1
+                nikto_nossl_command = "-nossl "
+                nikto_ssl_flag = 0
+                nikto_ssl_command = ""
+            else:
+                nikto_nossl_flag = 0
+                nikto_nossl_command = ""
+        #no dns lookup
+        elif nikto_select == "11":
+            if nikto_nodns_flag != 1:
+                nikto_nodns_flag = 1
+                nikto_nodns_command = "-nolookup "
+            else:
+                nikto_nodns_flag = 0
+                nikto_nodns_command = ""
+        #verbose
+        elif nikto_select == "12":
+            if nikto_verbose_flag != 1:
+                nikto_verbose_flag = 1
+                nikto_verbose_command = "-Display V "
+            else:
+                nikto_verbose_flag = 0
+                nikto_verbose_command = ""
+
+        #launch attack
+        elif nikto_select == "90":
+            if nikto_target_command != "":
+                ###check nodnslookup and target hots
+                if nikto_nodns_flag == 1:
+                    if len(nikto_target.split(".")) == 4:
+                        try:
+                            nikto_check_target_ip = nikto_target.split(".")
+                            for i in range(len(nikto_check_target_ip)):
+                                nikto_check_target_ip_isint = int(nikto_check_target_ip[i])
+                        except ValueError:
+                            print("\n[*] IP Address Format Invalid! Using No DNS lookup with domain name will cause an error.")
+                            nikto_nodns_error_prompt = input("Do you wish to continue? (y/n): ").strip()
+                            if nikto_nodns_error_prompt == "n" or nikto_nodns_error_prompt == "N":
+                                continue
+                    else:
+                        print("\n[*] Target is not IP Address. No DNS lookup enabled will cause an error.")
+                        nikto_nodns_error_prompt = input("Do you wish to continue? (y/n): ")
+                        if nikto_nodns_error_prompt == "n" or nikto_nodns_error_prompt == "N":
+                            continue
+                #save to file prompt
+                nikto_output_prompt = input("\nDo you want to save result to file? (y/n): ").strip()
+                if nikto_output_prompt == "y" or nikto_output_prompt == "Y":
+                    nikto_output_filename = input("\nEnter a name for new file: ").strip()
+                    if nikto_output_filename == "":
+                        print("\n[*] File name is empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    nikto_output_command = " -output ./result/" + nikto_output_filename + ".txt"
+                #command
+                print("\033[1;32m[+] Starting Nikto......\033[00m")
+                if nikto_output_command == "":
+                    os.system(nikto_final_command.strip())
+                else:
+                    os.system(nikto_final_command.strip() + nikto_output_command)
+                    print("\033[1;32m[+] File saved to {}\033[00m".format(nikto_output_command.replace("-output ", "").strip()))
+                useless = input("[*] Process Completed! Enter any key to continue......")
+            else:
+                print("\n[*] Target is empty!")
+                useless = input("Enter any key to continue......")
+                continue
 
 def main():
     print("\033[1;32m[+] Loading Nikto Module\033[00m")
