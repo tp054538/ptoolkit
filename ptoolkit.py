@@ -21,12 +21,15 @@ def RoE():
     print("|legal actions against the  user. Please use  this tools at your |")
     print("|own risk!                                                       |")
     print("|                                                                |")
-    print("|*****Please enter \"1\" if you agree with the statement above*****|")
+    print("|***Please enter \"yes\" if you agree with the statement above***|")
     print("|----------------------------------------------------------------|")
     print("|----------------------------------------------------------------|")
     print("                                                                  ")
-    Answer = input("Answer:")
-    return Answer
+    Answer = input("Answer: ")
+    if Answer == "yes" or Answer == "YES" or Answer == "Yes":
+        return 1
+    else:
+        return 0
 
 def banner():
     prRed("""
@@ -118,9 +121,7 @@ def scanning_menu():
             host_nmap.main()
 
 if __name__ == '__main__':  
-
-    if (RoE() == "1"):
-        #package_status = PackageCheck.self_check()
+    if RoE() == 1:
         selection = 0
         while(selection != 10):
             selection = 0       #initialize selection so it wont inherit from other module
