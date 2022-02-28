@@ -1,6 +1,7 @@
 import os
 import subprocess
 from module import sniper_scan
+from module import tor
 
 def wpscan_self_check():
     print("\033[1;32m[+] Loading WpScan Module.\033[00m")
@@ -29,7 +30,7 @@ def wp_validate_dir(dir):
 #process all value and add colour for wpscan_banner()
 def wpscan_banner_value_color():
     global wp_url_banner, wp_uri_banner, wp_password_banner, wp_username_banner, wp_content_dir_banner, wp_plugin_dir_banner, wp_enumerate_banner, wp_rua_color, wp_force_color, wp_stealthy_color, wp_aggr_color
-    global wp_default_color, wp_cookie_banner, wp_verbose_color, wp_threads_banner
+    global wp_default_color, wp_cookie_banner, wp_verbose_color, wp_threads_banner, wp_proxy_color
     if wpscan_url != "":
         wp_url_banner = "\033[1;32m" + wpscan_url + "\033[00m"
     else:
@@ -106,6 +107,11 @@ def wpscan_banner_value_color():
         wp_threads_banner = "\033[1;32m5 (Default)\033[00m"
     else:
         wp_threads_banner = "\033[1;32m" + str(wpscan_threads) + "\033[00m"
+    
+    if wpscan_proxy == 1:
+        wp_proxy_color = "\033[1;32m"
+    else:
+        wp_proxy_color = "\033[00m"
 
 def wpscan_banner():
     os.system("clear")
@@ -139,6 +145,7 @@ Other:
    13. Cookie               -   """+wp_cookie_banner+"""
    14. """+wp_verbose_color+"""Verbose\033[00m              -   Display more information when scanning
    15. Threads              :   """+wp_threads_banner+"""
+   16. """+wp_proxy_color+"""Tor Proxy\033[00m            :   Scan through Tor proxy to hide identity
 
 Command: \033[0;31m"""+wpscan_final_command+"""\033[00m 
    90. Launch Attack
@@ -347,7 +354,7 @@ def main():
     #check wpscan installed
     if wpscan_self_check() == 1:
         global wpscan_url, wpscan_uri, wpscan_password, wpscan_username, wpscan_content_dir, wpscan_plugin_dir, wp_enumerate_command, wpscan_rua_flag, wpscan_force_flag, wpscan_stealthy_flag, wpscan_aggr_flag
-        global wpscan_default_flag, wpscan_cookie, wpscan_verbose_flag, wpscan_threads, wpscan_final_command
+        global wpscan_default_flag, wpscan_cookie, wpscan_verbose_flag, wpscan_threads, wpscan_final_command, wpscan_proxy
         wpscan_url = ""
         wpscan_uri = ""
         wpscan_password = ""
@@ -363,6 +370,7 @@ def main():
         wpscan_cookie = ""
         wpscan_verbose_flag = 0
         wpscan_threads = 0
+        wpscan_proxy = 0
 
         wpscan_url_command = ""
         wpscan_uri_command = ""
@@ -379,13 +387,14 @@ def main():
         wpscan_verbose_command = ""
         wpscan_threads_command = ""
         wpscan_final_command = ""
+        wpscan_proxy_command = ""
 
         wpscan_select = ""
         #wpscan program loop
         while wpscan_select != "99":
             #generate command
             wpscan_final_command = "wpscan " + wpscan_url_command + wpscan_uri_command + wpscan_content_dir_command + wpscan_plugin_dir_command + wpscan_cookie_command + wp_enumerate_command + wpscan_password_command + wpscan_username_command 
-            wpscan_final_command += wpscan_rua_command + wpscan_force_command + wpscan_stealthy_command + wpscan_aggr_command + wpscan_threads_command + wpscan_verbose_command
+            wpscan_final_command += wpscan_rua_command + wpscan_force_command + wpscan_stealthy_command + wpscan_aggr_command + wpscan_proxy_command + wpscan_threads_command + wpscan_verbose_command
             #main program
             wpscan_banner_value_color()
             wpscan_banner()
@@ -584,12 +593,29 @@ def main():
                     print("\n[*] Numbers only!")
                     useless = input("Enter any key to continue......")
                     continue
+            #proxy
+            elif wpscan_select == "16":
+                if tor.check_init() == 1:
+                    if wpscan_proxy != 1:
+                        wpscan_proxy = 1
+                        wpscan_proxy_command = "--proxy socks5://127.0.0.1:9050 "
+                    else:
+                        wpscan_proxy = 0
+                        wpscan_proxy_command = ""
+                else:
+                    wpscan_proxy = 0
+                    wpscan_proxy_command = ""
+                    print("\n[*]Tor is not running! Activate Tor at main menu before using this option.")
+                    useless = input("Enter any key to continue......")
+                    continue
             #check target is not empty -> fire attack.
             elif wpscan_select == "90":
                 if wpscan_url == "":
                     print("\n[*] No target specified!.")
                     useless = input("Enter any key to continue......")
                     continue
+                #initialize output state
+                wpscan_output_command = ""
                 #Prompt for output file y/n and output format
                 wpscan_output_tofile = input("\nDo you want to save the result? (y/n): ")
                 if wpscan_output_tofile == "y" or wpscan_output_tofile == "Y":
@@ -602,8 +628,9 @@ def main():
                     wpscan_output_command = " -o " + wpscan_output_filepath + " "    
                 #launch wpscan
                 print("\033[1;32m[+] Starting WpScan......\033[00m")
-                os.system(wpscan_final_command.strip()+wpscan_output_command)
-                print("\n\033[1;32m[+] Result saved to {}\033[00m".format(wpscan_output_filepath))
+                os.system(wpscan_final_command.strip()+wpscan_output_command+" --no-update")
+                if wpscan_output_command != "":
+                    print("\n\033[1;32m[+] Result saved to {}\033[00m".format(wpscan_output_filepath))
                 wpscan_output_command = ""
                 useless = input("[*] Process Completed. Enter any key to continue......")
 
