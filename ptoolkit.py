@@ -21,7 +21,7 @@ def RoE():
     print("|legal actions against the  user. Please use  this tools at your |")
     print("|own risk!                                                       |")
     print("|                                                                |")
-    print("|***Please enter \"yes\" if you agree with the statement above***|")
+    print("|****Please enter \"yes\" if you agree with the statement above****|")
     print("|----------------------------------------------------------------|")
     print("|----------------------------------------------------------------|")
     print("                                                                  ")
@@ -83,7 +83,7 @@ def recon_menu():
 
    99. Exit
     """)
-        recon_input = input("Select: ")
+        recon_input = input("Select: ").strip()
         if recon_input == "1":
             searchsploit.main()
         elif recon_input == "2":
@@ -106,7 +106,7 @@ def scanning_menu():
 
    99. Exit
     """)
-        scanning_input = input("Select: ")
+        scanning_input = input("Select: ").strip()
         if scanning_input == "1":
             nmap.main()
         elif scanning_input == "2":
@@ -120,6 +120,25 @@ def scanning_menu():
         elif scanning_input == "6":
             host_nmap.main()
 
+def exploitation_menu():
+    exploitation_select = ""
+    while exploitation_select != "99":
+        os.system("clear")
+        print("""
+                              Exploitation Menu
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. SQL injection (SQLmap)                2. Web/Vuln Scan (Sn1per)
+
+
+   99. Exit
+    """)
+        exploitation_select = input("Select: ").strip()
+        if exploitation_select == "1":
+            sqlmap.main()
+
+#main program
 if __name__ == '__main__':  
     if RoE() == 1:
         selection = 0
@@ -145,9 +164,12 @@ if __name__ == '__main__':
                 recon_menu()
             elif selection == 6:
                 scanning_menu()
+            elif selection == 7:
+                exploitation_menu()
+
+        #exit shut down tor
         if tor.check_init() == 1:
             os.system("sudo service tor stop")
-            
         print("Exiting...")
         exit()
     else:
