@@ -1,5 +1,4 @@
 import os
-from re import S
 import subprocess
 from module import tor
 
@@ -119,9 +118,10 @@ def joom_main():
         #set target
         if joom_select == "1":
             joom_target = input("\nTarget URL: ").strip()
-            if joom_target == "":
+            if joom_target == "" or " " in joom_target:
                 joom_target_command = ""
-                print("\n[*] Target cannot be empty!")
+                joom_target = ""
+                print("\n[*] Target cannot be empty / contain spaces!")
                 useless = input("Enter any key to continue......")
                 continue
             joom_target_command = "-u " + joom_target + " "
@@ -250,6 +250,7 @@ def joom_main():
                     joom_output_filename = input("Enter the new filename: ").strip()
                     if joom_output_filename != "":
                         joom_output_flag = 1
+                        joom_output_filename = joom_output_filename.replace(" ","_")
                         joom_final_command += " > ./result/" + joom_output_filename
                     else:
                         joom_output_flag = 0

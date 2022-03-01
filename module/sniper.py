@@ -71,8 +71,9 @@ def main():
                 if sniper_select == "1":
                     sniper_target = input("\nTarget: ")
                     sniper_target = sniper_target.strip()
-                    if sniper_target == "":
-                        print("\n[*] Target cannot be empty!")
+                    if sniper_target == "" or " " in sniper_target:
+                        sniper_target = ""
+                        print("\n[*] Target cannot be empty / Target cannot contain space between words!")
                         useless = input("Enter any key to continue......")
                         continue
                 elif sniper_select == "2":
@@ -117,7 +118,7 @@ def main():
                         #move sniper result to /result directory
                         saved_filepath = "/usr/share/sniper/loot/workspace/" + sniper_target
                         working_directory = os.getcwd()
-                        move_file_command = "sudo mv " + saved_filepath + " " + working_directory +"/result/" + sniper_target
+                        move_file_command = "sudo mv " + saved_filepath + " " + working_directory +"/result/" + sniper_target.replace(" ","_")
                         os.system(move_file_command)
                         print("\033[1;32m\n[+] File saved to ./result/{}\033[00m".format(sniper_target))
                         useless = input("\n[*] Process Completed. Enter any key to continue......")

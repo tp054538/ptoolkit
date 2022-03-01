@@ -123,18 +123,20 @@ def nikto_main():
         #target host ip
         if nikto_select == "1":
             nikto_target = input("\nHost: ").strip()
-            if nikto_target == "":
+            if nikto_target == "" or " " in nikto_target:
+                nikto_target = ""
                 nikto_target_command = ""
-                print("\n[*] Host cannot be empty!")
+                print("\n[*] Host cannot be empty / contain space!")
                 useless = input("Enter any key to continue......")
                 continue
             nikto_target_command = "-h " + nikto_target + " "
         #vhost
         elif nikto_select == "2":
             nikto_vhost = input("\nVirtual Host: ").strip()
-            if nikto_vhost == "":
+            if nikto_vhost == "" or " " in nikto_vhost:
                 nikto_vhost_command = ""
-                print("\n[*] VHost is empty!")
+                nikto_vhost = ""
+                print("\n[*] VHost is empty / contain spaces!")
                 useless = input("Enter any key to continue......")
                 continue
             nikto_vhost_command = "-vhost " + nikto_vhost + " "
@@ -326,6 +328,7 @@ def nikto_main():
                         print("\n[*] File name is empty!")
                         useless = input("Enter any key to continue......")
                         continue
+                    nikto_output_filename = nikto_output_filename.replace(" ","_")
                     nikto_output_command = " -output ./result/" + nikto_output_filename + ".txt"
                 #command
                 print("\033[1;32m[+] Starting Nikto......\033[00m")

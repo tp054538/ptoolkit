@@ -402,18 +402,19 @@ def main():
             #url
             if wpscan_select == "1":
                 wpscan_url = input("\nURL (https protocol need to be specified. Eg. https://example.com): ").strip()
-                if wpscan_url == "":
+                if wpscan_url == "" or " " in wpscan_url:
                     wpscan_url_command = ""
-                    print("\n[*] URL cannot be empty!")
+                    print("\n[*] URL cannot be empty or contain space between words!")
                     useless = input("Enter any key to continue......")
                     continue
                 wpscan_url_command = "--url " + wpscan_url + " "
             #uri
             elif wpscan_select == "2":
                 wpscan_uri = input("\nURI: ").strip()
-                if wpscan_uri == "":
+                if wpscan_uri == "" or " " in wpscan_uri:
                     wpscan_uri_command = ""
-                    print("\n[*] URI cannot be empty!")
+                    wpscan_uri = ""
+                    print("\n[*] URI cannot be empty / contain spaces!")
                     useless = input("Enter any key to continue......")
                     continue
                 if wp_validate_uri(wpscan_uri) == 1:
@@ -624,6 +625,7 @@ def main():
                         print("\n[*] Error. Filename is empty!")
                         useless = input("Enter any key to continue......")
                         continue
+                    wpscan_output_filename = wpscan_output_filename.replace(" ","_")
                     wpscan_output_filepath = os.getcwd() + "/result/" + wpscan_output_filename
                     wpscan_output_command = " -o " + wpscan_output_filepath + " "    
                 #launch wpscan

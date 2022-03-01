@@ -55,8 +55,8 @@ def main():
             if host_nmap_select == "1":
                 user_nmap = input("\nTarget (IP address with subnet (eg. 192.168.0.1/24): ")
                 user_nmap = user_nmap.strip()
-                if user_nmap == "":
-                    print("\n[*] Field is empty!")
+                if user_nmap == "" or " " in user_nmap:
+                    print("\n[*] Field is empty / Contain spaces!")
                     useless = input("Enter any key to continue......")
                 else:
                     if check_subnet_format(user_nmap) == 1:
@@ -64,8 +64,9 @@ def main():
                             host_discovery_command = "sudo nmap " + user_nmap + " -sn"
                             output_to_file = input("Do you want to save the result to a file? (y/n) : ")
                             if output_to_file == "y" or output_to_file == "Y":
-                                hostd_file_name = input("Filename: ")
-                                if hostd_file_name.strip() != "":
+                                hostd_file_name = input("Filename: ").strip()
+                                if hostd_file_name != "":
+                                    hostd_file_name = hostd_file_name.replace(" ","_")
                                     host_discovery_command += " -o ./result/" + hostd_file_name
                                 else:
                                     print("[*] Filename cannot be emtpy!")

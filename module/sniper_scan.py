@@ -86,8 +86,9 @@ def main():
                 if sniper_scan_select == "1":
                     sniper_scan_target = input("\nTarget: ")
                     sniper_scan_target = sniper_scan_target.strip()
-                    if sniper_scan_target == "":
-                        print("\n[*] Target cannot be empty!")
+                    if sniper_scan_target == "" or " " in sniper_scan_target:
+                        sniper_scan_target = ""
+                        print("\n[*] Target cannot be empty / Target cannot contain space between words!")
                         useless = input("Enter any key to continue......")
                         continue
                     sniper_mscan_file_fullpath = ""
@@ -98,6 +99,11 @@ def main():
                     sniper_mscan_file = sniper_mscan_file.strip()
                     if sniper_mscan_file == "":
                         print("\n[*] Target file cannot be empty!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                    if " " in sniper_mscan_file:
+                        sniper_mscan_file = ""
+                        print("\n[*] Target file cannot contain spaces!")
                         useless = input("Enter any key to continue......")
                         continue
                     if check_file_exist(sniper_mscan_file) == 0:
@@ -195,7 +201,7 @@ def main():
                     #variable for mass mode *single mode also can use 
                     sniper_mass_workspace = ""
                     sniper_mass_filename = input("\nEnter a directory name for storing result: ")
-                    sniper_mass_filename = sniper_mass_filename.strip()
+                    sniper_mass_filename = sniper_mass_filename.strip().replace(" ","_")
                     if sniper_mass_filename == "":
                         print("\n[*] Directory name cannot be empty!")
                         useless = input("Enter any key to continue......")

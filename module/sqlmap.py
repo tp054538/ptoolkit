@@ -205,18 +205,32 @@ Selected: \033[1;32m"""+sqlmap_enumerate_command+"""\033[00m
 
 
 def sqlmap_banner():
+    sqlmap_target_banner = sqlmap_target_command.strip().replace("-u","").strip()
+
+    if sqlmap_enumerate_banner == "":
+        sqlmap_enumerate_banner_main = "\033[00mSpecify what to enumerate"
+    elif sqlmap_enumerate_banner == "-a":
+        sqlmap_enumerate_banner_main = "All"
+    else:
+        sqlmap_enumerate_banner_main = sqlmap_enumerate_banner
+    
+    if sqlmap_level_command == "":
+        sqlmap_level_banner = "Higher Level = more tests and injection points (Default = 1)"
+    else:
+        sqlmap_level_banner = "\033[1;32m" + sqlmap_level_command.replace("--level","").strip() + "\033[00m"
+
     os.system("clear")
     print("""
-                          Joomla Scanner (JoomScan)
+                             SQL Injection (SQLmap)
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Target URL    :   
+    1. Target URL    : \033[1;32m"""+sqlmap_target_banner+"""\033[00m
 
-    2. Level         : Higher Level = more tests and injection points (Default = 1)
+    2. Level         : """+sqlmap_level_banner+"""
     3. Risk          : Higher Risk adds heavy queries and OR-based injection (Default = 1)
     4. Tor Proxy     - Use Tor proxy as an additional layer to hide identity
-    5. Enumeration   : \033[1;32m"""+sqlmap_enumerate_banner+"""\033[00m
+    5. Enumeration   : \033[1;32m"""+sqlmap_enumerate_banner_main+"""\033[00m
 
 Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
 
@@ -225,17 +239,50 @@ Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
     """)
 
 def sqlmap_main():
-    global sqlmap_enumerate_banner, sqlmap_final_command
+    global sqlmap_enumerate_banner, sqlmap_final_command, sqlmap_target_command, sqlmap_level_command
     sqlmap_enumerate_banner = ""
     sqlmap_enumerate_main_command = ""
+    sqlmap_target_command = ""
+    sqlmap_level_command = ""
 
     sqlmap_select = ""
     while sqlmap_select != "99":
-        sqlmap_final_command = "sqlmap " + sqlmap_enumerate_main_command
+        sqlmap_final_command = "sqlmap " + sqlmap_target_command + sqlmap_level_command + sqlmap_enumerate_main_command
         sqlmap_banner()
         sqlmap_select = input("\nSelect: ")
+        #target
         if sqlmap_select == "1":
+            sqlmap_target = input("\nTarget URL: ").strip()
+            if sqlmap_target == "" or " " in sqlmap_target:
+                sqlmap_target_command = ""
+                sqlmap_target = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_target_command = "-u " + sqlmap_target + " "
+        #level
+        elif sqlmap_select == "2":
+            sqlmap_level = input("\nLevel (Range: 1~5, Higher level will consume more time): ").strip()
+            if sqlmap_level == "" or " " in sqlmap_level:
+                sqlmap_level = ""
+                sqlmap_level_command = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            #validate if it is valid range 1-5
+            try:
+                sqlmap_level_validate = int(sqlmap_level)
+                if sqlmap_level_validate < 1 or sqlmap_level_validate > 5:
+                    raise ValueError
+            except ValueError:
+                print("\n[*] Error Level Range!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_level_command = "--level " + sqlmap_level + " "
+        #risk
+        elif sqlmap_select == "3":
             pass
+
         #enumerate section
         elif sqlmap_select == "5":
             sqlmap_enumerate_main_command = sqlmap_enumerate_sub()

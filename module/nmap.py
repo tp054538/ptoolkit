@@ -218,7 +218,13 @@ def newscan():
                 target_ip = input("Target IP Address: ")
                 target_ip = target_ip.strip()
                 #check ip address format valid
-                if target_ip != "":
+                if target_ip == "" or " " in target_ip:
+                    target_ip = ""
+                    target = ""
+                    print("\n[*] Target cannot be empty / contain spaces!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                else:
                     try:
                         ip = ipaddress.ip_address(target_ip)
                         target_color = green
@@ -230,10 +236,6 @@ def newscan():
                         continue
                     finally:
                         target = target_ip.strip()
-                else:
-                    print("\n[*] Target cannot be empty!")
-                    useless = input("Enter any key to continue......")
-                    continue
 
             #Shortcuts (only can choose 1), reselect again will cancel selection
             elif select == 2:
@@ -396,8 +398,9 @@ def newscan():
                 else:
                     output_prompt = input("Do you want to save the result to a file? (y/n) : ")
                     if output_prompt == "y" or output_prompt == "Y":
-                        file_name = input("Filename: ")
-                        if file_name.strip() != "":
+                        file_name = input("Filename: ").strip()
+                        if file_name != "":
+                            file_name = file_name.replace(" ","_")
                             attack_command += " -o ./result/" + file_name
                         else:
                             print("Filename cannot be emtpy!")
@@ -668,14 +671,16 @@ def custom_scan_menu(custom_num):
             ctarget = ctarget.strip()
         #cannot launch NMAP if target is not specified
         elif custom_select == "90":
-            if ctarget == "":
-                print("\n[*] Target cannot be empty!")
+            if ctarget == "" or " " in ctarget:
+                print("\n[*] Target cannot be empty / contain spaces!")
                 useless = input("Enter any key to continue......")
+                continue
             else:
                 coutput_prompt = input("Do you want to save the result to a file? (y/n) : ")
                 if coutput_prompt == "y" or coutput_prompt == "Y":
-                    cfile_name = input("Filename: ")
-                    if cfile_name.strip() != "":
+                    cfile_name = input("Filename: ").strip()
+                    if cfile_name != "":
+                        cfile_name = cfile_name.replace(" ","_")
                         cattack_command += " -o ./result/" + cfile_name
                     else:
                         print("Filename cannot be emtpy!")
