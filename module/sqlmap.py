@@ -33,13 +33,16 @@ def sqlmap_enumerate_sub():
     sqlmap_enumerate_8_command = ""
     sqlmap_enumerate_9_command = ""
     sqlmap_enumerate_10_command = ""
+    sqlmap_enumerate_11_command = ""
+    sqlmap_enumerate_12_command = ""
+    sqlmap_enumerate_13_command = ""
 
     sqlmap_enumerate_select = ""
     while sqlmap_enumerate_select != "99":
         #all flag override all settings
         if sqlmap_enumerate_all_flag != 1:
             sqlmap_enumerate_command = sqlmap_enumerate_2_command + sqlmap_enumerate_3_command +sqlmap_enumerate_4_command + sqlmap_enumerate_5_command + sqlmap_enumerate_6_command + sqlmap_enumerate_7_command
-            sqlmap_enumerate_command += sqlmap_enumerate_8_command + sqlmap_enumerate_9_command + sqlmap_enumerate_10_command
+            sqlmap_enumerate_command += sqlmap_enumerate_8_command + sqlmap_enumerate_9_command + sqlmap_enumerate_10_command + sqlmap_enumerate_11_command + sqlmap_enumerate_12_command + sqlmap_enumerate_13_command 
         else:
             sqlmap_enumerate_command = "-a "
         
@@ -82,6 +85,21 @@ def sqlmap_enumerate_sub():
                 sqlmap_enumerate_10 = "\033[1;32m"
             else:
                 sqlmap_enumerate_10 = "\033[00m"
+            # D 
+            if sqlmap_enumerate_11_command == "":
+                sqlmap_enumerate_11 = "N/A" 
+            else:
+                sqlmap_enumerate_11 = "\033[1;32m" + sqlmap_enumerate_11_command.replace("-D","").strip() + "\033[00m"
+            # T
+            if sqlmap_enumerate_12_command == "":
+                sqlmap_enumerate_12 = "N/A" 
+            else:
+                sqlmap_enumerate_12 = "\033[1;32m" + sqlmap_enumerate_12_command.replace("-T","").strip() + "\033[00m"
+            # C
+            if sqlmap_enumerate_13_command == "":
+                sqlmap_enumerate_13 = "N/A" 
+            else:
+                sqlmap_enumerate_13 = "\033[1;32m" + sqlmap_enumerate_13_command.replace("-C","").strip() + "\033[00m"
         else:
             sqlmap_enumerate_1 = "\033[1;32m"
             sqlmap_enumerate_2 = "\033[00m"
@@ -93,6 +111,9 @@ def sqlmap_enumerate_sub():
             sqlmap_enumerate_8 = "\033[00m"
             sqlmap_enumerate_9 = "\033[00m"
             sqlmap_enumerate_10 = "\033[00m"
+            sqlmap_enumerate_11 = "N/A" 
+            sqlmap_enumerate_12 = "N/A" 
+            sqlmap_enumerate_13 = "N/A" 
         os.system("clear")
         print("""
                           Joomla Scanner (JoomScan)
@@ -110,9 +131,9 @@ def sqlmap_enumerate_sub():
     8. """+sqlmap_enumerate_8+"""Enumerate Database Schema\033[00m
     9. """+sqlmap_enumerate_9+"""Dump Database Table Entries\033[00m
    10. """+sqlmap_enumerate_10+"""Dump All Database Table Entries\033[00m
-   11. Specify DBMS database to enumerate   :   N/A
-   12. Specify DBMS table to enumerate      :   N/A
-   13. Specify DBMS columns to enumerate    :   N/A
+   11. Specify DBMS database to enumerate   :   """+sqlmap_enumerate_11+"""
+   12. Specify DBMS table to enumerate      :   """+sqlmap_enumerate_12+"""
+   13. Specify DBMS columns to enumerate    :   """+sqlmap_enumerate_13+"""
 
 Selected: \033[1;32m"""+sqlmap_enumerate_command+"""\033[00m
    90. Submit
@@ -198,6 +219,36 @@ Selected: \033[1;32m"""+sqlmap_enumerate_command+"""\033[00m
             else:
                 sqlmap_enumerate_10_flag = 0
                 sqlmap_enumerate_10_command = ""
+        #specify database
+        elif sqlmap_enumerate_select == "11":
+            sqlmap_enumerate_database = input("\nDatabase to enumerate: ").strip()
+            if sqlmap_enumerate_database == "" or " " in sqlmap_enumerate_database:
+                sqlmap_enumerate_11_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue.....")
+                continue
+            sqlmap_enumerate_all_flag = 0
+            sqlmap_enumerate_11_command = "-D " + sqlmap_enumerate_database + " "
+        #specify tables
+        elif sqlmap_enumerate_select == "12":
+            sqlmap_enumerate_tables = input("\nTables to enumerate: ").strip()
+            if sqlmap_enumerate_tables == "" or " " in sqlmap_enumerate_tables:
+                sqlmap_enumerate_12_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue.....")
+                continue
+            sqlmap_enumerate_all_flag = 0
+            sqlmap_enumerate_12_command = "-T " + sqlmap_enumerate_tables + " "
+        #specify columns
+        elif sqlmap_enumerate_select == "13":
+            sqlmap_enumerate_columns = input("\nColumns to enumerate: ").strip()
+            if sqlmap_enumerate_columns == "" or " " in sqlmap_enumerate_columns:
+                sqlmap_enumerate_13_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue.....")
+                continue
+            sqlmap_enumerate_all_flag = 0
+            sqlmap_enumerate_13_command = "-C " + sqlmap_enumerate_columns + " "
         #submit
         elif sqlmap_enumerate_select == "90":
             return sqlmap_enumerate_command

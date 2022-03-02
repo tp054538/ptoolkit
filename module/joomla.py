@@ -147,10 +147,10 @@ def joom_main():
                 joom_custom_proxy_prompt = input("Do you want to use a custom proxy other than tor? (y/n): ")
                 if joom_custom_proxy_prompt == "y" or joom_custom_proxy_prompt == "Y":
                     joom_custom_proxy = input("\nEnter the proxy (protocol://ip:port): ").strip()
-                    if joom_custom_proxy == "":
+                    if joom_custom_proxy == "" or " " in joom_custom_proxy:
                         joom_proxy_command = ""
                         joom_proxy_flag = 0
-                        print("\n[*] Target cannot be empty!")
+                        print("\n[*] Target cannot be empty / contain space!")
                         useless = input("Enter any key to continue......")
                         continue
                     else:

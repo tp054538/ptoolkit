@@ -484,9 +484,10 @@ def main():
             #username
             elif wpscan_select == "6":
                 wpscan_username = input("\nUsername/s (use \",\" as seperator for multiple usernames): ").strip()
-                if wpscan_username == "":
+                if wpscan_username == "" or " " in wpscan_username:
                     wpscan_username_command = ""
-                    print("\n[*] Field cannot be empty!")
+                    wpscan_username = ""
+                    print("\n[*] Field cannot be empty / contain space!")
                     useless = input("Enter any key to continue......")
                     continue
                 wpscan_username_command = "-U " + wpscan_username + " "

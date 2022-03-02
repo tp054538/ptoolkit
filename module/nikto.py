@@ -167,9 +167,9 @@ def nikto_main():
         elif nikto_select == "4":
             print("\n[*] Nikto only support http proxy. Socks proxies are unavailable.")
             nikto_proxy = input("Proxy (http://ip:port): ").strip()
-            if nikto_proxy == "":
+            if nikto_proxy == "" or " " in nikto_proxy:
                 nikto_proxy_command = ""
-                print("\n[*] Field is empty!")
+                print("\n[*] Field is empty / contain space!")
                 useless = input("Enter any key to continue......")
                 continue
             if nikto_proxy.startswith("http://"):
