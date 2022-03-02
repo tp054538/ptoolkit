@@ -1,5 +1,6 @@
 import os
 import subprocess
+from module import tor
 
 def sqlmap_self_check():
     sqlmap_checkstatus = subprocess.run("apt list 2>/dev/null | grep -E '^sqlmap/'", shell=True, stdout=subprocess.PIPE)
@@ -205,7 +206,7 @@ Selected: \033[1;32m"""+sqlmap_enumerate_command+"""\033[00m
 
 
 def sqlmap_banner():
-    sqlmap_target_banner = sqlmap_target_command.strip().replace("-u","").strip()
+    sqlmap_target_banner = sqlmap_target_command.replace("-u","").replace("\"","").strip()
 
     if sqlmap_enumerate_banner == "":
         sqlmap_enumerate_banner_main = "\033[00mSpecify what to enumerate"
@@ -217,20 +218,54 @@ def sqlmap_banner():
     if sqlmap_level_command == "":
         sqlmap_level_banner = "Higher Level = more tests and injection points (Default = 1)"
     else:
-        sqlmap_level_banner = "\033[1;32m" + sqlmap_level_command.replace("--level","").strip() + "\033[00m"
+        sqlmap_level_banner = "\033[1;32m" + sqlmap_level_command.replace("--level=","").strip() + "\033[00m"
+    
+    if sqlmap_risk_command == "":
+        sqlmap_risk_banner = "Higher Risk adds heavy queries and OR-based injection (Default = 1)"
+    else:
+        sqlmap_risk_banner = "\033[1;32m" + sqlmap_risk_command.replace("--risk=","").strip() + "\033[00m"
+    
+    if sqlmap_tor_flag == 1:
+        sqlmap_tor_banner = "\033[1;32m" + "socks5://127.0.0.1:9050 (Tor)" + "\033[00m"
+    else:
+        sqlmap_tor_banner = "Use Tor proxy as an additional layer to hide identity"
+    
+    if sqlmap_cookie_command == "":
+        sqlmap_cookie_banner = "Specify cookie to use"
+    else:
+        sqlmap_cookie_banner = "\033[1;32m" + sqlmap_cookie_command.replace("--cookie=","").strip().strip("\"") + "\033[00m"
+    
+    if sqlmap_rua_flag == 1:
+        sqlmap_rua_color = "\033[1;32m"
+    else:
+        sqlmap_rua_color = "\033[00m"
 
+    if sqlmap_data_string_command == "":
+        sqlmap_data_banner = "Provide data to be sent through POST (eg. id=1 or password=abc123):"
+    else:
+        sqlmap_data_banner = "\033[1;32m" + sqlmap_data_string_command.replace("--data=","").strip().strip("\"") + "\033[00m"
+    
+    if sqlmap_testpara_command == "":
+        sqlmap_testpara_banner = "Specify which parameter is testable among all parameters (Save Time)"
+    else:
+        sqlmap_testpara_banner = "\033[1;32m" + sqlmap_testpara_command.replace("-p","").strip().strip("\"") + "\033[00m"
+    
     os.system("clear")
     print("""
                              SQL Injection (SQLmap)
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Target URL    : \033[1;32m"""+sqlmap_target_banner+"""\033[00m
+    1. Target URL         : \033[1;32m"""+sqlmap_target_banner+"""\033[00m
 
-    2. Level         : """+sqlmap_level_banner+"""
-    3. Risk          : Higher Risk adds heavy queries and OR-based injection (Default = 1)
-    4. Tor Proxy     - Use Tor proxy as an additional layer to hide identity
-    5. Enumeration   : \033[1;32m"""+sqlmap_enumerate_banner_main+"""\033[00m
+    2. Level              : """+sqlmap_level_banner+"""
+    3. Risk               : """+sqlmap_risk_banner+"""
+    4. Tor Proxy          : """+sqlmap_tor_banner+""" 
+    5. Enumeration        : \033[1;32m"""+sqlmap_enumerate_banner_main+"""\033[00m
+    6. Cookie             : """+sqlmap_cookie_banner+"""
+    7. """+sqlmap_rua_color+"""Random User Agent\033[00m  - Use random user agent to add anonymity
+    8. Data               : """+sqlmap_data_banner+"""
+    9. Testable Parameter : """+sqlmap_testpara_banner+"""
 
 Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
 
@@ -239,15 +274,25 @@ Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
     """)
 
 def sqlmap_main():
-    global sqlmap_enumerate_banner, sqlmap_final_command, sqlmap_target_command, sqlmap_level_command
+    global sqlmap_enumerate_banner, sqlmap_final_command, sqlmap_target_command, sqlmap_level_command, sqlmap_risk_command, sqlmap_tor_flag, sqlmap_cookie_command, sqlmap_rua_flag
+    global sqlmap_data_string_command, sqlmap_testpara_command
     sqlmap_enumerate_banner = ""
     sqlmap_enumerate_main_command = ""
     sqlmap_target_command = ""
     sqlmap_level_command = ""
+    sqlmap_risk_command = ""
+    sqlmap_tor_command = ""
+    sqlmap_cookie_command = ""
+    sqlmap_rua_command = ""
+    sqlmap_tor_flag = 0
+    sqlmap_rua_flag = 0
+    sqlmap_data_string_command = ""
+    sqlmap_testpara_command = ""
 
     sqlmap_select = ""
     while sqlmap_select != "99":
-        sqlmap_final_command = "sqlmap " + sqlmap_target_command + sqlmap_level_command + sqlmap_enumerate_main_command
+        sqlmap_final_command = "sqlmap " + sqlmap_target_command + sqlmap_level_command + sqlmap_risk_command + sqlmap_cookie_command + sqlmap_data_string_command + sqlmap_testpara_command 
+        sqlmap_final_command += sqlmap_enumerate_main_command + sqlmap_tor_command + sqlmap_rua_command
         sqlmap_banner()
         sqlmap_select = input("\nSelect: ")
         #target
@@ -259,7 +304,7 @@ def sqlmap_main():
                 print("\n[*] Field is empty / Contain spaces!")
                 useless = input("Enter any key to continue......")
                 continue
-            sqlmap_target_command = "-u " + sqlmap_target + " "
+            sqlmap_target_command = "-u \"" + sqlmap_target + "\" "
         #level
         elif sqlmap_select == "2":
             sqlmap_level = input("\nLevel (Range: 1~5, Higher level will consume more time): ").strip()
@@ -278,15 +323,106 @@ def sqlmap_main():
                 print("\n[*] Error Level Range!")
                 useless = input("Enter any key to continue......")
                 continue
-            sqlmap_level_command = "--level " + sqlmap_level + " "
+            sqlmap_level_command = "--level=" + sqlmap_level + " "
         #risk
         elif sqlmap_select == "3":
-            pass
-
+            sqlmap_risk = input("\nRisk (Range: 1~3, Higher Risk will consume more time): ").strip()
+            if sqlmap_risk == "" or " " in sqlmap_risk:
+                sqlmap_risk = ""
+                sqlmap_risk_command = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            #validate if it is valid range 1-3
+            try:
+                sqlmap_risk_validate = int(sqlmap_risk)
+                if sqlmap_risk_validate < 1 or sqlmap_risk_validate > 3:
+                    raise ValueError
+            except ValueError:
+                print("\n[*] Error Risk Range!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_risk_command = "--risk=" + sqlmap_risk + " "
+        #tor proxy
+        elif sqlmap_select == "4":
+            if tor.check_init() == 1:
+                if sqlmap_tor_flag != 1:
+                    sqlmap_tor_flag = 1
+                    sqlmap_tor_command = "--proxy=\"socks5://127.0.0.1:9050\" --check-tor "
+                else:
+                    sqlmap_tor_flag = 0
+                    sqlmap_tor_command = ""
+            else:
+                sqlmap_tor_flag = 0
+                sqlmap_tor_command = ""
+                print("\n[*] Tor is not running! Please activate Tor at main menu.")
+                useless = input("Enter any key to continue......")
+                continue
         #enumerate section
         elif sqlmap_select == "5":
             sqlmap_enumerate_main_command = sqlmap_enumerate_sub()
             sqlmap_enumerate_banner = sqlmap_enumerate_main_command.replace("--","").strip().replace(" ",",")
+        #cookie
+        elif sqlmap_select == "6":
+            sqlmap_cookie = input("\nCookie (use ; as seperator for multiple cookie. Eg. cookie1=xx;cookie2=xx): ").strip()
+            if sqlmap_cookie == "" or " " in sqlmap_cookie:
+                sqlmap_cookie = ""
+                sqlmap_cookie_command = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "=" not in sqlmap_cookie:
+                sqlmap_cookie = ""
+                sqlmap_cookie_command = ""
+                print("\n[*] Error format! No \"=\" used.")
+                useless = input("Enter any key to continue......")
+                continue
+            #check format for multiple value
+            if sqlmap_cookie.count("=") > 1:
+                if sqlmap_cookie.count(";") == 0:
+                    sqlmap_cookie = ""
+                    sqlmap_cookie_command = ""
+                    print("\n[*] Error format! Use ; to seperate multiple cookies.")
+                    useless = input("Enter any key to continue......")
+                    continue
+                if sqlmap_cookie.count(";") == sqlmap_cookie.count("=") or sqlmap_cookie.count(";") == (sqlmap_cookie.count("=") - 1):
+                    pass
+                else:
+                    sqlmap_cookie = ""
+                    sqlmap_cookie_command = ""
+                    print("\n[*] Error format! Use ; to seperate multiple cookies.")
+                    useless = input("Enter any key to continue......")
+                    continue
+            #check format 
+            sqlmap_cookie_command = "--cookie=\"" + sqlmap_cookie + "\" "
+        #rua
+        elif sqlmap_select == "7":
+            if sqlmap_rua_flag != 1:
+                sqlmap_rua_flag = 1
+                sqlmap_rua_command = "--random-agent "
+            else:
+                sqlmap_rua_flag = 0
+                sqlmap_rua_command = ""
+        #data strings
+        elif sqlmap_select == "8":
+            sqlmap_data_string = input("\nData string (Eg. username=admin&password=abc): ").strip()
+            if sqlmap_data_string == "" or " " in sqlmap_data_string:
+                sqlmap_data_string = ""
+                sqlmap_data_string_command = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_data_string_command = "--data=\"" + sqlmap_data_string + "\" "
+        #testable parameter
+        elif sqlmap_select == "9":
+            sqlmap_testpara = input("\nTestable Parameter (use , as seperator for multiple parameters): ").strip()
+            if sqlmap_testpara == "" or " " in sqlmap_testpara:
+                sqlmap_testpara = ""
+                sqlmap_testpara_command = ""
+                print("\n[*] Field is empty / Contain spaces!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_testpara_command = "-p \"" + sqlmap_testpara + "\" "
 
 
 
