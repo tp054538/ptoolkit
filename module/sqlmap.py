@@ -301,6 +301,36 @@ def sqlmap_banner():
     else:
         sqlmap_testpara_banner = "\033[1;32m" + sqlmap_testpara_command.replace("-p","").strip().strip("\"") + "\033[00m"
     
+    if sqlmap_database_command == "":
+        sqlmap_database_banner = "Specify the backend database type (if known)"
+    else:
+        sqlmap_database_banner = "\033[1;32m" + sqlmap_database_command.replace("--dbms=","").strip() + "\033[00m"
+
+    if sqlmap_os_flag == 1:
+        sqlmap_os_color = "\033[1;32m"
+    else:
+        sqlmap_os_color = "\033[00m"
+    
+    if sqlmap_pwn_flag == 1:
+        sqlmap_pwn_color = "\033[1;32m"
+    else:
+        sqlmap_pwn_color = "\033[00m"
+    
+    if sqlmap_threads_command == "":
+        sqlmap_threads_banner = "Max num of concurrent HTTP request (Default = 1)"
+    else:
+        sqlmap_threads_banner = "\033[1;32m" + sqlmap_threads_command.replace("--threads=","").strip() + "\033[00m"
+    
+    if sqlmap_forms_flag == 1:
+        sqlmap_forms_color = "\033[1;32m"
+    else:
+        sqlmap_forms_color = "\033[00m"
+    
+    if sqlmap_verbose_flag == 1:
+        sqlmap_verbose_color = "\033[1;32m"
+    else:
+        sqlmap_verbose_color = "\033[00m"
+
     os.system("clear")
     print("""
                              SQL Injection (SQLmap)
@@ -317,6 +347,12 @@ def sqlmap_banner():
     7. """+sqlmap_rua_color+"""Random User Agent\033[00m  - Use random user agent to add anonymity
     8. Data               : """+sqlmap_data_banner+"""
     9. Testable Parameter : """+sqlmap_testpara_banner+"""
+   10. Database           : """+sqlmap_database_banner+"""
+   11. """+sqlmap_os_color+"""OS Shell\033[00m           : Prompt for interactive system shell in linux server
+   12. """+sqlmap_pwn_color+"""OS Pwn\033[00m             : Prompt for OOB Shell, Meterpreter or VNC
+   13. """+sqlmap_forms_color+"""Forms page\033[00m         : Target URL have form's field to test (example: login page)
+   14. Threads            : """+sqlmap_threads_banner+"""
+   15. """+sqlmap_verbose_color+"""Verbose\033[00m            : Display more information
 
 Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
 
@@ -326,7 +362,7 @@ Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
 
 def sqlmap_main():
     global sqlmap_enumerate_banner, sqlmap_final_command, sqlmap_target_command, sqlmap_level_command, sqlmap_risk_command, sqlmap_tor_flag, sqlmap_cookie_command, sqlmap_rua_flag
-    global sqlmap_data_string_command, sqlmap_testpara_command
+    global sqlmap_data_string_command, sqlmap_testpara_command, sqlmap_os_flag, sqlmap_pwn_flag, sqlmap_database_command, sqlmap_threads_command, sqlmap_forms_flag, sqlmap_verbose_flag
     sqlmap_enumerate_banner = ""
     sqlmap_enumerate_main_command = ""
     sqlmap_target_command = ""
@@ -339,16 +375,29 @@ def sqlmap_main():
     sqlmap_rua_flag = 0
     sqlmap_data_string_command = ""
     sqlmap_testpara_command = ""
+    sqlmap_os_flag = 0
+    sqlmap_pwn_flag = 0
+    sqlmap_database_command = ""
+    sqlmap_os_command = ""
+    sqlmap_pwn_command = ""
+    sqlmap_threads_command = ""
+    sqlmap_forms_flag = 0
+    sqlmap_forms_command = ""
+    sqlmap_verbose_flag = 0
+    sqlmap_verbose_command = ""
 
     sqlmap_select = ""
     while sqlmap_select != "99":
-        sqlmap_final_command = "sqlmap " + sqlmap_target_command + sqlmap_level_command + sqlmap_risk_command + sqlmap_cookie_command + sqlmap_data_string_command + sqlmap_testpara_command 
-        sqlmap_final_command += sqlmap_enumerate_main_command + sqlmap_tor_command + sqlmap_rua_command
+        #initialize filename save command
+        sqlmap_save_command = ""
+        #share variable for banner()
+        sqlmap_final_command = "sqlmap " + sqlmap_target_command + sqlmap_forms_command + sqlmap_level_command + sqlmap_risk_command + sqlmap_cookie_command + sqlmap_database_command + sqlmap_data_string_command + sqlmap_testpara_command 
+        sqlmap_final_command += sqlmap_enumerate_main_command + sqlmap_os_command + sqlmap_pwn_command +sqlmap_tor_command + sqlmap_rua_command + sqlmap_threads_command + sqlmap_verbose_command + "--batch"
         sqlmap_banner()
         sqlmap_select = input("\nSelect: ")
         #target
         if sqlmap_select == "1":
-            sqlmap_target = input("\nTarget URL: ").strip()
+            sqlmap_target = input("\nTarget URL (eg. http://abc.com or https://abc.com): ").strip()
             if sqlmap_target == "" or " " in sqlmap_target:
                 sqlmap_target_command = ""
                 sqlmap_target = ""
@@ -474,8 +523,94 @@ def sqlmap_main():
                 useless = input("Enter any key to continue......")
                 continue
             sqlmap_testpara_command = "-p \"" + sqlmap_testpara + "\" "
-
-
+        #database type
+        elif sqlmap_select == "10":
+            sqlmap_database = input("\nDatabase: ").strip()
+            if sqlmap_database == "" or " " in sqlmap_database:
+                sqlmap_database = ""
+                sqlmap_database_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_database_command = "--dbms=" + sqlmap_database + " "
+        #os shell
+        elif sqlmap_select == "11":
+            if sqlmap_os_flag != 1:
+                sqlmap_os_flag = 1
+                sqlmap_os_command = "--os-shell "
+                sqlmap_pwn_flag = 0
+                sqlmap_pwn_command = ""
+            else:
+                sqlmap_os_flag = 0
+                sqlmap_os_command = ""
+        #os cmd
+        elif sqlmap_select == "12":
+            if sqlmap_pwn_flag != 1:
+                sqlmap_pwn_flag = 1
+                sqlmap_pwn_command = "--os-pwn "
+                sqlmap_os_flag = 0
+                sqlmap_os_command = ""
+            else:
+                sqlmap_pwn_flag = 0
+                sqlmap_pwn_command = ""
+        #forms
+        elif sqlmap_select == "13":
+            if sqlmap_forms_flag != 1:
+                sqlmap_forms_flag = 1
+                sqlmap_forms_command = "--forms "
+            else:
+                sqlmap_forms_flag = 0
+                sqlmap_forms_command = ""
+        #threads
+        elif sqlmap_select == "14":
+            sqlmap_threads = input("\nThreads (1~5): ").strip()
+            if sqlmap_threads == "" or " " in sqlmap_threads:
+                sqlmap_threads = ""
+                sqlmap_threads_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            #validate number range
+            try:
+                sqlmap_threads_val = int(sqlmap_threads)
+                if sqlmap_threads_val < 1 or sqlmap_threads_val > 5:
+                    raise ValueError
+            except ValueError:
+                sqlmap_threads = ""
+                sqlmap_threads_command = ""
+                print("\n[*] Enter numbers from 1 to 5 only!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_threads_command = "--threads=" + sqlmap_threads + " "
+        #verbose
+        elif sqlmap_select == "15":
+            if sqlmap_verbose_flag != 1:
+                sqlmap_verbose_flag = 1
+                sqlmap_verbose_command = "-v "
+            else:
+                sqlmap_verbose_flag = 0
+                sqlmap_verbose_command = ""
+        #launch attack
+        elif sqlmap_select == "90":
+            if sqlmap_target_command == "":
+                print("\n[*] Target is empty!")
+                useless = input("Enter any key to continue......")
+                continue
+            sqlmap_launch_command = sqlmap_final_command.strip()
+            sqlmap_save_prompt = input("\nDo you want to save the result to a file? (y/n): ").strip()
+            if sqlmap_save_prompt == "y" or sqlmap_save_prompt == "Y":
+                sqlmap_save_filename = input("Enter a new filename: ").strip()
+                if sqlmap_save_filename == "":
+                    print("\n[*] Filename is empty!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                sqlmap_save_filename = sqlmap_save_filename.replace(" ","_")
+                sqlmap_save_command = " --output-dir=\"" + os.getcwd() + "/result/" + sqlmap_save_filename + "\""
+            print("\033[1;32m[+] Starting SQLmap......\033[00m")
+            os.system(sqlmap_launch_command+sqlmap_save_command)
+            if sqlmap_save_command != "":
+                print("\033[1;32m[+] File saved to {}\033[00m".format(sqlmap_save_command.replace("--output-dir=","").strip().strip("\"")))
+            useless = input("[*] Process Completed! Enter any key to continue......")
 
 
 def main():
