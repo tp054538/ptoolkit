@@ -55,20 +55,50 @@ def gobuster_banner():
     else:
         gobuster_wordlist_banner = gobuster_wordlist_command.replace("-w","").strip()
 
+    if gobuster_target_command == "":
+        gobuster_target_banner = ""
+    else:
+        gobuster_target_banner = gobuster_target_command.replace("-u","").strip()
+    
+    if gobuster_cookie_command == "":
+        gobuster_cookie_banner = ""
+    else:
+        gobuster_cookie_banner = gobuster_cookie_command.replace("-c","").replace("\"","").strip()
+    
+    if gobuster_positive_command == "":
+        gobuster_positive_banner = "Specify positive HTTP status code (Default = 200,204,301,302,307,401,403)"
+    else:
+        gobuster_positive_banner = "\033[1;32m" + gobuster_positive_command.replace("-s","").strip() + "\033[00m"
+    
+    if gobuster_negative_command == "":
+        gobuster_negative_banner = "Specify negative HTTP status codes (Default = 404)"
+    else:
+        gobuster_negative_banner = "\033[1;32m" + gobuster_negative_command.replace("-b","").strip() + "\033[00m"
+    
+    if gobuster_follow_redir_flag == 1:
+        gobuster_follow_redir_color = "\033[1;32m"
+    else:
+        gobuster_follow_redir_color = "\033[00m"
+    
+    if gobuster_rua_flag == 1:
+        gobuster_rua_color = "\033[1;32m"
+    else:
+        gobuster_rua_color = "\033[00m"
+
     os.system("clear")
     print("""
                     Directory and Files Discovery (GoBuster)
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Target URL        : 
+    1. Target URL        : \033[1;32m"""+gobuster_target_banner+"""\033[00m
     2. Wordlist          : \033[1;32m"""+gobuster_wordlist_banner+"""\033[00m
 
-    3. Cookie            : 
-    4. Follow redirect   : 
-    5. Positive Codes    : Treat the specified status codes as positive response
-    6. Negative Codes    : Treat the specified status codes as negative response (Default = 404)
-    7. Random User Agent - Use random user agent for brute forcing
+    3. Cookie            : \033[1;32m"""+gobuster_cookie_banner+"""\033[00m
+    4. Positive Codes    : """+gobuster_positive_banner+"""
+    5. Negative Codes    : """+gobuster_negative_banner+"""
+    6. """+gobuster_follow_redir_color+"""Follow redirect\033[00m   - Follow redirection
+    7. """+gobuster_rua_color+"""Random User Agent\033[00m - Use random user agent for brute forcing
     8. User Agent        : Use specified user agent for brute forcing
     8. Threads           : Set maximum concurrent threads (Default = 10)
     9. Verbose           - Display more information
@@ -82,17 +112,34 @@ Command: """+gobuster_final_command+"""
     
 
 def gobuster_main():
-    global gobuster_final_command, gobuster_wordlist_command
+    global gobuster_final_command, gobuster_wordlist_command, gobuster_target_command, gobuster_cookie_command, gobuster_positive_command, gobuster_negative_command, gobuster_follow_redir_flag
+    global gobuster_rua_flag
     gobuster_wordlist_command = ""
+    gobuster_target_command = ""
+    gobuster_cookie_command = ""
+    gobuster_positive_command = ""
+    gobuster_negative_command = ""
+    gobuster_follow_redir_flag = 0
+    gobuster_follow_redir_command = ""
+    gobuster_rua_flag = 0
+    gobuster_rua_command = ""
 
     gobuster_select = ""
     while gobuster_select != "99":
-        gobuster_final_command = "gobuster " + gobuster_wordlist_command
+        gobuster_final_command = "gobuster " + gobuster_target_command + gobuster_wordlist_command + gobuster_cookie_command + gobuster_positive_command + gobuster_negative_command + gobuster_follow_redir_command
+        gobuster_final_command += gobuster_rua_command
         gobuster_banner()
         gobuster_select = input("\nSelect: ").strip()
         #target url
         if gobuster_select == "1":
             gobuster_target = input("\nTarget URL (Specify https:// if the website is running on https): ").strip()
+            if gobuster_target == "" or " " in gobuster_target:
+                gobuster_target = ""
+                gobuster_target_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            gobuster_target_command = "-u " + gobuster_target + " "
         #wordlist -> check file exit & user can use provided wordlist
         elif gobuster_select == "2":
             gobuster_wordlist_prompt = input("\nDo you want to use provided wordlists? (y/n): ").strip()
@@ -113,6 +160,151 @@ def gobuster_main():
                     useless = input("Enter any key to continue......")
                     continue
             gobuster_wordlist_command = "-w " + gobuster_wordlist + " "
+        #cookie
+        elif gobuster_select == "3":
+            gobuster_cookie = input("\nCookie (Format is name=value, Eg. token=aJSIuM2N0D893) (use ; as seperator): \n").strip()
+            if gobuster_cookie == "" or " " in gobuster_cookie:
+                gobuster_cookie = ""
+                gobuster_cookie_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "=" not in gobuster_cookie:
+                gobuster_cookie = ""
+                gobuster_cookie_command = ""
+                print("\n[*] Error Format! Format -> Cookiename=CookieValue")
+                useless = input("Enter any key to continue......")
+                continue
+            gobuster_cookie_command = "-c \"" + gobuster_cookie + "\" "
+        #positive code
+        elif gobuster_select == "4":
+            gobuster_positive_code = input("\nPositive Status Code (use , as seperator): ").strip().strip(",")
+            if gobuster_positive_code == "" or " " in gobuster_positive_code:
+                gobuster_positive_code = ""
+                gobuster_positive_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            #validate status code format
+            if len(gobuster_positive_code) < 3:
+                gobuster_positive_code = ""
+                gobuster_positive_command = ""
+                print("\n[*] Error HTTP status code")
+                useless = input("Enter any key to continue......")
+                continue
+            elif len(gobuster_positive_code) > 3:
+                if "," not in gobuster_positive_code:
+                    gobuster_positive_code = ""
+                    gobuster_positive_command = ""
+                    print("\n[*] Error format! Use \",\" as seperator for multiple status code.")
+                    useless = input("Enter any key to continue......")
+                    continue
+                gobuster_positive_list = gobuster_positive_code.split(",")
+                try:
+                    for i in range(len(gobuster_positive_list)):
+                        if len(gobuster_positive_list[i]) != 3:
+                            raise ValueError
+                        gobuster_positive_code_test = int(gobuster_positive_list[i])
+                except ValueError:
+                    gobuster_positive_code = ""
+                    gobuster_positive_command = ""
+                    print("\n[*] Error HTTP Status Code!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                #check duplicate
+                if len(gobuster_positive_list) != len(set(gobuster_positive_list)):
+                    gobuster_positive_code = ""
+                    gobuster_positive_command = ""
+                    print("\n[*] HTTP Status Code Duplicated!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            elif len(gobuster_positive_code) == 3:
+                try:
+                    gobuster_positive_test = int(gobuster_positive_code)
+                except ValueError:
+                    gobuster_positive_code = ""
+                    gobuster_positive_command = ""
+                    print("\n[*] Error HTTP Status Code!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            gobuster_negative_command = ""
+            gobuster_positive_command = "-s " + gobuster_positive_code + " "
+        #negative code
+        elif gobuster_select == "5":
+            gobuster_negative_code = input("\nNegative Status Code (use , as seperator): ").strip().strip(",")
+            if gobuster_negative_code == "" or " " in gobuster_negative_code:
+                gobuster_negative_code = ""
+                gobuster_negative_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            #validate status code format
+            if len(gobuster_negative_code) < 3:
+                gobuster_negative_code = ""
+                gobuster_negative_command = ""
+                print("\n[*] Error HTTP status code")
+                useless = input("Enter any key to continue......")
+                continue
+            elif len(gobuster_negative_code) > 3:
+                if "," not in gobuster_negative_code:
+                    gobuster_negative_code = ""
+                    gobuster_negative_command = ""
+                    print("\n[*] Error format! Use \",\" as seperator for multiple status code.")
+                    useless = input("Enter any key to continue......")
+                    continue
+                gobuster_negative_list = gobuster_negative_code.split(",")
+                try:
+                    for i in range(len(gobuster_negative_list)):
+                        if len(gobuster_negative_list[i]) != 3:
+                            raise ValueError
+                        gobuster_negative_code_test = int(gobuster_negative_list[i])
+                except ValueError:
+                    gobuster_negative_code = ""
+                    gobuster_negative_command = ""
+                    print("\n[*] Error HTTP Status Code!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                #check duplicate
+                if len(gobuster_negative_list) != len(set(gobuster_negative_list)):
+                    gobuster_negative_code = ""
+                    gobuster_negative_command = ""
+                    print("\n[*] HTTP Status Code Duplicated!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            elif len(gobuster_negative_code) == 3:
+                try:
+                    gobuster_negative_test = int(gobuster_negative_code)
+                except ValueError:
+                    gobuster_negative_code = ""
+                    gobuster_negative_command = ""
+                    print("\n[*] Error HTTP Status Code!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            gobuster_positive_command = ""
+            gobuster_negative_command = "-b " + gobuster_negative_code + " "
+        #follow redirect
+        elif gobuster_select == "6":
+            if gobuster_follow_redir_flag != 1:
+                gobuster_follow_redir_flag = 1
+                gobuster_follow_redir_command = "-r "
+            else:
+                gobuster_follow_redir_flag = 0
+                gobuster_follow_redir_command = ""
+        #random user agent
+        elif gobuster_select == "7":
+            if gobuster_rua_flag != 1:
+                gobuster_rua_flag = 1
+                gobuster_rua_command = "--random-agent "
+            else:
+                gobuster_rua_flag = 0
+                gobuster_rua_command = ""
+        #specify user agent
+        elif gobuster_select == "8":
+            pass
+            
+            
+
+
 
 #user agent default gobuster/3.1.0
 
