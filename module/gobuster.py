@@ -84,6 +84,31 @@ def gobuster_banner():
         gobuster_rua_color = "\033[1;32m"
     else:
         gobuster_rua_color = "\033[00m"
+    
+    if gobuster_ua_command == "":
+        gobuster_ua_banner = "Use specified user agent for brute forcing"
+    else:
+        gobuster_ua_banner = "\033[1;32m" + gobuster_ua_command.replace("-a","").replace("\"","").strip() + "\033[00m"
+    
+    if gobuster_file_ext_command == "":
+        gobuster_file_ext_banner = "Specify file extension to search for"
+    else:
+        gobuster_file_ext_banner = "\033[1;32m" + gobuster_file_ext_command.replace("-x","").strip() + "\033[00m"
+    
+    if gobuster_threads_command == "":
+        gobuster_threads_banner = "Set maximum concurrent threads (Default = 10)"
+    else:
+        gobuster_threads_banner = "\033[1;32m" + gobuster_threads_command.replace("-t","").strip() + "\033[00m"
+    
+    if gobuster_verbose_flag == 1:
+        gobuster_verbose_color = "\033[1;32m"
+    else:
+        gobuster_verbose_color = "\033[00m"
+    
+    if gobuster_queit_flag == 1:
+        gobuster_queit_color = "\033[1;32m"
+    else:
+        gobuster_queit_color = "\033[00m"
 
     os.system("clear")
     print("""
@@ -99,10 +124,11 @@ def gobuster_banner():
     5. Negative Codes    : """+gobuster_negative_banner+"""
     6. """+gobuster_follow_redir_color+"""Follow redirect\033[00m   - Follow redirection
     7. """+gobuster_rua_color+"""Random User Agent\033[00m - Use random user agent for brute forcing
-    8. User Agent        : Use specified user agent for brute forcing
-    8. Threads           : Set maximum concurrent threads (Default = 10)
-    9. Verbose           - Display more information
-   10. Queit             - No display banner and lesser noise
+    8. User Agent        : """+gobuster_ua_banner+"""
+    9. File Extension    : """+gobuster_file_ext_banner+"""
+   10. Threads           : """+gobuster_threads_banner+"""
+   11. """+gobuster_verbose_color+"""Verbose\033[00m           - Display more information
+   12. """+gobuster_queit_color+"""Queit\033[00m             - No display banner and lesser noise
 
 Command: """+gobuster_final_command+"""
 
@@ -113,7 +139,7 @@ Command: """+gobuster_final_command+"""
 
 def gobuster_main():
     global gobuster_final_command, gobuster_wordlist_command, gobuster_target_command, gobuster_cookie_command, gobuster_positive_command, gobuster_negative_command, gobuster_follow_redir_flag
-    global gobuster_rua_flag
+    global gobuster_rua_flag, gobuster_ua_command, gobuster_file_ext_command, gobuster_threads_command, gobuster_verbose_flag, gobuster_queit_flag
     gobuster_wordlist_command = ""
     gobuster_target_command = ""
     gobuster_cookie_command = ""
@@ -123,11 +149,18 @@ def gobuster_main():
     gobuster_follow_redir_command = ""
     gobuster_rua_flag = 0
     gobuster_rua_command = ""
+    gobuster_ua_command = ""
+    gobuster_file_ext_command = ""
+    gobuster_threads_command = ""
+    gobuster_verbose_flag = 0
+    gobuster_verbose_command = ""
+    gobuster_queit_flag = 0
+    gobuster_queit_command = ""
 
     gobuster_select = ""
     while gobuster_select != "99":
         gobuster_final_command = "gobuster " + gobuster_target_command + gobuster_wordlist_command + gobuster_cookie_command + gobuster_positive_command + gobuster_negative_command + gobuster_follow_redir_command
-        gobuster_final_command += gobuster_rua_command
+        gobuster_final_command += gobuster_file_ext_command + gobuster_rua_command + gobuster_ua_command + gobuster_threads_command + gobuster_verbose_command + gobuster_queit_command
         gobuster_banner()
         gobuster_select = input("\nSelect: ").strip()
         #target url
@@ -295,12 +328,76 @@ def gobuster_main():
             if gobuster_rua_flag != 1:
                 gobuster_rua_flag = 1
                 gobuster_rua_command = "--random-agent "
+                gobuster_ua_command = ""
             else:
                 gobuster_rua_flag = 0
                 gobuster_rua_command = ""
         #specify user agent
         elif gobuster_select == "8":
-            pass
+            gobuster_ua = input("\nUser Agent (Default = gobuster/3.1.0): ").strip()
+            if gobuster_ua == "":
+                gobuster_ua_command = ""
+                print("\nField is empty!")
+                useless = input("Enter any key to continue......")
+                continue
+            gobuster_ua_command = "-a \"" + gobuster_ua + "\" "
+            gobuster_rua_flag = 0
+            gobuster_rua_command = ""
+        #file extension
+        elif gobuster_select == "9":
+            gobuster_file_ext = input("\nFile extension (use , as seperator for multiple extensions): ").strip().strip(",")
+            if gobuster_file_ext == "" or " " in gobuster_file_ext:
+                gobuster_file_ext = ""
+                gobuster_file_ext_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            gobuster_file_ext_command = "-x " + gobuster_file_ext + " "
+        #threads
+        elif gobuster_select == "10":
+            try:
+                gobuster_threads = int(input("Threads (Default = 10): ").strip())
+                if gobuster_threads < 1:
+                    raise ValueError
+            except ValueError:
+                gobuster_threads = ""
+                gobuster_threads_command = ""
+                print("\n[*] Positive numbers only!")
+                useless = input("Enter any key to continue......")
+                continue
+            gobuster_threads_command = "-t " + str(gobuster_threads) + " "
+        #verbose
+        elif gobuster_select == "11":
+            if gobuster_verbose_flag != 1:
+                gobuster_verbose_flag = 1
+                gobuster_verbose_command = "-v "
+                gobuster_queit_flag = 0
+                gobuster_queit_command = ""
+            else:
+                gobuster_verbose_flag = 0
+                gobuster_verbose_command = ""
+        #queit
+        elif gobuster_select == "12":
+            if gobuster_queit_flag != 1:
+                gobuster_queit_flag = 1
+                gobuster_queit_command = "-q "
+                gobuster_verbose_flag = 0
+                gobuster_verbose_command = ""
+            else:
+                gobuster_queit_flag = 0
+                gobuster_queit_command = ""
+        #launch attack
+        elif gobuster_select == "90":
+            if gobuster_target_command == "":
+                print("\n[*] Target is empty!")
+                useless = input("Enter any key to continue......")
+                continue
+            if gobuster_wordlist_command == "":
+                print("\n[*] Wordlist is empty!")
+                useless = input("Enter any key to continue......")
+                continue
+
+
             
             
 
