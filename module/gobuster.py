@@ -159,13 +159,14 @@ def gobuster_main():
 
     gobuster_select = ""
     while gobuster_select != "99":
-        gobuster_final_command = "gobuster " + gobuster_target_command + gobuster_wordlist_command + gobuster_cookie_command + gobuster_positive_command + gobuster_negative_command + gobuster_follow_redir_command
+        gobuster_output_command = ""
+        gobuster_final_command = "gobuster dir " + gobuster_target_command + gobuster_wordlist_command + gobuster_cookie_command + gobuster_positive_command + gobuster_negative_command + gobuster_follow_redir_command
         gobuster_final_command += gobuster_file_ext_command + gobuster_rua_command + gobuster_ua_command + gobuster_threads_command + gobuster_verbose_command + gobuster_queit_command
         gobuster_banner()
         gobuster_select = input("\nSelect: ").strip()
         #target url
         if gobuster_select == "1":
-            gobuster_target = input("\nTarget URL (Specify https:// if the website is running on https): ").strip()
+            gobuster_target = input("\nTarget URL (Specify https:// if the website is running on https) or IP: ").strip()
             if gobuster_target == "" or " " in gobuster_target:
                 gobuster_target = ""
                 gobuster_target_command = ""
@@ -396,15 +397,22 @@ def gobuster_main():
                 print("\n[*] Wordlist is empty!")
                 useless = input("Enter any key to continue......")
                 continue
-
+            gobuster_output_prompt = input("\nDo you want to save the result to a file? (y/n): ").strip()
+            if gobuster_output_prompt == "y" or gobuster_output_prompt == "Y":
+                gobuster_output_name = input("Enter a new filename: ").strip().replace(" ","_")
+                if gobuster_output_name == "":
+                    gobuster_output_command = ""
+                    print("\n[*] Filename is empty!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                gobuster_output_command = "-o " +os.getcwd() + "/result/" + gobuster_output_name
+            print("\033[1;32m[+] Starting GoBuster......\033[00m")
+            os.system(gobuster_final_command+gobuster_output_command)
+            if gobuster_output_command != "":
+                print("\033[1;32m[+] File saved to {}\033[00m".format(gobuster_output_command.replace("-o","").strip()))
+            useless = input("[*] Process Completed! Enter any key to continue......")
 
             
-            
-
-
-
-#user agent default gobuster/3.1.0
-
 def main():
     print("\033[1;32m[+] Loading GoBuster Module\033[00m")
     if gobuster_self_check() == 1:
