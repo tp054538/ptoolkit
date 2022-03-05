@@ -13,7 +13,7 @@ def gobuster_self_check():
 def gobuster_wordlist_select_func():
     os.system("clear")
     print("""
-                Wordlists for Dir & File Brute FOrce (SecLists)
+                Wordlists for Dir & File Brute Force (SecLists)
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

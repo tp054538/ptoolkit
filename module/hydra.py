@@ -1,5 +1,6 @@
 import os
 import subprocess
+from module.sniper_scan import check_file_exist
 
 def hydra_self_check():
     hydra_checkstatus = subprocess.run("apt list 2>/dev/null | grep -E '^hydra/'", shell=True, stdout=subprocess.PIPE)
@@ -8,6 +9,94 @@ def hydra_self_check():
         return 1
     else:
         return 0
+
+def hydra_password_provided_wordlist():
+    os.system("clear")
+    print("""
+                         Password Wordlists (SecLists)
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. xato-net-10-million-passwords-1000000.txt
+    2. xato-net-10-million-passwords-100000.txt
+    3. xato-net-10-million-passwords-10000.txt
+    4. Most-Popular-Letter-Passes.txt
+    5. 10-million-password-list-top-1000000.txt
+    6. 10-million-password-list-top-100000.txt
+    7. 10k-most-common.txt
+    8. 100k-most-used-passwords-NCSC.txt
+    9. elitehacker.txt    (leaked database)
+   10. hotmail.txt          (leaked database)
+   11. NordVPN.txt          (leaked database)
+   12. UserPassCombo-Jay.txt
+
+*for more wordlists, browser at ./Wordlists/Passwords/ directory
+   99. Exit
+""")
+    wordlist_directory = os.getcwd() + "/Wordlists/Passwords/"
+    hydra_wordlist_select = input("\nSelect: ").strip()
+    if hydra_wordlist_select == "1":
+        return wordlist_directory + "xato-net-10-million-passwords-1000000.txt"
+    elif hydra_wordlist_select == "2":
+        return wordlist_directory + "xato-net-10-million-passwords-100000.txt"
+    elif hydra_wordlist_select == "3":
+        return wordlist_directory + "xato-net-10-million-passwords-10000.txt"
+    elif hydra_wordlist_select == "4":
+        return wordlist_directory + "Most-Popular-Letter-Passes.txt"
+    elif hydra_wordlist_select == "5":
+        return wordlist_directory + "Common-Credentials/10-million-password-list-top-1000000.txt"
+    elif hydra_wordlist_select == "6":
+        return wordlist_directory + "Common-Credentials/10-million-password-list-top-100000.txt"
+    elif hydra_wordlist_select == "7":
+        return wordlist_directory + "Common-Credentials/10k-most-common.txt"
+    elif hydra_wordlist_select == "8":
+        return wordlist_directory + "Common-Credentials/100k-most-used-passwords-NCSC.txt"
+    elif hydra_wordlist_select == "9":
+        return wordlist_directory + "Leaked-Databases/elitehacker.txt"
+    elif hydra_wordlist_select == "10":
+        return wordlist_directory + "Leaked-Databases/hotmail.txt"
+    elif hydra_wordlist_select == "11":
+        return wordlist_directory + "Leaked-Databases/NordVPN.txt"
+    elif hydra_wordlist_select == "12":
+        return wordlist_directory + "UserPassCombo-Jay.txt"
+    else:
+        return ""
+
+def hydra_username_provided_wordlist():
+    os.system("clear")
+    print("""
+                          Username Wordlist (SecLists)
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. cirt-default-usernames.txt
+    2. xato-net-10-million-usernames-dup.txt
+    3. CommonAdminBase64.txt
+    4. sap-default-usernames.txt
+    5. xato-net-10-million-usernames.txt
+    6. mssql-usernames-nansh0u-guardicore.txt
+    7. top-usernames-shortlist.txt
+
+   99. Exit
+""")
+    wordlist_directory = os.getcwd() + "/Wordlists/Usernames/"
+    hydra_wordlist_select = input("\nSelect: ").strip()
+    if hydra_wordlist_select == "1":
+        return wordlist_directory + "cirt-default-usernames.txt"
+    elif hydra_wordlist_select == "2":
+        return wordlist_directory + "xato-net-10-million-usernames-dup.txt"
+    elif hydra_wordlist_select == "3":
+        return wordlist_directory + "CommonAdminBase64.txt"
+    elif hydra_wordlist_select == "4":
+        return wordlist_directory + "sap-default-usernames.txt"
+    elif hydra_wordlist_select == "5":
+        return wordlist_directory + "xato-net-10-million-usernames.txt"
+    elif hydra_wordlist_select == "6":
+        return wordlist_directory + "mssql-usernames-nansh0u-guardicore.txt"
+    elif hydra_wordlist_select == "7":
+        return wordlist_directory + "top-usernames-shortlist.txt"
+    else:
+        return ""
 
 def hydra_service_banner():
     hydra_service_banner_select = ""
@@ -191,6 +280,21 @@ def hydra_banner():
         hydra_webform_banner = "For http(s)-get(post)-form only"
     else:
         hydra_webform_banner = "\033[1;32m" + hydra_webform_command.replace("\"","").strip() + "\033[00m"
+    
+    if hydra_username_command == "":
+        hydra_username_banner = "Username / Username Wordlist"
+    elif "-l" in hydra_username_command:
+        hydra_username_banner = "\033[1;32m" + hydra_username_command.replace("-l","").strip() + "\033[00m" + " (username)"
+    elif "-L" in hydra_username_command:
+        hydra_username_banner = "\033[1;32m" + hydra_username_command.replace("-L","").strip() + "\033[00m" + " (username wordlist)"
+
+    if hydra_password_command == "":
+        hydra_password_banner = "Password / Password Wordlist"
+    elif "-p" in hydra_password_command:
+        hydra_password_banner = "\033[1;32m" + hydra_password_command.replace("-p","").strip() + "\033[00m" + " (password)"
+    elif "-P" in hydra_password_command:
+        hydra_password_banner = "\033[1;32m" + hydra_password_command.replace("-P","").strip() + "\033[00m" + " (password wordlist)"
+
 
     os.system("clear")
     print("""
@@ -200,9 +304,11 @@ def hydra_banner():
 
     1. Target       : \033[1;32m"""+hydra_target_command+"""\033[00m
     2. Service      : \033[1;32m"""+hydra_service_command+"""\033[00m
+    3. Username     : """+hydra_username_banner+"""
+    4. Password     : """+hydra_password_banner+"""
 
-    3. Port         : """+hydra_port_banner+"""
-    4. Web Form     : """+hydra_webform_banner+"""
+    5. Port         : """+hydra_port_banner+"""
+    6. Web Form     : """+hydra_webform_banner+"""
 
 
     x.Quit once found positive -f   
@@ -216,17 +322,23 @@ Command: \033[1;32m"""+hydra_final_command+"""\033[00m
 
 
 def hydra_main():
-    global hydra_final_command, hydra_target_command, hydra_service_command, hydra_port_command, hydra_webform_command
+    global hydra_final_command, hydra_target_command, hydra_service_command, hydra_port_command, hydra_webform_command, hydra_username_command, hydra_password_command
 
     hydra_target_command = ""
     hydra_service_command = ""
     hydra_port_command = ""
     hydra_webform_command = ""
     hydra_cookie_command = ""
+    hydra_username_command = ""
+    hydra_username_single = ""
+    hydra_username_wordlist = ""
+    hydra_password_single = ""
+    hydra_password_command = ""
+    hydra_password_wordlist = ""
 
     hydra_select = ""
     while hydra_select != "99":
-        hydra_final_command = "hydra " + hydra_target_command + hydra_service_command + hydra_webform_command + hydra_port_command 
+        hydra_final_command = "hydra " + hydra_username_command + hydra_password_command + hydra_target_command + hydra_service_command + hydra_webform_command + hydra_port_command 
         hydra_banner()
         hydra_select = input("\nSelect: ").strip()
         #target
@@ -256,8 +368,104 @@ def hydra_main():
                     useless = input("Enter any key to continue......")
                     continue
             hydra_service_command = hydra_service + " "
-        #port
+        #username
         elif hydra_select == "3":
+            hydra_username_prompt = input("Type \"u\" for single username, \"w\" for username wordlist file. (u/w): ").strip()
+            #single username
+            if hydra_username_prompt == "u" or hydra_username_prompt == "U":
+                hydra_username_single = input("\nUsername / Login name: ").strip()
+                if hydra_username_single == "" or " " in hydra_username_single:
+                    hydra_username_single = ""
+                    hydra_username_command = ""
+                    print("\n[*] Field is empty / contain space!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                hydra_username_wordlist = ""
+            #wordlist
+            elif hydra_username_prompt == "w" or hydra_username_prompt == "W":
+                hydra_username_provided_prompt = input("Do you want to use provided wordlist? (y/n): ").strip()
+                if hydra_username_provided_prompt == "y" or hydra_username_provided_prompt == "Y":
+                    hydra_username_wordlist = hydra_username_provided_wordlist()
+                    if hydra_username_wordlist == "":
+                        hydra_username_command = ""
+                        print("\n[*] No File Selected!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                else:
+                    hydra_username_wordlist = input("\nWordlist Location: ").strip()
+                    if hydra_username_wordlist == "" or " " in hydra_username_wordlist:
+                        hydra_username_wordlist = ""
+                        hydra_username_command = ""
+                        print("\n[*] Field is empty / contain space!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                if check_file_exist(hydra_username_wordlist) != 1:
+                    hydra_username_wordlist = ""
+                    hydra_username_command = ""
+                    print("\n[*] File not found!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                hydra_username_single = ""
+            else:
+                hydra_username_command = ""
+                print("\n[*] Error! Enter \"w\" or \"u\" only.")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_username_single == "" and hydra_username_wordlist != "":
+                hydra_username_command = "-L " + hydra_username_wordlist + " "
+            elif hydra_username_single != "" and hydra_username_wordlist == "":
+                hydra_username_command = "-l " + hydra_username_single + " "
+        #password
+        elif hydra_select == "4":
+            hydra_password_prompt = input("Type \"p\" for single password, \"w\" for password wordlist file. (p/w): ").strip()
+            #single username
+            if hydra_password_prompt == "p" or hydra_password_prompt == "P":
+                hydra_password_single = input("\nPassword: ").strip()
+                if hydra_password_single == "" or " " in hydra_password_single:
+                    hydra_password_single = ""
+                    hydra_password_command = ""
+                    print("\n[*] Field is empty / contain space!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                hydra_password_wordlist = ""
+            #wordlist
+            elif hydra_password_prompt == "w" or hydra_password_prompt == "W":
+                hydra_password_provided_prompt = input("Do you want to use provided wordlist? (y/n): ").strip()
+                if hydra_password_provided_prompt == "y" or hydra_password_provided_prompt == "Y":
+                    hydra_password_wordlist = hydra_password_provided_wordlist() ##change
+                    if hydra_password_wordlist == "":
+                        hydra_password_command = ""
+                        print("\n[*] No File Selected!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                else:
+                    hydra_password_wordlist = input("\nWordlist Location: ").strip()
+                    if hydra_password_wordlist == "" or " " in hydra_password_wordlist:
+                        hydra_password_wordlist = ""
+                        hydra_password_command = ""
+                        print("\n[*] Field is empty / contain space!")
+                        useless = input("Enter any key to continue......")
+                        continue
+                if check_file_exist(hydra_password_wordlist) != 1:
+                    hydra_password_wordlist = ""
+                    hydra_password_command = ""
+                    print("\n[*] File not found!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                hydra_password_single = ""
+            else:
+                hydra_password_command = ""
+                print("\n[*] Error! Enter \"w\" or \"p\" only.")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_password_single == "" and hydra_password_wordlist != "":
+                hydra_password_command = "-P " + hydra_password_wordlist + " "
+            elif hydra_password_single != "" and hydra_password_wordlist == "":
+                hydra_password_command = "-p " + hydra_password_single + " "
+            
+
+        #port
+        elif hydra_select == "5":
             hydra_port = input("\nPort: ").strip()
             if hydra_port == "" or " " in hydra_port:
                 hydra_port = ""
@@ -277,7 +485,7 @@ def hydra_main():
                 continue
             hydra_port_command = "-s " + hydra_port + " " 
         #web form
-        elif hydra_select == "4":
+        elif hydra_select == "6":
             print("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
             print("\nFormat -> URL:Parameters:Correct/Incorrect Strings")
             print("URL:user=^USER^&pass=^PASS^:F=incorrectstrings(S=correctstrings)")
