@@ -364,6 +364,7 @@ def hydra_main():
 
     hydra_select = ""
     while hydra_select != "99":
+        hydra_output_command = ""
         hydra_final_command = "hydra " + hydra_username_command + hydra_password_command + hydra_speed_command + hydra_exit_found_command
         hydra_final_command += hydra_port_command + hydra_ssl_command + hydra_verbose_command + hydra_target_command + hydra_service_command + hydra_webform_command 
         hydra_banner()
@@ -622,8 +623,46 @@ def hydra_main():
                 hydra_verbose_command = ""
         #launch attack
         elif hydra_select == "90":
-            #check required field is empty (1, 3~4)
-            pass
+            #check required field is empty (1~4)
+            if hydra_target_command == "":
+                print("\n[*] Target is required!")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_service_command == "":
+                print("\n[*] Service is required!")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_username_command == "":
+                print("\n[*] Username / username wordlist is required!")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_password_command == "":
+                print("\n[*] Password / password wordlist is required!")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_service_command.strip() == "http-get-form" or hydra_service_command.strip() == "http-post-form" or hydra_service_command.strip() == "https-get-form" or hydra_service_command.strip() == "https-post-form":
+                if hydra_webform_command == "":
+                    print("\n[*] Web Form is required for {}!".format(hydra_service_command))
+                    useless = input("Enter any key to continue......")
+                    continue
+            #prompt for output
+            hydra_output_prompt = input("\nDo you want to save result to file? (y/n)").strip()
+            if hydra_output_prompt == "y" or hydra_output_prompt == "Y":
+                hydra_filename = input("\nEnter a name for new file: ").strip().replace(" ","_")
+                if hydra_filename == "":
+                    print("\n[*] Field is empty!")
+                    useless = input("Enter any key to continue......")
+                    continue
+                hydra_output_command = " -o ./result/" + hydra_filename
+            #launch
+            print("\033[1;32m[+] Starting Hydra......\033[00m")
+            if hydra_output_command == "":
+                os.system(hydra_final_command)
+            else:
+                os.system(hydra_final_command+hydra_output_command)
+                print("\033[1;32m[+] File saved to {}\033[00m".format(hydra_output_command.replace("-o","").strip()))
+            useless = input("[*] Process Completed! Enter any key to continue......")
+
 
 def main():
     print("\033[1;32m[+] Loading Hydra Module\033[00m")
