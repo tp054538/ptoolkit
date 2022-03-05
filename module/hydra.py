@@ -272,7 +272,7 @@ def hydra_service_banner():
 
 def hydra_banner():
     if hydra_port_command == "":
-        hydra_port_banner = "Specify if the service is not running on default port"
+        hydra_port_banner = "Specify only if the service is not running on default port"
     else:
         hydra_port_banner = "\033[1;32m" + hydra_port_command.replace("-s","").strip() + "\033[00m"
     
@@ -290,11 +290,30 @@ def hydra_banner():
 
     if hydra_password_command == "":
         hydra_password_banner = "Password / Password Wordlist"
-    elif "-p" in hydra_password_command:
+    elif "-p " in hydra_password_command:
         hydra_password_banner = "\033[1;32m" + hydra_password_command.replace("-p","").strip() + "\033[00m" + " (password)"
-    elif "-P" in hydra_password_command:
+    elif "-P " in hydra_password_command:
         hydra_password_banner = "\033[1;32m" + hydra_password_command.replace("-P","").strip() + "\033[00m" + " (password wordlist)"
+    
+    if hydra_speed_command == "":
+        hydra_speed_banner = "\033[1;32m" + "16 (Default)" + "\033[00m"
+    else:
+        hydra_speed_banner = "\033[1;32m" + hydra_speed_command.replace("-t","").strip() + "\033[00m"
+    
+    if hydra_exit_found_flag == 1:
+        hydra_exit_found_color = "\033[1;32m" + "Exit when a pair of correct credential is found"
+    else:
+        hydra_exit_found_color = "\033[00m" + "Exit when a pair of correct credential found (Default = Test all values in wordlist)"
 
+    if hydra_ssl_flag == 1:
+        hydra_ssl_color = "\033[1;32m"
+    else:
+        hydra_ssl_color = "\033[00m"
+    
+    if hydra_verbose_flag == 1:
+        hydra_verbose_color = "\033[1;32m"
+    else:
+        hydra_verbose_color = "\033[00m"
 
     os.system("clear")
     print("""
@@ -309,10 +328,10 @@ def hydra_banner():
 
     5. Port         : """+hydra_port_banner+"""
     6. Web Form     : """+hydra_webform_banner+"""
-
-
-    x.Quit once found positive -f   
-
+    7. Speed        : """+hydra_speed_banner+"""
+    8. """+hydra_exit_found_color+"""\033[00m
+    9. """+hydra_ssl_color+"""Perform SSL Connect\033[00m
+   10. """+hydra_verbose_color+"""Verbose\033[00m
 
 Command: \033[1;32m"""+hydra_final_command+"""\033[00m
 
@@ -322,8 +341,8 @@ Command: \033[1;32m"""+hydra_final_command+"""\033[00m
 
 
 def hydra_main():
-    global hydra_final_command, hydra_target_command, hydra_service_command, hydra_port_command, hydra_webform_command, hydra_username_command, hydra_password_command
-
+    global hydra_final_command, hydra_target_command, hydra_service_command, hydra_port_command, hydra_webform_command, hydra_username_command, hydra_password_command, hydra_speed_command, hydra_exit_found_flag
+    global hydra_ssl_flag, hydra_verbose_flag
     hydra_target_command = ""
     hydra_service_command = ""
     hydra_port_command = ""
@@ -335,10 +354,18 @@ def hydra_main():
     hydra_password_single = ""
     hydra_password_command = ""
     hydra_password_wordlist = ""
+    hydra_speed_command = ""
+    hydra_exit_found_flag = 0
+    hydra_exit_found_command = ""
+    hydra_verbose_flag = 0
+    hydra_verbose_command = ""
+    hydra_ssl_flag = 0
+    hydra_ssl_command = ""
 
     hydra_select = ""
     while hydra_select != "99":
-        hydra_final_command = "hydra " + hydra_username_command + hydra_password_command + hydra_target_command + hydra_service_command + hydra_webform_command + hydra_port_command 
+        hydra_final_command = "hydra " + hydra_username_command + hydra_password_command + hydra_speed_command + hydra_exit_found_command
+        hydra_final_command += hydra_port_command + hydra_ssl_command + hydra_verbose_command + hydra_target_command + hydra_service_command + hydra_webform_command 
         hydra_banner()
         hydra_select = input("\nSelect: ").strip()
         #target
@@ -432,7 +459,7 @@ def hydra_main():
             elif hydra_password_prompt == "w" or hydra_password_prompt == "W":
                 hydra_password_provided_prompt = input("Do you want to use provided wordlist? (y/n): ").strip()
                 if hydra_password_provided_prompt == "y" or hydra_password_provided_prompt == "Y":
-                    hydra_password_wordlist = hydra_password_provided_wordlist() ##change
+                    hydra_password_wordlist = hydra_password_provided_wordlist() 
                     if hydra_password_wordlist == "":
                         hydra_password_command = ""
                         print("\n[*] No File Selected!")
@@ -462,8 +489,6 @@ def hydra_main():
                 hydra_password_command = "-P " + hydra_password_wordlist + " "
             elif hydra_password_single != "" and hydra_password_wordlist == "":
                 hydra_password_command = "-p " + hydra_password_single + " "
-            
-
         #port
         elif hydra_select == "5":
             hydra_port = input("\nPort: ").strip()
@@ -555,7 +580,50 @@ def hydra_main():
                     continue
                 hydra_cookie_command = ":H=Cookie\: " + hydra_cookie
             hydra_webform_command = "\"" + hydra_webform.strip() + hydra_cookie_command.strip() + "\" "
-
+        #speed
+        elif hydra_select == "7":
+            try:
+                hydra_speed = int(input("\nSpeed: ").strip())
+                if hydra_speed < 1:
+                    raise ValueError
+            except ValueError:
+                hydra_speed = 16
+                hydra_speed_command = ""
+                print("\n[*] Error Value!")
+                useless = input("Enter any key to continue......")
+                continue
+            if hydra_speed != 16:
+                hydra_speed_command = "-t " + str(hydra_speed) + " "
+            else:
+                hydra_speed_command = ""
+        #exit once found
+        elif hydra_select == "8":
+            if hydra_exit_found_flag != 1:
+                hydra_exit_found_flag = 1
+                hydra_exit_found_command = "-f "
+            else:
+                hydra_exit_found_flag = 0
+                hydra_exit_found_command = ""
+        #SSL Connect
+        elif hydra_select == "9":
+            if hydra_ssl_flag != 1:
+                hydra_ssl_flag = 1
+                hydra_ssl_command = "-S "
+            else:
+                hydra_ssl_flag = 0
+                hydra_ssl_command = ""
+        #verbose
+        elif hydra_select == "10":
+            if hydra_verbose_flag != 1:
+                hydra_verbose_flag = 1
+                hydra_verbose_command = "-v "
+            else:
+                hydra_verbose_flag = 0
+                hydra_verbose_command = ""
+        #launch attack
+        elif hydra_select == "90":
+            #check required field is empty (1, 3~4)
+            pass
 
 def main():
     print("\033[1;32m[+] Loading Hydra Module\033[00m")
