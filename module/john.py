@@ -1,6 +1,7 @@
 import os
 import subprocess
 from module.sniper_scan import check_file_exist
+from module.hydra import hydra_password_provided_wordlist
 
 def john_self_check():
     john_checkstatus = subprocess.run("apt list 2>/dev/null | grep -E '^john/'", shell=True, stdout=subprocess.PIPE)
@@ -9,6 +10,50 @@ def john_self_check():
         return 1
     else:
         return 0
+
+def john_print_incre():
+    print("\n- - - - - - - - -Incremental Modes- - - - - - - - -")
+    print("\n 1. ASCII (95 characters)")
+    print(" 2. LM_ASCII (for LM hashes only)")
+    print(" 3. Alnum (62 alphanumeric characters)")
+    print(" 4. Alnumspace (62 alphanumeric characters + space)")
+    print(" 5. Alpha (52 characters)")
+    print(" 6. LowerNum (lowercase letter + numbers , 36 characters)")
+    print(" 7. UpperNum (uppercase letter + numbers , 36 characters)")
+    print(" 8. LowerSpace (lowercase + space , 27 characters)")
+    print(" 9. Lower (lowercase letters, 26 characters)")
+    print("10. Upper (uppercase letters, 26 characters)")
+    print("11. Digits (1~10)")
+    try:
+        john_incre_input = int(input("\nSelect a mode: ").strip())
+        if john_incre_input < 1 or john_incre_input > 11:
+            raise ValueError
+    except ValueError:
+        return ""
+    if john_incre_input == 1:
+        return "ascii"
+    elif john_incre_input == 2:
+        return "lm_ascii"
+    elif john_incre_input == 3:
+        return "alnum"
+    elif john_incre_input == 4:
+        return "alnumspace"
+    elif john_incre_input == 5:
+        return "alpha"
+    elif john_incre_input == 6:
+        return "lowernum"
+    elif john_incre_input == 7:
+        return "uppernum"
+    elif john_incre_input == 8:
+        return "lowerspace"
+    elif john_incre_input == 9:
+        return "lower"
+    elif john_incre_input == 10:
+        return "upper"
+    elif john_incre_input == 11:
+        return "digits"
+    else:
+        return ""
 
 def john_show_supported_format(viewtype):
     global john_supported_format_list_lower
@@ -85,7 +130,7 @@ def john_banner():
         john_wordlist_banner = "\033[1;32m" + john_wordlist_command.replace("--wordlist=","").strip() + "\033[00m"
     
     if john_format_command == "":
-        john_format_banner = "Default = Auto detect hash format (might not be accurate)"
+        john_format_banner = "Default = Auto Detect (specify to increase accuracy)"
     else:
         john_format_banner = "\033[1;32m" + john_format_command.replace("--format=","").strip() + "\033[00m"
     
@@ -103,6 +148,11 @@ def john_banner():
         john_max_banner = "Specify maximum length words to look for in wordlist"
     else:
         john_max_banner = "\033[1;32m" + john_max_length_command.replace("--max-length=","").strip() + "\033[00m"
+    
+    if john_incremental_command == "":
+        john_incremental_banner = "Use Brute Force"
+    else:
+        john_incremental_banner = "\033[1;32m" + john_incremental_command.replace("--incremental:","").strip() + "\033[00m"
 
     os.system("clear")
     print("""
@@ -112,11 +162,12 @@ def john_banner():
 
     1. File         :   \033[1;32m"""+john_target+"""\033[00m
     2. Wordlist     :   """+john_wordlist_banner+"""
-    3. Hash Format  :   """+john_format_banner+"""
+    3. Incremental  :   """+john_incremental_banner+"""
+    4. Hash Format  :   """+john_format_banner+"""
 
-    4. """+john_mangle_color+"""Mangle Mode\033[00m - Produce additional likely password based on the wordlist
-    5. Min Length   :   """+john_min_banner+"""
-    6. Max Length   :   """+john_max_banner+"""
+    5. """+john_mangle_color+"""Mangle Mode\033[00m - Produce additional likely password based on the wordlist
+    6. Min Length   :   """+john_min_banner+"""
+    7. Max Length   :   """+john_max_banner+"""
 
 Command: \033[1;32m"""+john_final_command+"""\033[00m
 
@@ -125,7 +176,7 @@ Command: \033[1;32m"""+john_final_command+"""\033[00m
 """)
 
 def john_main():
-    global john_final_command, john_target, john_wordlist_command, john_format_command, john_mangle_flag, john_min_length_command, john_max_length_command
+    global john_final_command, john_target, john_wordlist_command, john_format_command, john_mangle_flag, john_min_length_command, john_max_length_command, john_incremental_command
     john_target = ""
     john_wordlist_command = ""
     john_format_command = ""
@@ -133,10 +184,11 @@ def john_main():
     john_mangle_flag = 0
     john_min_length_command = ""
     john_max_length_command = ""
+    john_incremental_command = ""
 
     john_select = ""
     while john_select != "99":
-        john_final_command = "john " + john_wordlist_command + john_mangle_command + john_format_command + john_min_length_command + john_max_length_command +  john_target
+        john_final_command = "john " + john_incremental_command + john_wordlist_command + john_mangle_command + john_format_command + john_min_length_command + john_max_length_command +  john_target
         john_banner()
         john_select = input("\nSelect: ").strip()
         #password/hash file to crack
@@ -154,13 +206,16 @@ def john_main():
                 continue
         #wordlist
         elif john_select == "2":
-            john_wordlist = input("\nWordlist File: ").strip()
+            print("\nType \"wordlists\" to select from provided wordlists.")
+            john_wordlist = input("Wordlist File: ").strip()
             if john_wordlist == "" or " " in john_wordlist:
                 john_wordlist = ""
                 john_wordlist_command = ""
                 print("\n[*] Field is empty / contain space!")
                 useless = input("Enter any key to continue......")
                 continue
+            if john_wordlist == "wordlists":
+                john_wordlist = hydra_password_provided_wordlist()
             if check_file_exist(john_wordlist) != 1:
                 john_wordlist = ""
                 john_wordlist_command = ""
@@ -168,8 +223,20 @@ def john_main():
                 useless = input("Enter any key to continue......")
                 continue
             john_wordlist_command = "--wordlist=" + john_wordlist + " "
-        #hash format
+            john_incremental_command = ""
+        #incremental
         elif john_select == "3":
+            john_incremental = john_print_incre()
+            if john_incremental == "":
+                john_incremental_command = ""
+                print("\nError Value / Out of Range! 1~10 only.")
+                useless = input("Enter any key to continue......")
+                continue
+            john_incremental_command = "--incremental:" + john_incremental + " "
+            john_wordlist_command = ""
+            john_wordlist = ""
+        #hash format
+        elif john_select == "4":
             john_show_supported_format(3)
             print("\nType \"search\" to search for supported format. Type \"View\" to view all supported format.")
             john_format = input("Hash Format: ").strip()
@@ -196,7 +263,7 @@ def john_main():
                 continue
             john_format_command = "--format=" + john_format + " "
         #Mangle
-        elif john_select == "4":
+        elif john_select == "5":
             if john_mangle_flag != 1:
                 john_mangle_flag = 1
                 john_mangle_command = "--rules:Jumbo "
@@ -204,7 +271,7 @@ def john_main():
                 john_mangle_flag = 0
                 john_mangle_command = ""
         #min length
-        elif john_select == "5":
+        elif john_select == "6":
             try:
                 john_min_length = int(input("\nMinimum Length: ").strip())
                 if john_min_length < 1:
@@ -222,7 +289,7 @@ def john_main():
                     continue
             john_min_length_command = "--min-length=" + str(john_min_length) + " "
         #max length
-        elif john_select == "6":
+        elif john_select == "7":
             try:
                 john_max_length = int(input("\nMaximum Length: ").strip())
                 if john_max_length < 1:
@@ -239,6 +306,25 @@ def john_main():
                     useless = input("Enter any key to continue......")
                     continue
             john_max_length_command = "--max-length=" + str(john_max_length) + " "
+        #launch attack
+        elif john_select == "90":
+            if john_target == "":
+                print("\n[*] No file is selected!")
+                useless = input("Enter any key to continue......")
+                continue
+            if john_wordlist_command == "" and john_incremental_command == "":
+                print("\n[*] Specify Wordlist or Incremental Mode to launch attack!")
+                useless = input("Enter any key to continue......")
+                continue
+            if john_mangle_command != "" and john_incremental_command != "":
+                print("\n[*] Mangle mode can be used with wordlist only!")
+                useless = input("Enter any key to continue......")
+                continue
+            print("\033[1;32m[+] Starting JohnTheRipper......\033[00m")
+            os.system(john_final_command)
+            useless = input("\033[1;32m[*] Process Completed!\033[00m\nEnter any key to continue......")
+
+
 
             
 

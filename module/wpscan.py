@@ -2,6 +2,7 @@ import os
 import subprocess
 from module import sniper_scan
 from module import tor
+from module.hydra import hydra_password_provided_wordlist
 
 def wpscan_self_check():
     print("\033[1;32m[+] Loading WpScan Module.\033[00m")
@@ -462,12 +463,15 @@ def main():
             #password
             elif wpscan_select == "5":
                 print("\nCurrent Directory = \033[1;32m{}/\033[00m".format(os.getcwd()))
+                print("*Type \"wordlists\" to select from provided password wordlists.")
                 wpscan_password = input("Password file path: ").strip()
                 if wpscan_password == "":
                     wpscan_password_command = ""
                     print("\n[*] Password file path cannot be empty!")
                     useless = input("Enter any key to continue......")
                     continue
+                if wpscan_password == "wordlists":
+                    wpscan_password = hydra_password_provided_wordlist()
                 #check file exist
                 if sniper_scan.check_file_exist(wpscan_password) == 0:
                     wpscan_password = ""

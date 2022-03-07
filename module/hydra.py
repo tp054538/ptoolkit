@@ -30,7 +30,7 @@ def hydra_password_provided_wordlist():
    11. NordVPN.txt          (leaked database)
    12. UserPassCombo-Jay.txt
 
-*for more wordlists, browser at ./Wordlists/Passwords/ directory
+*for more wordlists, browse at ./Wordlists/Passwords/ directory
    99. Exit
 """)
     wordlist_directory = os.getcwd() + "/Wordlists/Passwords/"
