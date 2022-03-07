@@ -129,14 +129,31 @@ def exploitation_menu():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. SQL injection (SQLmap)                2. Web/Vuln Scan (Sn1per)
+    1. SQL injection (SQLmap)         2. Directory and Files Discovery (GoBuster)
 
+    3. Login Cracker (Hydra)          4. Password Cracker (JohnTheRipper)
+
+    5. MITM (Ettercap)                6. Social Engineering Toolkit (SET)
+
+    7. Denial-of-Service (Slowloris)
 
    99. Exit
     """)
         exploitation_select = input("Select: ").strip()
         if exploitation_select == "1":
             sqlmap.main()
+        elif exploitation_select == "2":
+            gobuster.main()
+        elif exploitation_select == "3":
+            hydra.main()
+        elif exploitation_select == "4":
+            john.main()
+        elif exploitation_select == "5":
+            ettercap.main()
+        elif exploitation_select == "6":
+            set.main()
+        elif exploitation_select == "7":
+            slowloris.main()
 
 #main program
 if __name__ == '__main__':  
