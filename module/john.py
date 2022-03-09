@@ -106,7 +106,7 @@ dummy, crypt"""
             return 0
         for i in range(len(john_supported_format_list)):
             if john_supported_input.lower() in john_supported_format_list[i].lower():
-                search_store_list.append(john_supported_format_list[i])
+                search_store_list.append(john_supported_format_list[i].replace(john_supported_input,"\033[1;31m"+john_supported_input+"\033[00m"))
         if len(search_store_list) == 0:
             print("\nNo format found!")
             useless = input("Enter any key to continue......")
