@@ -95,19 +95,99 @@ def msfvenom_check_valid_encoder(encoder_input):
         return 0
     
 
+def msfvenom_check_format(format):
+    #exec format
+    msf_exec_format_list = []
+    with open("module/config/msfvenom_exec_format") as execfile:
+        exec = execfile.readlines()
+        for line in exec:
+            msf_exec_format_list.append(line.replace("\n","").strip())
+        execfile.close()
+    #trans format
+    msf_trans_format_list = []
+    with open("module/config/msfvenom_trans_format") as tranfile:
+        trans = tranfile.readlines()
+        for line in trans:
+            msf_trans_format_list.append(line.replace("\n","").strip())
+        tranfile.close()
+    #print all executable format
+    if format == "format-1":
+        print("\n\033[1;32mMsfvenom Executable Formats: \033[00m")
+        for i in range(len(msf_exec_format_list)):
+            print("{}. {}".format(i+1,msf_exec_format_list[i]))
+        useless = input("\nEnter any key to continue......")
+    #print all transform format
+    elif format == "format-2":
+        print("\n\033[1;32mMsfvenom Transform Formats: \033[00m")
+        for i in range(len(msf_trans_format_list)):
+            print("{}. {}".format(i+1,msf_trans_format_list[i]))
+        useless = input("\nEnter any key to continue......")
+    #validate if format exist
+    else:
+        for i in range(len(msf_exec_format_list)):
+            if format.strip() == msf_exec_format_list[i].strip():
+                return 1
+        for i in range(len(msf_trans_format_list)):
+            if format.strip() == msf_trans_format_list[i].strip():
+                return 1
+        return 0
+
 def msfvenom_banner():
+    if msfvenom_payload_command == "":
+        msf_payload_banner = ""
+    else:
+        msf_payload_banner = "\033[1;32m" + msfvenom_payload_command.replace("-p ","").strip() + "\033[00m"
+    
+    if msfvenom_encoder_command == "":
+        msf_encoder_banner = ""
+    else:
+        msf_encoder_banner = "\033[1;32m" + msfvenom_encoder_command.replace("-e ","").strip() + "\033[00m"
+    
+    if msfvenom_iteration_command == "":
+        msf_iteration_banner = ""
+    else:
+        msf_iteration_banner = "\033[1;32m" + msfvenom_iteration_command.replace("-i ","").strip() + "\033[00m"
+    
+    if msfvenom_format_command == "":
+        msf_format_banner = ""
+    else:
+        msf_format_banner = "\033[1;32m" + msfvenom_format_command.replace("-f ","").strip() + "\033[00m"
+    
+    if msfvenom_1_command == "":
+        msfvenom_1_banner = "Check payload's argument with 91. and enter here."
+    else:
+        msfvenom_1_banner = "\033[1;32m" + msfvenom_1_command.strip() + "\033[00m"
+    
+    if msfvenom_2_command == "":
+        msfvenom_2_banner = "Check payload's argument with 91. and enter here."
+    else:
+        msfvenom_2_banner = "\033[1;32m" + msfvenom_2_command.strip() + "\033[00m"
+    
+    if msfvenom_3_command == "":
+        msfvenom_3_banner = "Check payload's argument with 91. and enter here."
+    else:
+        msfvenom_3_banner = "\033[1;32m" + msfvenom_3_command.strip() + "\033[00m"
+    
+    if msfvenom_4_command == "":
+        msfvenom_4_banner = "Check payload's argument with 91. and enter here."
+    else:
+        msfvenom_4_banner = "\033[1;32m" + msfvenom_4_command.strip() + "\033[00m"
+
     os.system("clear")
     print("""
                         MsfVenom
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Payload      :   s
-    2. Encoder      :   s
-    3. Argument 1   :   s
-    4. Argument 2   :   s
-    5. Argument 3   :   s
-    6. Argument 4   :   s
+    1. Payload      :   """+msf_payload_banner+"""
+    2. Encoder      :   """+msf_encoder_banner+"""
+    3. Iteration    :   """+msf_iteration_banner+"""
+    4. Format       :   """+msf_format_banner+"""
+
+    5. Argument 1   :   """+msfvenom_1_banner+"""
+    6. Argument 2   :   """+msfvenom_2_banner+"""
+    7. Argument 3   :   """+msfvenom_3_banner+"""
+    8. Argument 4   :   """+msfvenom_4_banner+"""
 
 Command: \033[1;32m"""+msfvenom_final_command+"""\033[00m
    
@@ -117,13 +197,20 @@ Command: \033[1;32m"""+msfvenom_final_command+"""\033[00m
 """)
 
 def msfvenom_main():
-    global msfvenom_final_command, msfvenom_payload_command, msfvenom_encoder_command
+    global msfvenom_final_command, msfvenom_payload_command, msfvenom_encoder_command, msfvenom_iteration_command, msfvenom_format_command
+    global msfvenom_1_command, msfvenom_2_command, msfvenom_3_command, msfvenom_4_command
     msfvenom_payload_command = ""
     msfvenom_encoder_command = ""
+    msfvenom_iteration_command = ""
+    msfvenom_format_command = ""
+    msfvenom_1_command = ""
+    msfvenom_2_command = ""
+    msfvenom_3_command = ""
+    msfvenom_4_command = ""
 
     msfvenom_select = ""
     while msfvenom_select != "99":
-        msfvenom_final_command = "msfvenom " + msfvenom_payload_command + msfvenom_encoder_command
+        msfvenom_final_command = "msfvenom " + msfvenom_payload_command + msfvenom_encoder_command + msfvenom_iteration_command + msfvenom_format_command + msfvenom_1_command + msfvenom_2_command
         msfvenom_banner()
         msfvenom_select = input("\nSelect: ").strip()
 
@@ -148,7 +235,7 @@ def msfvenom_main():
             if msfvenom_check_valid_payload(msfvenom_payload) != 1:
                 msfvenom_payload = ""
                 msfvenom_payload_command = ""
-                print("\n[*] Invalid payload! Search or view all avaialbe payloads to confirm if its available.")######
+                print("\n[*] Invalid payload! Search or view all avaialbe payloads to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_payload_command = "-p " + msfvenom_payload + " "
@@ -171,10 +258,186 @@ def msfvenom_main():
             if msfvenom_check_valid_encoder(msfvenom_encoder) != 1:
                 msfvenom_encoder = ""
                 msfvenom_encoder_command = ""
-                print("\n[*] Invalid encoder! Search or view all avaialbe encoders to confirm if its available.")######
+                print("\n[*] Invalid encoder! Search or view all avaialbe encoders to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_encoder_command = "-e " + msfvenom_encoder + " "
+        #Iteration
+        elif msfvenom_select == "3":
+            if msfvenom_encoder_command == "":
+                msfvenom_iteration = 0
+                msfvenom_iteration_command = ""
+                print("\n[*] Specify encoder first before iteration!")
+                useless = input("Enter any key to continue......")
+                continue
+            try:
+                msfvenom_iteration = int(input("\nIteration: ").strip())
+                if msfvenom_iteration < 1:
+                    raise ValueError
+            except ValueError:
+                msfvenom_iteration = 0
+                msfvenom_iteration_command = ""
+                print("\n[*] Error Value! Positive integer only.")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_iteration_command = "-i " + str(msfvenom_iteration) + " "
+        #Formats
+        elif msfvenom_select == "4":
+            print("\nType \"format-1\" to view all executable formats or \"format-2\" to view all transforms format.")
+            msfvenom_format = input("\nFormat: ").strip().lower()
+            if msfvenom_format == "" or " " in msfvenom_format:
+                msfvenom_format = ""
+                msfvenom_format_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_format == "format-1" or msfvenom_format == "format-2":
+                msfvenom_check_format(msfvenom_format)
+                continue
+            #check if format exist
+            if msfvenom_check_format(msfvenom_format) != 1:
+                msfvenom_format = ""
+                msfvenom_format_command = ""
+                print("\n[*] Invalid format! View all avaialbe formats to see supported formats.")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_format_command = "-f " + msfvenom_format + " "
+        #4 arguments name cannot be duplicated
+        #Arguments 1
+        elif msfvenom_select == "5":
+            if msfvenom_payload_command == "":
+                msfvenom_1_command = ""
+                print("\n[*] Specify payload first before arguments!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_1_input = input("\nArgument (format -> name=value) (Eg. LHOST=127.0.0.1) : ").strip()
+            if msfvenom_1_input == "" or " " in msfvenom_1_input:
+                msfvenom_1_input = ""
+                msfvenom_1_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_1_input.count("=") != 1:
+                msfvenom_1_input = ""
+                msfvenom_1_command = ""
+                print("\n[*] Error format!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "" in msfvenom_1_input.split("="):
+                msfvenom_1_input = ""
+                msfvenom_1_command = ""
+                print("\n[*] No argument name / value provided!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_1_input.split("=")[0].lower() == msfvenom_2_command.strip().split("=")[0].lower() or msfvenom_1_input.split("=")[0].lower() == msfvenom_3_command.strip().split("=")[0].lower() or msfvenom_1_input.split("=")[0].lower() == msfvenom_4_command.strip().split("=")[0].lower():
+                msfvenom_1_input = ""
+                msfvenom_1_command = ""
+                print("\n[*] Duplicated argument!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_1_command = msfvenom_1_input + " "
+        #Argument 2
+        elif msfvenom_select == "6":
+            if msfvenom_payload_command == "":
+                msfvenom_2_command = ""
+                print("\n[*] Specify payload first before arguments!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_2_input = input("\nArgument (format -> name=value) (Eg. LHOST=127.0.0.1) : ").strip()
+            if msfvenom_2_input == "" or " " in msfvenom_2_input:
+                msfvenom_2_input = ""
+                msfvenom_2_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_2_input.count("=") != 1:
+                msfvenom_2_input = ""
+                msfvenom_2_command = ""
+                print("\n[*] Error format!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "" in msfvenom_2_input.split("="):
+                msfvenom_2_input = ""
+                msfvenom_2_command = ""
+                print("\n[*] No argument name / value provided!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_2_input.split("=")[0].lower() == msfvenom_1_command.strip().split("=")[0].lower() or msfvenom_2_input.split("=")[0].lower() == msfvenom_3_command.strip().split("=")[0].lower() or msfvenom_2_input.split("=")[0].lower() == msfvenom_4_command.strip().split("=")[0].lower():
+                msfvenom_2_input = ""
+                msfvenom_2_command = ""
+                print("\n[*] Duplicated argument!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_2_command = msfvenom_2_input + " "
+        #Argument 3
+        elif msfvenom_select == "7":
+            if msfvenom_payload_command == "":
+                msfvenom_3_command = ""
+                print("\n[*] Specify payload first before arguments!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_3_input = input("\nArgument (format -> name=value) (Eg. LHOST=127.0.0.1) : ").strip()
+            if msfvenom_3_input == "" or " " in msfvenom_3_input:
+                msfvenom_3_input = ""
+                msfvenom_3_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_3_input.count("=") != 1:
+                msfvenom_3_input = ""
+                msfvenom_3_command = ""
+                print("\n[*] Error format!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "" in msfvenom_3_input.split("="):
+                msfvenom_3_input = ""
+                msfvenom_3_command = ""
+                print("\n[*] No argument name / value provided!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_3_input.split("=")[0].lower() == msfvenom_1_command.strip().split("=")[0].lower() or msfvenom_3_input.split("=")[0].lower() == msfvenom_2_command.strip().split("=")[0].lower() or msfvenom_3_input.split("=")[0].lower() == msfvenom_4_command.strip().split("=")[0].lower():
+                msfvenom_3_input = ""
+                msfvenom_3_command = ""
+                print("\n[*] Duplicated argument!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_3_command = msfvenom_3_input + " "
+        #Argument 4
+        elif msfvenom_select == "8":
+            if msfvenom_payload_command == "":
+                msfvenom_4_command = ""
+                print("\n[*] Specify payload first before arguments!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_4_input = input("\nArgument (format -> name=value) (Eg. LHOST=127.0.0.1) : ").strip()
+            if msfvenom_4_input == "" or " " in msfvenom_4_input:
+                msfvenom_4_input = ""
+                msfvenom_4_command = ""
+                print("\n[*] Field is empty / contain space!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_4_input.count("=") != 1:
+                msfvenom_4_input = ""
+                msfvenom_4_command = ""
+                print("\n[*] Error format!")
+                useless = input("Enter any key to continue......")
+                continue
+            if "" in msfvenom_4_input.split("="):
+                msfvenom_4_input = ""
+                msfvenom_4_command = ""
+                print("\n[*] No argument name / value provided!")
+                useless = input("Enter any key to continue......")
+                continue
+            if msfvenom_4_input.split("=")[0].lower() == msfvenom_1_command.strip().split("=")[0].lower() or msfvenom_4_input.split("=")[0].lower() == msfvenom_2_command.strip().split("=")[0].lower() or msfvenom_4_input.split("=")[0].lower() == msfvenom_3_command.strip().split("=")[0].lower():
+                msfvenom_4_input = ""
+                msfvenom_4_command = ""
+                print("\n[*] Duplicated argument!")
+                useless = input("Enter any key to continue......")
+                continue
+            msfvenom_4_command = msfvenom_4_input + " "
+
+
+
         #check payload arguments
         elif msfvenom_select == "91":
             if msfvenom_payload_command == "":
