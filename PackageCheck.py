@@ -1,8 +1,6 @@
 from queue import Queue
 import subprocess
 import multiprocessing
-from sys import stdout
-import time
 import os
 
 #need to add !!apt update!! to get latest packages
@@ -175,6 +173,17 @@ def sniper_check(q):
     else:
         sniper_checkr = "Sn1per Not Installed"
     return q.put(sniper_checkr)
+
+def git_check(q):
+    git_s = subprocess.run("apt list 2>/dev/null | grep -E '^git/'", shell=True, stdout=subprocess.PIPE)
+    git_ss = git_s.stdout.decode('ascii')
+    if("installed" in git_ss):
+        git_checkr = "Git Installed"
+    elif("upgradable" in git_ss):
+        git_checkr = "Git Upgradeable"
+    else:
+        git_checkr = "Git Not Installed"
+    return q.put(git_checkr)
  ###################################################################   
 
 def self_check(): #run all packages check
@@ -197,6 +206,7 @@ def self_check(): #run all packages check
     msfvenom = multiprocessing.Process(target=msfvenom_check, args=(q,))
     slowloris = multiprocessing.Process(target=slowloris_check, args=(q,))
     sniper = multiprocessing.Process(target=sniper_check, args=(q,))
+    git = multiprocessing.Process(target=git_check, args=(q,))
 
     tor.start()         # start multiprocessing
     nmap.start()
@@ -213,6 +223,7 @@ def self_check(): #run all packages check
     msfvenom.start()
     slowloris.start()
     sniper.start()
+    git.start()
 
     tor.join()              #join() wait the program to end
     nmap.join()
@@ -229,6 +240,7 @@ def self_check(): #run all packages check
     msfvenom.join()
     slowloris.join()
     sniper.join()
+    git.join()
 
     for i in range(q.qsize()):    #qsize() get the Queue size, q.get to retrieve all value in the queue (FIFO)
         packages_list.append(q.get())
