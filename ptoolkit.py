@@ -4,6 +4,7 @@ import PackageInstall
 import PackageUpdate
 import PackageUninstall
 from module import *
+from module.msfvenom import msfvenom_main
 
 
 def prRed(printinput):
@@ -139,7 +140,7 @@ def exploitation_menu():
 
    99. Exit
     """)
-        exploitation_select = input("Select: ").strip()
+        exploitation_select = input("\nSelect: ").strip()
         if exploitation_select == "1":
             sqlmap.main()
         elif exploitation_select == "2":
@@ -154,6 +155,23 @@ def exploitation_menu():
             set.main()
         elif exploitation_select == "7":
             slowloris.main()
+
+def maintaining_menu():
+    maintaining_select = ""
+    while maintaining_select != "99":
+        os.system("clear")
+        print("""
+                              Exploitation Menu
+
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    1. Payload generator with encoder (MSFvenom)
+
+   99. Exit
+    """)
+        maintaining_select = input("Select: ").strip()
+        if maintaining_select == "1":
+            msfvenom.msfvenom_main()
 
 #main program
 if __name__ == '__main__':  
@@ -183,6 +201,8 @@ if __name__ == '__main__':
                 scanning_menu()
             elif selection == 7:
                 exploitation_menu()
+            elif selection == 8:
+                maintaining_menu()
 
         #exit shut down tor
         if tor.check_init() == 1:
