@@ -4,7 +4,6 @@ import PackageInstall
 import PackageUpdate
 import PackageUninstall
 from module import *
-from module.msfvenom import msfvenom_main
 
 
 def prRed(printinput):
@@ -171,7 +170,7 @@ def maintaining_menu():
     """)
         maintaining_select = input("Select: ").strip()
         if maintaining_select == "1":
-            msfvenom.msfvenom_main()
+            msfvenom.main()
 
 #main program
 if __name__ == '__main__':  
