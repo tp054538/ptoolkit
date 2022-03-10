@@ -15,18 +15,21 @@ def check_init(): #initialize tor state during main program start up
 
 def main():
     global tor_flag
-    prGreen("[+] Loading Tor Module")
-    tor_1 = subprocess.run("apt list 2>/dev/null | grep -E '^tor/'", shell=True, stdout=subprocess.PIPE)
-    tor_2 = tor_1.stdout.decode('ascii')
-    if "installed" in tor_2:
-        os.system("sudo service tor start")
-        a = subprocess.run("service tor status | head -3 | tail -1", shell=True, stdout=subprocess.PIPE)
-        b = a.stdout.decode('ascii')
-        if "Active: active" in b:
-            prGreen("[+] Tor is running.")
-            tor_flag = 1
-            time.sleep(2)
+    if check_init() == 0:
+        prGreen("[+] Loading Tor Module")
+        tor_1 = subprocess.run("apt list 2>/dev/null | grep -E '^tor/'", shell=True, stdout=subprocess.PIPE)
+        tor_2 = tor_1.stdout.decode('ascii')
+        if "installed" in tor_2:
+            os.system("sudo service tor start")
+            a = subprocess.run("service tor status | head -3 | tail -1", shell=True, stdout=subprocess.PIPE)
+            b = a.stdout.decode('ascii')
+            if "Active: active" in b:
+                prGreen("[+] Tor is running.")
+                tor_flag = 1
+                time.sleep(2)
+        else:
+            prRed("\n[+] Tor is not installed! Please install Tor before accessing this page.")
+            useless = input("Enter any Key to continue......")
     else:
-        prRed("\n[+] Tor is not installed! Please install Tor before accessing this page.")
-        useless = input("Enter any Key to continue......")
+        os.system("sudo service tor stop")
 
