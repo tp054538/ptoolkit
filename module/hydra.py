@@ -28,7 +28,6 @@ def hydra_password_provided_wordlist():
     9. elitehacker.txt    (leaked database)
    10. hotmail.txt          (leaked database)
    11. NordVPN.txt          (leaked database)
-   12. UserPassCombo-Jay.txt
 
 *for more wordlists, browse at ./Wordlists/Passwords/ directory
    99. Exit
@@ -57,8 +56,6 @@ def hydra_password_provided_wordlist():
         return wordlist_directory + "Leaked-Databases/hotmail.txt"
     elif hydra_wordlist_select == "11":
         return wordlist_directory + "Leaked-Databases/NordVPN.txt"
-    elif hydra_wordlist_select == "12":
-        return wordlist_directory + "UserPassCombo-Jay.txt"
     else:
         return ""
 
