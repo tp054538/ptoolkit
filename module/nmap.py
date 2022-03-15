@@ -257,6 +257,11 @@ def newscan():
             elif select == 5:
                 port_range_temp = input("Port Ranges (1-65535): ")
                 port_range_temp.strip()
+                if port_range_temp == "" or " " in port_range_temp:
+                    port_range = ""
+                    print("\n[*] Field is empty / contain space!")
+                    input("Enter any key to continue.......")
+                    continue
                 if port_range_temp[0].isnumeric() == True:
                     port_range = port_range_temp.split('-')
                     if type(port_range) is list:
