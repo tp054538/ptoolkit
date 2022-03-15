@@ -42,13 +42,14 @@ def slowloris_banner():
 
     os.system("clear")
     print("""
-                        Password Cracker (JohnTheRipper)
+                        Denial-of-Service (Slowloris)
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     1. Target            :   """+slowloris_target_banner+"""
     2. Port              :   """+slowloris_port_banner+"""
     3. Sockets           :   """+slowloris_socket_banner+"""
+    
     4. """+slowloris_https_color+"""HTTPS Mode\033[00m        -   Use HTTPS for requests
     5. """+slowloris_verbose_color+"""Verbose\033[00m           -   Increase logging
     6. """+slowloris_rua_color+"""Random User Agent\033[00m -   Use random user agent for each request

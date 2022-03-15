@@ -75,11 +75,11 @@ def joom_banner():
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     1. Target               :   \033[1;32m"""+joom_target+"""\033[00m
+
     2. """+joom_enumerate_color+"""Enumerate\033[00m            -   Enumerate installed components
     3. Proxy                :   """+joom_proxy_banner+"""
     4. Timeout              :   """+joom_timeout_banner+"""
     5. Cookie               :   """+joom_cookie_banner+"""
-
     6. Set User Agent       :   """+joom_user_agent_banner+"""
     7. """+joom_rua_color+"""Random User Agent\033[00m    -   Use random user agent for each scan
 

@@ -348,11 +348,11 @@ def sqlmap_banner():
     8. Data               : """+sqlmap_data_banner+"""
     9. Testable Parameter : """+sqlmap_testpara_banner+"""
    10. Database           : """+sqlmap_database_banner+"""
-   11. """+sqlmap_os_color+"""OS Shell\033[00m           : Prompt for interactive system shell in linux server
-   12. """+sqlmap_pwn_color+"""OS Pwn\033[00m             : Prompt for OOB Shell, Meterpreter or VNC
-   13. """+sqlmap_forms_color+"""Forms page\033[00m         : Target URL have form's field to test (example: login page)
+   11. """+sqlmap_os_color+"""OS Shell\033[00m           - Prompt for interactive system shell in linux server
+   12. """+sqlmap_pwn_color+"""OS Pwn\033[00m             - Prompt for OOB Shell, Meterpreter or VNC
+   13. """+sqlmap_forms_color+"""Forms page\033[00m         - Target URL have form's field to test (example: login page)
    14. Threads            : """+sqlmap_threads_banner+"""
-   15. """+sqlmap_verbose_color+"""Verbose\033[00m            : Display more information
+   15. """+sqlmap_verbose_color+"""Verbose\033[00m            - Display more information
 
 Command: \033[1;32m"""+sqlmap_final_command+"""\033[00m
 
