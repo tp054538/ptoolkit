@@ -255,14 +255,18 @@ def installpackages(select):
         os.system("sudo apt install "+dictionary[selection])
         useless = input("\n[+] Process Completed. Enter any key to continue......")
     else:
-        if select == 14:
-            prRed("[+] Start installing Slowloris")
-        elif select == 15:
-            prRed("[+] Start Installing Sn1per")
-        os.system(dictionary[selection])
-        if select == 15:
-            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
-        useless = input("\n[+] Process Completed. Enter any key to continue......")
+        if git_status == red:
+            print("\n[*] Please install Git first before installing Sn1per.")
+            input("Enter any key to continue......")
+        else:
+            if select == 14:
+                prRed("[+] Start installing Slowloris")
+            elif select == 15:
+                prRed("[+] Start Installing Sn1per")
+            os.system(dictionary[selection])
+            if select == 15:
+                os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
+            useless = input("\n[+] Process Completed. Enter any key to continue......")
 
     #batch install function
 def batch_install_packages(input_list):
@@ -279,12 +283,16 @@ def batch_install_packages(input_list):
                         prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
                 command += " -y > /dev/null 2>&1"
                 os.system(command)
-            prRed("[+] Slowloris installation is starting......")
-            prRed("[+] Sn1per installation is starting......")
-            os.system(dictionary["14"])
-            os.system(dictionary["15"])
-            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
-            useless = input("\n[+] Process completed. Enter any key to continue......")
+            if git_status == red:
+                print("\n[*] Please install Git first before installing Sn1per.")
+                input("Enter any key to continue......")
+            else:
+                prRed("[+] Slowloris installation is starting......")
+                prRed("[+] Sn1per installation is starting......")
+                os.system(dictionary["14"])
+                os.system(dictionary["15"])
+                os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
+                useless = input("\n[+] Process completed. Enter any key to continue......")
 
         elif "14" in input_list and "15" not in input_list:
             if len(input_list) >= 2:
@@ -295,9 +303,13 @@ def batch_install_packages(input_list):
                         prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
                 command += " -y > /dev/null 2>&1"
                 os.system(command)
-            prRed("[+] Slowloris installation is starting......")
-            os.system(dictionary["14"])
-            useless = input("\n[+] Process completed. Enter any key to continue......")
+            if git_status == red:
+                print("\n[*] Please install Git first before installing Sn1per.")
+                input("Enter any key to continue......")
+            else:
+                prRed("[+] Slowloris installation is starting......")
+                os.system(dictionary["14"])
+                useless = input("\n[+] Process completed. Enter any key to continue......")
 
         elif "14" not in input_list and "15" in input_list:
             if len(input_list) >= 2:
@@ -308,10 +320,14 @@ def batch_install_packages(input_list):
                         prRed("[+] "+dictionary[input_list[i]]+" installation is starting......")
                 command += " -y > /dev/null 2>&1"
                 os.system(command)
-            prRed("[+] Sn1per installation is starting......")
-            os.system(dictionary["15"])
-            os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
-            useless = input("\n[+] Process completed. Enter any key to continue......")
+            if git_status == red:
+                print("\n[*] Please install Git first before installing Sn1per.")
+                input("Enter any key to continue......")
+            else:
+                prRed("[+] Sn1per installation is starting......")
+                os.system(dictionary["15"])
+                os.system('cd Sn1per; echo "y" > y.txt; sudo ./install.sh < y.txt')
+                useless = input("\n[+] Process completed. Enter any key to continue......")
 
     else:
         command = "sudo apt install"
