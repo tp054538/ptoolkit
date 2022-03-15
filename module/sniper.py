@@ -25,7 +25,7 @@ def sniper_banner():
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    1. Target: \033[1;32m"""+sniper_target+"""\033[00m
+    1. Target URL/IP:  \033[1;32m"""+sniper_target+"""\033[00m
 
     2. """+normal_color+"""Normal Mode\033[00m                    -   Basic scans of target and open ports
     3. """+normal_o_r_color+"""Normal Mode + OSINT + Recon\033[00m    -   Normal + OSINT Recon
