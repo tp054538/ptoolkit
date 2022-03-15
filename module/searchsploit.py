@@ -41,7 +41,13 @@ def ss_menu():
                 retrieve_list2 = retrieve_list[-1].split(".")
                 retrieve_input = retrieve_list2[0]
                 retrieve_command = "searchsploit -p " + retrieve_input
-                os.system(retrieve_command)
+                ret = subprocess.run(retrieve_command, shell=True, stdout=subprocess.PIPE)
+                ret_out = ret.stdout.decode('ascii')
+                print(ret_out)
+                if "Could not find EDB-ID" in ret_out:
+                    print("\n[*] No exploit found. Please provide the exploit index filename.")
+                    input("Enter any key to continue......")
+                    continue
                 copy_retrieve = input("\nDo you want to copy the file to ./result/ directory? (y/n): ")
                 if copy_retrieve == "y" or copy_retrieve == "Y":
                     a = subprocess.run(retrieve_command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,universal_newlines=True,shell=True)
