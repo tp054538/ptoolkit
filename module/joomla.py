@@ -177,10 +177,12 @@ def joom_main():
                 continue
             try:
                 joom_timeout_second = int(joom_timeout)
+                if joom_timeout_second <= 0:
+                    raise ValueError
             except ValueError:
                 joom_timeout_command = ""
                 joom_timeout_flag = 0
-                print("\n[*] Invalid! Please enter numbers only!")
+                print("\n[*] Invalid! Please enter positive number only!")
                 useless = input("Enter any key to continue......")
                 continue
             joom_timeout_flag = 1
