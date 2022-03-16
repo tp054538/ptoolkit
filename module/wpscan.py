@@ -617,7 +617,7 @@ def main():
             #check target is not empty -> fire attack.
             elif wpscan_select == "90":
                 if wpscan_url == "":
-                    print("\n[*] No target specified!.")
+                    print("\n[*] No target specified!")
                     useless = input("Enter any key to continue......")
                     continue
                 #initialize output state
