@@ -515,14 +515,23 @@ def sqlmap_main():
             sqlmap_data_string_command = "--data=\"" + sqlmap_data_string + "\" "
         #testable parameter
         elif sqlmap_select == "9":
-            sqlmap_testpara = input("\nTestable Parameter (use , as seperator for multiple parameters): ").strip()
+            sqlmap_testpara = input("\nTestable Parameter (use , as seperator for multiple parameters): ").strip().strip(",")
             if sqlmap_testpara == "" or " " in sqlmap_testpara:
                 sqlmap_testpara = ""
                 sqlmap_testpara_command = ""
                 print("\n[*] Field is empty / Contain spaces!")
                 useless = input("Enter any key to continue......")
                 continue
-            sqlmap_testpara_command = "-p \"" + sqlmap_testpara + "\" "
+            #check duplicate
+            if "," in sqlmap_testpara:
+                sqlmap_testpara_list = sqlmap_testpara.split(",")
+                if len(sqlmap_testpara_list) != len(set(sqlmap_testpara_list)):
+                    sqlmap_testpara = ""
+                    sqlmap_testpara_command = ""
+                    print("\n[*] Duplicated parameters!")
+                    useless = input("Enter any key to continue......")
+                    continue
+            sqlmap_testpara_command = "-p \"" + sqlmap_testpara.strip() + "\" "
         #database type
         elif sqlmap_select == "10":
             sqlmap_database = input("\nDatabase: ").strip()
