@@ -555,10 +555,10 @@ def main():
             #Cookie
             elif wpscan_select == "13":
                 wpscan_cookie = input("\nCookie (format: cookiename=cookievalue): ").strip()
-                if wpscan_cookie == "":
+                if wpscan_cookie == "" or " " in wpscan_cookie:
                     wpscan_cookie = ""
                     wpscan_cookie_command = ""
-                    print("\n[*] Field cannot be empty!")
+                    print("\n[*] Field cannot be empty / contain space!")
                     useless = input("Enter any key to continue......")
                     continue
                 #validate format
