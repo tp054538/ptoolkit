@@ -10,6 +10,19 @@ def hydra_self_check():
     else:
         return 0
 
+def hydra_check_supported_service(hydraservice):
+    hydra_valid_service_list = []
+    with open("module/config/hydra_supported_service") as file:
+        valid_service = file.readlines()
+        for line in valid_service:
+            hydra_valid_service_list.append(line.replace("\n","").strip())
+        file.close()
+    #validate service input is supported
+    for i in range(len(hydra_valid_service_list)):
+        if hydraservice.strip() == hydra_valid_service_list[i].strip():
+            return 1
+    return 0
+
 def hydra_password_provided_wordlist():
     os.system("clear")
     print("""
@@ -378,7 +391,7 @@ def hydra_main():
         #service
         elif hydra_select == "2":
             print("\n[*] Type manually or enter \"service\" to view and select Hydra-supported services.")
-            hydra_service = input("Service: ").strip()
+            hydra_service = input("Service: ").strip().lower()
             if hydra_service == "" or " " in hydra_service:
                 hydra_service_command = ""
                 print("\n[*] Field is empty / contain space!")
@@ -392,6 +405,11 @@ def hydra_main():
                     print("\n[*] No service selected!")
                     useless = input("Enter any key to continue......")
                     continue
+            if hydra_check_supported_service(hydra_service) == 0:
+                hydra_service_command = ""
+                print("\n[*] Invalid service selected! Please check hydra-supported service first.")
+                useless = input("Enter any key to continue......")
+                continue
             hydra_service_command = hydra_service + " "
         #username
         elif hydra_select == "3":
