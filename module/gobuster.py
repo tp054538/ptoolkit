@@ -128,7 +128,7 @@ def gobuster_banner():
     9. File Extension    : """+gobuster_file_ext_banner+"""
    10. Threads           : """+gobuster_threads_banner+"""
    11. """+gobuster_verbose_color+"""Verbose\033[00m           - Display more information
-   12. """+gobuster_queit_color+"""Queit\033[00m             - No display banner and lesser noise
+   12. """+gobuster_queit_color+"""Quiet\033[00m             - No display banner and lesser noise
 
 Command: """+gobuster_final_command+"""
 
@@ -338,7 +338,7 @@ def gobuster_main():
             gobuster_ua = input("\nUser Agent (Default = gobuster/3.1.0): ").strip()
             if gobuster_ua == "":
                 gobuster_ua_command = ""
-                print("\nField is empty!")
+                print("\n[*] Field is empty!")
                 useless = input("Enter any key to continue......")
                 continue
             gobuster_ua_command = "-a \"" + gobuster_ua + "\" "
@@ -353,6 +353,14 @@ def gobuster_main():
                 print("\n[*] Field is empty / contain space!")
                 useless = input("Enter any key to continue......")
                 continue
+            #check duplicate
+            if "," in gobuster_file_ext:
+                if len(gobuster_file_ext.split(",")) != len(set(gobuster_file_ext.split(","))):
+                    gobuster_file_ext = ""
+                    gobuster_file_ext_command = ""
+                    print("\n[*] Duplicated file extension!")
+                    useless = input("Enter any key to continue......")
+                    continue
             gobuster_file_ext_command = "-x " + gobuster_file_ext + " "
         #threads
         elif gobuster_select == "10":
