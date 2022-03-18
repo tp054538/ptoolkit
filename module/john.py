@@ -163,8 +163,8 @@ def john_banner():
     1. File         :   \033[1;32m"""+john_target+"""\033[00m
     2. Wordlist     :   """+john_wordlist_banner+"""
     3. Incremental  :   """+john_incremental_banner+"""
+    
     4. Hash Format  :   """+john_format_banner+"""
-
     5. """+john_mangle_color+"""Mangle Mode\033[00m - Produce additional likely password based on the wordlist
     6. Min Length   :   """+john_min_banner+"""
     7. Max Length   :   """+john_max_banner+"""
@@ -229,7 +229,7 @@ def john_main():
             john_incremental = john_print_incre()
             if john_incremental == "":
                 john_incremental_command = ""
-                print("\nError Value / Out of Range! 1~10 only.")
+                print("\n[*] Error Value / Out of Range! 1~10 only.")
                 useless = input("Enter any key to continue......")
                 continue
             john_incremental_command = "--incremental:" + john_incremental + " "
