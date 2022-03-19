@@ -206,7 +206,7 @@ def john_main():
                 continue
         #wordlist
         elif john_select == "2":
-            print("\nType \"wordlists\" to select from provided wordlists.")
+            print("\nType \"\033[1;33mwordlists\033[00m\" to select from provided wordlists.")
             john_wordlist = input("Wordlist File: ").strip()
             if john_wordlist == "" or " " in john_wordlist:
                 john_wordlist = ""
@@ -238,7 +238,7 @@ def john_main():
         #hash format
         elif john_select == "4":
             john_show_supported_format(3)
-            print("\nType \"search\" to search for supported format. Type \"View\" to view all supported format.")
+            print("\nType \"\033[1;33msearch\033[00m\" to search for supported format. Type \"\033[1;33mView\033[00m\" to view all supported format.")
             john_format = input("Hash Format: ").strip()
             if john_format.lower() == "search":
                 john_return = john_show_supported_format(1)

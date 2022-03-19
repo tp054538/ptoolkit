@@ -390,7 +390,7 @@ def hydra_main():
             hydra_target_command = hydra_target + " "
         #service
         elif hydra_select == "2":
-            print("\n[*] Type manually or enter \"service\" to view and select Hydra-supported services.")
+            print("\n[*] Type manually or enter \"\033[1;33mservice\033[00m\" to view and select Hydra-supported services.")
             hydra_service = input("Service: ").strip().lower()
             if hydra_service == "" or " " in hydra_service:
                 hydra_service_command = ""
