@@ -278,7 +278,7 @@ def msfvenom_main():
 
         #payload
         if msfvenom_select == "1":
-            print("\n*Enter \"search\" to search payloads or \"view\" to view all available payloads.")
+            print("\n*Enter \"\033[1;33msearch\033[00m\" to search payloads or \"\033[1;33mview\033[00m\" to view all available payloads.")
             msfvenom_payload = input("Payload: ").strip().lower()
             if msfvenom_payload == "" or " " in msfvenom_payload:
                 msfvenom_payload = ""
@@ -303,7 +303,7 @@ def msfvenom_main():
             msfvenom_payload_command = "-p " + msfvenom_payload + " "
         #Formats
         elif msfvenom_select == "2":
-            print("\n*Type \"format-1\" to view all executable formats or \"format-2\" to view all transforms format.")
+            print("\n*Type \"\033[1;33mformat-1\033[00m\" to view all executable formats or \"\033[1;33mformat-2\033[00m\" to view all transforms format.")
             msfvenom_format = input("Format: ").strip().lower()
             if msfvenom_format == "" or " " in msfvenom_format:
                 msfvenom_format = ""
@@ -324,7 +324,7 @@ def msfvenom_main():
             msfvenom_format_command = "-f " + msfvenom_format + " "
         #encoders
         elif msfvenom_select == "3":
-            print("\n*Enter \"search\" to search encoders or \"view\" to view all available encoders.")
+            print("\n*Enter \"\033[1;33msearch\033[00m\" to search encoders or \"\033[1;33mview\033[00m\" to view all available encoders.")
             msfvenom_encoder = input("Encoder: ").strip().lower()
             if msfvenom_encoder == "" or " " in msfvenom_encoder:
                 msfvenom_encoder = ""
@@ -366,7 +366,7 @@ def msfvenom_main():
             msfvenom_iteration_command = "-i " + str(msfvenom_iteration) + " "
         #Platform
         elif msfvenom_select == "5":
-            print("\n*Enter \"view\" to view all platforms.")
+            print("\n*Enter \"\033[1;33mview\033[00m\" to view all platforms.")
             msfvenom_platform = input("Platform: ").strip().lower()
             if msfvenom_platform == "" or " " in msfvenom_platform:
                 msfvenom_platform = ""
@@ -386,7 +386,7 @@ def msfvenom_main():
             msfvenom_platform_command = "--platform " + msfvenom_platform + " "
         #Arch
         elif msfvenom_select == "6":
-            print("\n*Enter \"view\" to view all archs.")
+            print("\n*Enter \"\033[1;33mview\033[00m\" to view all archs.")
             msfvenom_arch = input("Arch: ").strip().lower()
             if msfvenom_arch == "" or " " in msfvenom_arch:
                 msfvenom_arch = ""
