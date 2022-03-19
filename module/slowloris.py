@@ -16,7 +16,7 @@ def slowloris_banner():
         slowloris_target_banner = "\033[1;32m" + slowloris_target.strip() + "\033[00m"
     
     if slowloris_port_command == "":
-        slowloris_port_banner = "Default = 80"
+        slowloris_port_banner = "Default = 80 (https mode default 443)"
     else:
         slowloris_port_banner = "\033[1;32m" + slowloris_port_command.replace("-p","").strip() + "\033[00m"
     
@@ -47,9 +47,9 @@ def slowloris_banner():
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     1. Target            :   """+slowloris_target_banner+"""
-    2. Port              :   """+slowloris_port_banner+"""
-    3. Sockets           :   """+slowloris_socket_banner+"""
+    2. Sockets           :   """+slowloris_socket_banner+"""
     
+    3. Port              :   """+slowloris_port_banner+"""
     4. """+slowloris_https_color+"""HTTPS Mode\033[00m        -   Use HTTPS for requests
     5. """+slowloris_verbose_color+"""Verbose\033[00m           -   Increase logging
     6. """+slowloris_rua_color+"""Random User Agent\033[00m -   Use random user agent for each request
@@ -86,34 +86,34 @@ def slowloris_main():
                 useless = input("Enter any key to continue......")
                 continue
             if slowloris_target.startswith("http://") == True or slowloris_target.startswith("https://") == True:
-                slowloris_target = slowloris_target.strip("http://").strip("https://")
+                slowloris_target = slowloris_target.replace("http://","").replace("https://","")
                 print("\n[*] Do not specify protocol infront of URL! http/https is auto removed.")
                 useless = input("Enter any key to continue......")
             slowloris_target += " "
-        #port
-        elif slowloris_select == "2":
-            try:
-                slowloris_port = int(input("\nPort: ").strip())
-                if slowloris_port < 1 or slowloris_port > 65535:
-                    raise ValueError
-            except ValueError:
-                slowloris_port_command = ""
-                print("\nError Port! Port 1 ~ 65535 only.")
-                useless = input("Enter any key to continue......")
-                continue
-            slowloris_port_command = "-p " + str(slowloris_port) + " "
         #socket
-        elif slowloris_select == "3":
+        elif slowloris_select == "2":
             try:
                 slowloris_socket = int(input("\nSockets: ").strip())
                 if slowloris_socket < 1:
                     raise ValueError
             except ValueError:
                 slowloris_socket_command = ""
-                print("\nError Value! Positive numbers only.")
+                print("\n[*] Error Value! Positive numbers only.")
                 useless = input("Enter any key to continue......")
                 continue
             slowloris_socket_command = "-s " + str(slowloris_socket) + " "
+        #port
+        elif slowloris_select == "3":
+            try:
+                slowloris_port = int(input("\nPort: ").strip())
+                if slowloris_port < 1 or slowloris_port > 65535:
+                    raise ValueError
+            except ValueError:
+                slowloris_port_command = ""
+                print("\n[*] Error Port! Port 1 ~ 65535 only.")
+                useless = input("Enter any key to continue......")
+                continue
+            slowloris_port_command = "-p " + str(slowloris_port) + " "
         #https
         elif slowloris_select == "4":
             if slowloris_https_flag != 1:
@@ -141,15 +141,15 @@ def slowloris_main():
         #launch attack
         elif slowloris_select == "90":
             if slowloris_target == "":
-                print("\nTarget not specified!")
+                print("\n[*] Target not specified!")
                 useless = input("Enter any key to continue......")
                 continue
             if slowloris_socket_command == "":
-                print("\nSocket number not specified!")
+                print("\n[*] Socket number not specified!")
                 useless = input("Enter any key to continue......")
                 continue
             print("\033[1;32m[+] Starting Slowloris against target......\033[00m")
-            print("[*] Use Ctrl+C to stop Slowloris.")
+            print("\033[1;33m[*] Use Ctrl+C to stop Slowloris.\033[00m")
             os.system(slowloris_final_command)
             useless = input("\033[1;32m[*] Process Completed!\033[00m\nEnter any key to continue......")
 
