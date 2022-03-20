@@ -297,7 +297,7 @@ def msfvenom_main():
             if msfvenom_check_valid_payload(msfvenom_payload) != 1:
                 msfvenom_payload = ""
                 msfvenom_payload_command = ""
-                print("\n[*] Invalid payload! Search or view all avaialbe payloads to confirm if its available.")
+                print("\n[*] Invalid payload! Search or view all available payloads to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_payload_command = "-p " + msfvenom_payload + " "
@@ -318,7 +318,7 @@ def msfvenom_main():
             if msfvenom_check_format(msfvenom_format) != 1:
                 msfvenom_format = ""
                 msfvenom_format_command = ""
-                print("\n[*] Invalid format! View all avaialbe formats to see supported formats.")
+                print("\n[*] Invalid format! View all available formats to see supported formats.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_format_command = "-f " + msfvenom_format + " "
@@ -341,7 +341,7 @@ def msfvenom_main():
             if msfvenom_check_valid_encoder(msfvenom_encoder) != 1:
                 msfvenom_encoder = ""
                 msfvenom_encoder_command = ""
-                print("\n[*] Invalid encoder! Search or view all avaialbe encoders to confirm if its available.")
+                print("\n[*] Invalid encoder! Search or view all available encoders to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_encoder_command = "-e " + msfvenom_encoder + " "
@@ -380,7 +380,7 @@ def msfvenom_main():
             if msfvenom_check_valid_platform(msfvenom_platform) != 1:
                 msfvenom_platform = ""
                 msfvenom_platform_command = ""
-                print("\n[*] Invalid platform! View all avaialbe platforms to confirm if its available.")
+                print("\n[*] Invalid platform! View all available platforms to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_platform_command = "--platform " + msfvenom_platform + " "
@@ -400,7 +400,7 @@ def msfvenom_main():
             if msfvenom_check_valid_arch(msfvenom_arch) != 1:
                 msfvenom_arch = ""
                 msfvenom_arch_command = ""
-                print("\n[*] Invalid arch! View all avaialbe archs to confirm if its available.")
+                print("\n[*] Invalid arch! View all available archs to confirm if its available.")
                 useless = input("Enter any key to continue......")
                 continue
             msfvenom_arch_command = "-a " + msfvenom_arch + " "
