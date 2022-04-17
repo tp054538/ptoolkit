@@ -160,7 +160,7 @@ def maintaining_menu():
     while maintaining_select != "99":
         os.system("clear")
         print("""
-                              Exploitation Menu
+                            Maintaining Access Menu
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
