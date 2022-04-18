@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Called by install, update, and uninstall module, to check all tool's status on the machine (installed/uninstalled/updatable)
+#First Written Date: 8 February 2022
+#Last Edited: 18 April 2022
+
 from queue import Queue
 import subprocess
 import multiprocessing

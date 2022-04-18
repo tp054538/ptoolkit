@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Uninstall Tools
+#First Written Date: 10 February 2022
+#Last Edited: 18 April 2022
+
 import subprocess
 from sys import stdout
 import PackageInstall

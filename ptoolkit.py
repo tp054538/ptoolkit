@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: As main program, show categories menu and main menu
+#First Written Date: 7 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import PackageCheck
 import PackageInstall
