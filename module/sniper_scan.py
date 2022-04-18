@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Scan websites with Sn1per
+#First Written Date: 19 February 2022
+#Last Edited: 18 April 2022
+
 import os
 from module import sniper
 

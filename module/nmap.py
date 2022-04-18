@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Scan ports and services with NMAP, able to save arguments into shortcut for future use
+#First Written Date: 16 February 2022
+#Last Edited: 18 April 2022
+
 import configparser
 import os
 import ipaddress

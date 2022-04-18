@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Use John The Ripper to crack hashes and find the plain text
+#First Written Date: 17 March 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module.sniper_scan import check_file_exist

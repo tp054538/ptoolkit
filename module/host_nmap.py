@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Use nmap to discover live host on the given network and CIDR
+#First Written Date: 13 February 2022
+#Last Edited: 18 April 2022
+
 import os
 from module import nmap
 

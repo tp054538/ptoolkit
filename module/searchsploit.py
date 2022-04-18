@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Search vulnerabilities in ExploitDB with keywords
+#First Written Date: 22 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 

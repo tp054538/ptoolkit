@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Gather information of target through OSINT and reconnaissance with Sn1per
+#First Written Date: 20 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 

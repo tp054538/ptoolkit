@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Inject and Identify SQL Vulnerabilities with SQLmap
+#First Written Date: 15 March 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module import tor

@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Start Tor in background / Stop Tor
+#First Written Date: 24 February 2022
+#Last Edited: 18 April 2022
+
 import os 
 import subprocess
 import time

@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Scan WordPress websites for vulnerabilities, misconfiguration, or sensitive data exposure with WPscan
+#First Written Date: 17 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module import sniper_scan

@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Used for discovering directory and files on a website
+#First Written Date: 20 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module import sniper_scan

@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Scan joomla CMS website with joomscan
+#First Written Date: 28 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module import tor

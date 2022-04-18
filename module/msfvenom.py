@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Generate different payloads and encode it with MSFvenom
+#First Written Date: 28 March 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 from module.sniper_scan import check_file_exist

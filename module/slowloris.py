@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Denial-of-Service attack through keep-alive HTTP header with Slowloris
+#First Written Date: 23 March 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 

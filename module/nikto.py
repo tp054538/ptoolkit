@@ -1,3 +1,8 @@
+#Written By: Foong Yew Joe (TP054538)
+#Description: Scan websites with nikto
+#First Written Date: 19 February 2022
+#Last Edited: 18 April 2022
+
 import os
 import subprocess
 
