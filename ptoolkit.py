@@ -54,7 +54,7 @@ def banner():
   \033[32mCreated by: \033[1;32mYew Joe\033[0;31m -------------------------\033[1;32m APU-FYP
   """)
 
-    print("\033[1;33mVersion: 1.7        ", end='')
+    print("\033[1;33mVersion: 3.0        ", end='')
     if tor.check_init() == 1:
         PackageCheck.prGreen("Tor is running on \033[1;33msocks5://127.0.0.1:9050")
     else:
