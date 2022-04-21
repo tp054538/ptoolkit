@@ -30,6 +30,8 @@ def RoE():
     print("|----------------------------------------------------------------|")
     print("|----------------------------------------------------------------|")
     print("                                                                  ")
+    print("                                                                  ")
+    print("**Some content might be hidden if the background colour of the terminal is plain white colour.")
     Answer = input("Answer: ")
     if Answer == "yes" or Answer == "YES" or Answer == "Yes":
         return 1
