@@ -1,4 +1,4 @@
-# ptoolkitinvalida
+# ptoolkit
 PToolkit is developed to ease the use of penetration testing tools with minimal knowledge and effort.
 
 PToolkit provides a simple UI that let user to view integrated tools' main arguments. Users can select the arguments and provide value for that argument.
