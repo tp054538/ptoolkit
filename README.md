@@ -23,3 +23,8 @@ Currently PToolkit support the following features:
 10. SQL injection Attack
 11. Directory and Files discovery
 12. Generate Payload (MSFvenom)
+
+Requirements:
+1. Kali Linux (or debian-based system)
+2. Advanced Packaging Tool (APT) installed
+3. Python3
