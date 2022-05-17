@@ -23,8 +23,11 @@ Currently PToolkit support the following features:
 10. SQL injection Attack
 11. Directory and Files discovery
 12. Generate Payload (MSFvenom)
+13. Shortcut to select wordlists from SecLists
 
 Requirements:
 1. Kali Linux (or debian-based system)
 2. Advanced Packaging Tool (APT) installed
 3. Python3
+
+*Please run this tool in terminal with black background because some words might be hidden if the background colour is same with the text colour.
